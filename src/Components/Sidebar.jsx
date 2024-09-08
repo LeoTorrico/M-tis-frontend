@@ -5,8 +5,8 @@ const Sidebar = () => {
     <div className="flex flex-col h-screen w-64 bg-dark-blue text-white ">
       
       <div className="flex items-center justify-center py-4">
-        <div className="bg-gray-400 rounded-full w-12 h-12"></div>
-        <h1 className="ml-3 text-lg font-bold">Mtis</h1>
+          <img src="/logoSidebar.svg" alt="Logo Blanco" className="w-22 h-20" />
+        
       </div>
 
       
