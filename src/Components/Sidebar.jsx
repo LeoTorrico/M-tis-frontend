@@ -1,4 +1,5 @@
 import { FaHome, FaBuilding, FaClipboardList, FaChartLine, FaBell, FaSignOutAlt } from 'react-icons/fa';
+import { Link } from 'react-router-dom';
 
 const Sidebar = () => {
   return (
@@ -11,18 +12,18 @@ const Sidebar = () => {
 
       
       <nav className="mt-8 space-y-6">
-        <a href="#inicio" className="flex items-center px-4 py-2 hover:bg-light-blue transition-colors">
+        <Link to="/Inicio" className="flex items-center px-4 py-2 hover:bg-light-blue transition-colors">
           <FaHome className="mr-3" />
           Inicio
-        </a>
+        </Link>
         <a href="#grupo-empresas" className="flex items-center px-4 py-2 hover:bg-light-blue transition-colors">
           <FaBuilding className="mr-3" />
           Grupo Empresas
         </a>
-        <a href="#planificacion" className="flex items-center px-4 py-2 hover:bg-light-blue transition-colors">
+        <Link to="/planificacion-docente" className="flex items-center px-4 py-2 hover:bg-light-blue transition-colors">
           <FaClipboardList className="mr-3" />
           Planificación
-        </a>
+        </Link>
         <a href="#evaluaciones" className="flex items-center px-4 py-2 hover:bg-light-blue transition-colors">
           <FaClipboardList className="mr-3" />
           Evaluaciones
