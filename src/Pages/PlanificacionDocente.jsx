@@ -16,15 +16,18 @@ function PlanificacionDocente() {
         { nombre: 'Diseño Bd', semana1: false, semana2: true, semana3: false },
       ];
       
-      const dataEmpresa = [
-        {nombre: 'codecraft'}
-      ];
+      const dataEmpresa = 
+        {nombre: 'codecraft'};
 
   return (
     <div className="p-8">
       <h1 className="text-4xl font-bold mb-4">Grupo: {dataEmpresa.nombre}</h1>
       <h2 className="text-2xl font-semibold mb-6">Planificación de grupo</h2>
-
+      <div className="flex justify-end my-4">
+        <button className="bg-semi-blue text-white p-2 rounded-xl shadow-lg hover:bg-light-gray flex justify-center items-center">
+                  Nueva Actividad
+        </button>
+      </div>
       <TablaActividades actividades={actividades} />
     </div>
   )
