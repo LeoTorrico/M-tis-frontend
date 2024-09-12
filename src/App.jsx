@@ -9,52 +9,33 @@ import PlanificacionDocente from './pages/PlanificacionDocente';
 function App() {
   return (
     <Router>
-      <div className="flex flex-col w-screen h-screen ">
-        <NavbarAndSidebar />
-        <div className="flex flex-grow font-title ">
+      <div className="flex flex-col w-screen h-screen">
+        <Layout>
           <Routes>
-            <Route
-              path="/Inicio"
-              element={
-                <>
-                  <Sidebar />
-                  <div className="flex-grow ml-64">
-                    <Inicio />
-                  </div>
-                </>
-              }
-            />
-            <Route
-              path="/login"
-              element={
-                <div className="flex flex-grow p-4">
-                  <LoginEstudiantes />
-                </div>
-              }
-            />
-            <Route
-              path="/planificacion-docente"
-              element={
-                <>
-                  <Sidebar />
-                  <div className="flex-grow ml-64">
-                    <PlanificacionDocente />
-                  </div>
-                </>
-              }
-            />
+            <Route path="/Inicio" element={<Inicio />} />
+            <Route path="/login" element={<LoginEstudiantes />} />
+            <Route path="/planificacion-docente" element={<PlanificacionDocente />} />
           </Routes>
-        </div>
+        </Layout>
       </div>
     </Router>
   );
 }
 
-function NavbarAndSidebar() {
+function Layout({ children }) {
   const location = useLocation();
-  const showNavbar = location.pathname === '/login'; 
+  const isLoginPage = location.pathname === '/login';
+  const isSidebarPage = location.pathname === '/Inicio' || location.pathname === '/planificacion-docente';
 
-  return <>{showNavbar && <Navbar />}</>;
+  return (
+    <div className="flex flex-grow">
+      {isSidebarPage && <Sidebar />} {/* Mostrar Sidebar solo en Inicio y Planificación Docente */}
+      <div className={`flex-grow ${isSidebarPage ? 'ml-64' : ''}`}>
+        {isLoginPage && <Navbar />} {/* Mostrar Navbar solo en Login */}
+        {children}
+      </div>
+    </div>
+  );
 }
 
 export default App;
