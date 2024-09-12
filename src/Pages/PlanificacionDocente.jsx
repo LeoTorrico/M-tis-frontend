@@ -24,7 +24,7 @@ function PlanificacionDocente() {
       <h1 className="text-4xl font-bold mb-4">Grupo: {dataEmpresa.nombre}</h1>
       <h2 className="text-2xl font-semibold mb-6">Planificación de grupo</h2>
       <div className="flex justify-end my-4">
-        <button className="bg-semi-blue text-white p-2 rounded-xl shadow-lg hover:bg-light-gray flex justify-center items-center">
+        <button className="bg-semi-blue text-lg text-white p-2 rounded-xl shadow-lg hover:bg-light-gray flex justify-center items-center w-56 tracking-widest ">
                   Nueva Actividad
         </button>
       </div>
