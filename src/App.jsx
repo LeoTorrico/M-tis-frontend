@@ -4,21 +4,21 @@ import Navbar from './Components/Navbar';
 import './App.css';
 import Inicio from './Pages/Inicio';
 import LoginEstudiantes from './pages/LoginEstudiantes';
-import PlanificacionDocente from './Pages/PlanificacionDocente'; // Importa el nuevo componente
+import PlanificacionDocente from './pages/PlanificacionDocente';
 
 function App() {
   return (
     <Router>
       <div className="flex flex-col w-screen h-screen ">
         <NavbarAndSidebar />
-        <div className="flex flex-grow font-title">
+        <div className="flex flex-grow font-title ">
           <Routes>
             <Route
               path="/Inicio"
               element={
                 <>
                   <Sidebar />
-                  <div className="flex-grow p-4">
+                  <div className="flex-grow ml-64">
                     <Inicio />
                   </div>
                 </>
@@ -37,7 +37,7 @@ function App() {
               element={
                 <>
                   <Sidebar />
-                  <div className="flex-grow p-4">
+                  <div className="flex-grow ml-64">
                     <PlanificacionDocente />
                   </div>
                 </>
