@@ -13,7 +13,7 @@ function App() {
         <Layout>
           <Routes>
             <Route path="/Inicio" element={<Inicio />} />
-            <Route path="/login" element={<LoginEstudiantes />} />
+            <Route path="/LoginEstudiantes" element={<LoginEstudiantes />} />
             <Route path="/planificacion-docente" element={<PlanificacionDocente />} />
           </Routes>
         </Layout>
@@ -24,7 +24,7 @@ function App() {
 
 function Layout({ children }) {
   const location = useLocation();
-  const isLoginPage = location.pathname === '/login';
+  const isLoginPage = location.pathname === '/LoginEstudiantes';
   const isSidebarPage = location.pathname === '/Inicio' || location.pathname === '/planificacion-docente';
 
   return (
