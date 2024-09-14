@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { FaEye, FaEyeSlash } from 'react-icons/fa';
+import ReCAPTCHA from 'react-google-recaptcha';
 
 function LoginEstudiantes() {
   const [formState, setFormState] = useState({
@@ -9,6 +10,7 @@ function LoginEstudiantes() {
   });
 
   const [showPassword, setShowPassword] = useState(false);
+  const [captchaValue, setCaptchaValue] = useState(null);
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
@@ -20,7 +22,15 @@ function LoginEstudiantes() {
 
   const handleSubmit = (e) => {
     e.preventDefault();
+    if (!captchaValue) {
+      alert('Por favor, completa el CAPTCHA.');
+      return;
+    }
     console.log('Form Submitted', formState);
+  };
+
+  const handleCaptchaChange = (value) => {
+    setCaptchaValue(value);
   };
 
   return (
@@ -33,7 +43,7 @@ function LoginEstudiantes() {
         <p className="text-xl mb-2 text-center">MTIS es la plataforma de gestión de proyectos para organizar, colaborar y seguir el progreso en tiempo real. Inicia sesión y optimiza tus proyectos de manera eficiente y segura.</p>
 
         <div className="flex justify-center mt-4">
-              <a href="#" className="text-black text-sm font-Montserrat font-bold">
+              <a href="#" className="text-black text-sm font-Montserrat font-bold underline">
               ¿No tienes cuenta aun? Registrate ahora
               </a>
             </div>
@@ -116,10 +126,17 @@ function LoginEstudiantes() {
             </button>
 
             <div className="flex justify-end mt-2">
-              <a href="#" className="text-white text-xs font-Montserrat font-bold">
+              <a href="#" className="text-white text-sm font-Montserrat font-bold underline">
                 ¿Olvidaste tu contraseña?
               </a>
             </div>
+          </div>
+
+          <div className="flex mb-6 justify-center">
+            <ReCAPTCHA
+              sitekey="6LeW-EIqAAAAAKzpUQfxGq7wtwr-37KO-bpSA8lJ"
+              onChange={handleCaptchaChange}
+            />
           </div>
 
           <button
