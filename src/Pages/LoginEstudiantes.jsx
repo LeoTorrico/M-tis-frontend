@@ -55,8 +55,6 @@ function LoginEstudiantes() {
             Registrarse
           </button>
           </div>
-
-
       </div>
 
       {/* Contenido derecha */}
