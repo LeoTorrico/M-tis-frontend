@@ -1,10 +1,15 @@
-import { BrowserRouter as Router, Route, Routes, useLocation } from 'react-router-dom';
-import Sidebar from './Components/Sidebar';
-import Navbar from './Components/Navbar';
-import './App.css';
-import Inicio from './Pages/Inicio';
-import LoginEstudiantes from './pages/LoginEstudiantes';
-import PlanificacionDocente from './pages/PlanificacionDocente';
+import {
+  BrowserRouter as Router,
+  Route,
+  Routes,
+  useLocation,
+} from "react-router-dom";
+import Sidebar from "./Components/Sidebar";
+import Navbar from "./Components/Navbar";
+import "./App.css";
+import Inicio from "./Pages/Inicio";
+import LoginEstudiantes from "./pages/LoginEstudiantes";
+import PlanificacionDocente from "./pages/PlanificacionDocente";
 
 function App() {
   return (
@@ -14,7 +19,10 @@ function App() {
           <Routes>
             <Route path="/Inicio" element={<Inicio />} />
             <Route path="/login" element={<LoginEstudiantes />} />
-            <Route path="/planificacion-docente" element={<PlanificacionDocente />} />
+            <Route
+              path="/planificacion-docente"
+              element={<PlanificacionDocente />}
+            />
           </Routes>
         </Layout>
       </div>
@@ -24,13 +32,16 @@ function App() {
 
 function Layout({ children }) {
   const location = useLocation();
-  const isLoginPage = location.pathname === '/login';
-  const isSidebarPage = location.pathname === '/Inicio' || location.pathname === '/planificacion-docente';
+  const isLoginPage = location.pathname === "/login";
+  const isSidebarPage =
+    location.pathname === "/Inicio" ||
+    location.pathname === "/planificacion-docente";
 
   return (
     <div className="flex flex-grow">
-      {isSidebarPage && <Sidebar />} {/* Mostrar Sidebar solo en Inicio y Planificación Docente */}
-      <div className={`flex-grow ${isSidebarPage ? 'ml-64' : ''}`}>
+      {isSidebarPage && <Sidebar />}{" "}
+      {/* Mostrar Sidebar solo en Inicio y Planificación Docente */}
+      <div className={`flex-grow ${isSidebarPage ? "ml-64" : ""}`}>
         {isLoginPage && <Navbar />} {/* Mostrar Navbar solo en Login */}
         {children}
       </div>
