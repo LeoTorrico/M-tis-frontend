@@ -38,7 +38,7 @@ function LoginEstudiantes() {
       {/* Formulario a la izquierda */}
       <div className="flex-1 bg-white flex flex-col justify-center items-center p-12 mt-6">
         <div className='flex flex-col w-2/3'>      
-        <h1 className="text-5xl font-bold mb-2">Bienvenidos a</h1>
+        <h1 className="flex text-5xl font-bold mb-2 justify-center">Bienvenidos a</h1>
         <img src="/LogoColor.svg" alt="Logo Color" className="w-full h-full" />
         <p className="text-xl mb-2 text-center">MTIS es la plataforma de gestión de proyectos para organizar, colaborar y seguir el progreso en tiempo real. Inicia sesión y optimiza tus proyectos de manera eficiente y segura.</p>
 
