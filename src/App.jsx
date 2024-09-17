@@ -4,6 +4,7 @@ import Navbar from './Components/Navbar';
 import './App.css';
 import Inicio from './Pages/Inicio';
 import LoginEstudiantes from './pages/LoginEstudiantes';
+import LoginDocentes from './pages/LoginDocentes';
 import PlanificacionDocente from './pages/PlanificacionDocente';
 
 function App() {
@@ -14,6 +15,7 @@ function App() {
           <Routes>
             <Route path="/Inicio" element={<Inicio />} />
             <Route path="/LoginEstudiantes" element={<LoginEstudiantes />} />
+            <Route path="/LoginDocentes" element={<LoginDocentes/>} />
             <Route path="/planificacion-docente" element={<PlanificacionDocente />} />
           </Routes>
         </Layout>
@@ -24,7 +26,7 @@ function App() {
 
 function Layout({ children }) {
   const location = useLocation();
-  const isLoginPage = location.pathname === '/LoginEstudiantes';
+  const isLoginPage = location.pathname === '/LoginEstudiantes' || location.pathname === '/LoginDocentes';
   const isSidebarPage = location.pathname === '/Inicio' || location.pathname === '/planificacion-docente';
 
   return (
