@@ -1,15 +1,16 @@
-import Sidebar from './Components/Sidebar'
+import { Route, Routes } from 'react-router-dom';
 import './App.css'
-
+import RegistroEstudiante from './Components/Registros/RegistroEstudiantes'
+import Home from './Pages/Home/Home';
 function App() {
   return (
     <div className="flex">
-      <Sidebar />
-      <div className="flex-grow p-4">
-        {/* Aquí va el contenido de la página principal */}
-        <h1 className="text-2xl font-bold">Página Principal</h1>
-        {/* Más contenido */}
-      </div>
+     
+      <Routes>
+        <Route path='/RegistroEstudiante' element={<RegistroEstudiante></RegistroEstudiante>} />
+        <Route path='/' element={<Home></Home>} />
+
+           </Routes>
     </div>
   )
 }
