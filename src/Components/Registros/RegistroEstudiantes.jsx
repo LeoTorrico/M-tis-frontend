@@ -25,17 +25,17 @@ function RegistroEstudiante() {
     e.preventDefault();
     // Validar formulario
     const newErrors = {};
-    if (!formData.nombre || formData.nombre.length < 3 || formData.nombre.length > 60 || /[^a-zA-Z'-]/.test(formData.nombre)) {
-      newErrors.nombre = 'Nombre debe tener entre 3 y 60 caracteres y solo contener letras y caracteres especiales: - \'';
+    if (!formData.nombre || formData.nombre.length < 3 || formData.nombre.length > 60 || /[^a-zA-Z\s']/.test(formData.nombre)) {
+      newErrors.nombre = 'Nombre debe tener entre 3 y 60 caracteres y solo contener letras, espacios y apóstrofes.';
     }
-    if (!formData.apellidos || formData.apellidos.length < 3 || formData.apellidos.length > 80 || /[^a-zA-Z'-]/.test(formData.apellidos)) {
-      newErrors.apellidos = 'Apellidos debe tener entre 3 y 80 caracteres y solo contener letras y caracteres especiales: - \'';
-    }
-    if (!formData.correo || !/^[\w-]+@est\.umss\.edu$/.test(formData.correo) || formData.correo.length !== 21) {
-      newErrors.correo = 'Correo debe tener formato válido y 21 caracteres.';
+    if (!formData.apellidos || formData.apellidos.length < 3 || formData.apellidos.length > 80 || /[^a-zA-Z\s']/.test(formData.apellidos)) {
+      newErrors.apellidos = 'Apellidos debe tener entre 3 y 80 caracteres y solo contener letras, espacios y apóstrofes.';
     }
     if (!formData.codigoSIS || formData.codigoSIS.length < 6 || formData.codigoSIS.length > 10) {
-      newErrors.codigoSIS = 'Código de clase debe tener entre 6 y 10 caracteres.';
+      newErrors.codigoSIS = 'Código SIS debe tener entre 6 y 10 caracteres.';
+    }
+    if (!formData.correo || !new RegExp(`^${formData.codigoSIS}@est\\.umss\\.edu$`).test(formData.correo)) {
+      newErrors.correo = 'Correo debe seguir el formato códigoSIS@est.umss.edu y el código SIS debe coincidir con el campo Código SIS.';
     }
     if (!formData.contraseña || formData.contraseña.length < 12 || formData.contraseña.length > 30 || !/[A-Z]/.test(formData.contraseña) || !/[a-z]/.test(formData.contraseña)) {
       newErrors.contraseña = 'Contraseña debe tener entre 12 y 30 caracteres, y contener mayúsculas y minúsculas.';
@@ -136,30 +136,38 @@ function RegistroEstudiante() {
             Regístrate en MTIS y comienza a gestionar tus proyectos de forma eficiente. Únete a una plataforma diseñada para facilitar la colaboración y el seguimiento en tiempo real.
           </p>
           <a href="/iniciar-sesion" className="text-black underline mb-6"><strong>¿Ya tienes cuenta? Inicia sesión ahora.</strong></a>
-          <button onClick={handleCancel} className="p-3 bg-[#3684DB] text-white rounded-lg text-lg w-1/3 transition-transform duration-200 hover:bg-[#001737] hover:-translate-y-1 hover:shadow-lg">
-            Cancelar Registro
+          <button onClick={handleCancel} className="p-3 bg-[#3684DB] text-white rounded-lg text-lg w-1/3 transition-transform duration-200 hover:bg-[#2a6ab1] hover:-translate-y-1 hover:shadow-lg">
+            Cancelar
           </button>
         </div>
       </div>
 
       {/* Modal de éxito */}
       {showModal && (
-        <div className="fixed inset-0 flex items-center justify-center bg-[#00204A] bg-opacity-50">
-          <div className="bg-white p-6 rounded-lg shadow-lg">
-            <h3 className="text-lg font-bold text-[#00204A]">Estudiante registrado correctamente</h3>
-            <button onClick={handleModalClose} className="mt-4 p-2 bg-[#3684DB] text-white rounded-lg">Aceptar</button>
+        <div className="fixed inset-0 flex items-center justify-center bg-gray-800 bg-opacity-75">
+          <div className="bg-white p-6 rounded-lg shadow-lg w-1/3 text-center">
+            <h3 className="text-lg font-bold mb-4">Registro Exitoso</h3>
+            <p className="mb-4">Tu registro se ha completado exitosamente. Ahora puedes iniciar sesión.</p>
+            <button onClick={handleModalClose} className="p-3 bg-[#00204A] text-white rounded-lg transition-transform duration-200 hover:bg-[#001737] hover:-translate-y-1 hover:shadow-lg">
+              Aceptar
+            </button>
           </div>
         </div>
       )}
 
-      {/* Modal de confirmación de cancelación */}
+      {/* Modal de cancelación */}
       {showCancelModal && (
-        <div className="fixed inset-0 flex items-center justify-center bg-[#00204A] bg-opacity-50">
-          <div className="bg-white p-6 rounded-lg shadow-lg text-center">
-            <p className="text-lg font-bold text-[#00204A]">¿Estás seguro de que deseas cancelar el registro de estudiante?</p>
-            <div className="flex justify-center gap-4 mt-4">
-              <button onClick={() => handleCancelModalClose(true)} className="p-2 bg-red-500 text-white rounded-lg">Sí</button>
-              <button onClick={() => handleCancelModalClose(false)} className="p-2 bg-gray-300 text-black rounded-lg">No</button>
+        <div className="fixed inset-0 flex items-center justify-center bg-gray-800 bg-opacity-75">
+          <div className="bg-white p-6 rounded-lg shadow-lg w-1/3 text-center">
+            <h3 className="text-lg font-bold mb-4">Confirmar Cancelación</h3>
+            <p className="mb-4">¿Estás seguro de que deseas cancelar? Los datos ingresados se perderán.</p>
+            <div className="flex justify-around">
+              <button onClick={() => handleCancelModalClose(true)} className="p-3 bg-[#E74C3C] text-white rounded-lg transition-transform duration-200 hover:bg-[#c0392b] hover:-translate-y-1 hover:shadow-lg">
+                Sí, cancelar
+              </button>
+              <button onClick={() => handleCancelModalClose(false)} className="p-3 bg-[#2ECC71] text-white rounded-lg transition-transform duration-200 hover:bg-[#27ae60] hover:-translate-y-1 hover:shadow-lg">
+                No, continuar
+              </button>
             </div>
           </div>
         </div>
