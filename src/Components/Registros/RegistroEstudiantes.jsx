@@ -1,12 +1,13 @@
 import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom'; // Importar useNavigate para la navegación
+import { useNavigate } from 'react-router-dom';
+import axios from 'axios'; // Importar Axios para realizar la solicitud HTTP
 import logo from '../../assets/images/logo.png';
 import logoGrande from '../../assets/images/logo-grande.png';
 
 function RegistroEstudiante() {
   const [formData, setFormData] = useState({
-    codigoSIS: '',
-    nombre: '',
+    codigo_sis: '', // Cambiado de codigoSIS a codigo_sis
+    nombres: '',    // Cambiado de nombre a nombres
     apellidos: '',
     correo: '',
     contraseña: ''
@@ -21,21 +22,21 @@ function RegistroEstudiante() {
     setFormData({ ...formData, [id]: value });
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     // Validar formulario
     const newErrors = {};
-    if (!formData.nombre || formData.nombre.length < 3 || formData.nombre.length > 60 || /[^a-zA-Z\s']/.test(formData.nombre)) {
-      newErrors.nombre = 'Nombre debe tener entre 3 y 60 caracteres y solo contener letras, espacios y apóstrofes.';
+    if (!formData.nombres || formData.nombres.length < 3 || formData.nombres.length > 60 || /[^a-zA-Z\s']/.test(formData.nombres)) {
+      newErrors.nombres = 'Nombre debe tener entre 3 y 60 caracteres y solo contener letras, espacios y apóstrofes.';
     }
     if (!formData.apellidos || formData.apellidos.length < 3 || formData.apellidos.length > 80 || /[^a-zA-Z\s']/.test(formData.apellidos)) {
       newErrors.apellidos = 'Apellidos debe tener entre 3 y 80 caracteres y solo contener letras, espacios y apóstrofes.';
     }
-    if (!formData.codigoSIS || formData.codigoSIS.length < 6 || formData.codigoSIS.length > 10) {
-      newErrors.codigoSIS = 'Código SIS debe tener entre 6 y 10 caracteres.';
+    if (!formData.codigo_sis || formData.codigo_sis.length < 6 || formData.codigo_sis.length > 10) {
+      newErrors.codigo_sis = 'Código SIS debe tener entre 6 y 10 caracteres.';
     }
-    if (!formData.correo || !new RegExp(`^${formData.codigoSIS}@est\\.umss\\.edu$`).test(formData.correo)) {
-      newErrors.correo = 'Correo debe seguir el formato códigoSIS@est.umss.edu y el código SIS debe coincidir con el campo Código SIS.';
+    if (!formData.correo || !/^[\w-.]+@umss\.edu\.bo$/.test(formData.correo)) {
+      newErrors.correo = 'Correo debe seguir el formato: [códigoSIS]@umss.edu.bo';
     }
     if (!formData.contraseña || formData.contraseña.length < 12 || formData.contraseña.length > 30 || !/[A-Z]/.test(formData.contraseña) || !/[a-z]/.test(formData.contraseña)) {
       newErrors.contraseña = 'Contraseña debe tener entre 12 y 30 caracteres, y contener mayúsculas y minúsculas.';
@@ -43,7 +44,24 @@ function RegistroEstudiante() {
     setErrors(newErrors);
 
     if (Object.keys(newErrors).length === 0) {
-      setShowModal(true); // Mostrar modal de éxito
+      try {
+        // Enviar los datos al backend usando Axios
+        const response = await axios.post('http://localhost:4000/estudiantes/registro', formData, {
+          headers: {
+            'Content-Type': 'application/json'
+          }
+        });
+
+        // Mostrar modal de éxito si el registro fue exitoso
+        if (response.status === 201) {
+          setShowModal(true);
+        }
+      } catch (error) {
+        // Mostrar errores del backend (por ejemplo, si el correo ya está registrado)
+        if (error.response && error.response.data) {
+          setErrors({ api: error.response.data.detalle || 'Error al registrar el estudiante' });
+        }
+      }
     }
   };
 
@@ -88,15 +106,15 @@ function RegistroEstudiante() {
           <h2 className="text-2xl mb-6 font-bold text-center">Registro Estudiantes</h2>
           <form onSubmit={handleSubmit}>
             <div className="relative mb-4">
-              <label htmlFor="codigoSIS" className="block font-bold mb-2">Código SIS*</label>
-              <input id="codigoSIS" type="text" value={formData.codigoSIS} onChange={handleChange} placeholder="Ingrese su código SIS" required className="w-[90%] py-2 px-3 border-none rounded-full text-base text-black bg-white shadow-md" />
-              {errors.codigoSIS && <div className="text-red-500 text-sm">{errors.codigoSIS}</div>}
+              <label htmlFor="codigo_sis" className="block font-bold mb-2">Código SIS*</label>
+              <input id="codigo_sis" type="text" value={formData.codigo_sis} onChange={handleChange} placeholder="Ingrese su código SIS" required className="w-[90%] py-2 px-3 border-none rounded-full text-base text-black bg-white shadow-md" />
+              {errors.codigo_sis && <div className="text-red-500 text-sm">{errors.codigo_sis}</div>}
             </div>
 
             <div className="relative mb-4">
-              <label htmlFor="nombre" className="block font-bold mb-2">Nombre(s)*</label>
-              <input id="nombre" type="text" value={formData.nombre} onChange={handleChange} placeholder="Ingrese su nombre(s)" required className="w-[90%] py-2 px-3 border-none rounded-full text-base text-black bg-white shadow-md" />
-              {errors.nombre && <div className="text-red-500 text-sm">{errors.nombre}</div>}
+              <label htmlFor="nombres" className="block font-bold mb-2">Nombre(s)*</label>
+              <input id="nombres" type="text" value={formData.nombres} onChange={handleChange} placeholder="Ingrese su nombre(s)" required className="w-[90%] py-2 px-3 border-none rounded-full text-base text-black bg-white shadow-md" />
+              {errors.nombres && <div className="text-red-500 text-sm">{errors.nombres}</div>}
             </div>
 
             <div className="relative mb-4">
@@ -116,6 +134,8 @@ function RegistroEstudiante() {
               <input id="contraseña" type="password" value={formData.contraseña} onChange={handleChange} placeholder="Ingrese su contraseña" required className="w-[90%] py-2 px-3 border-none rounded-full text-base text-black bg-white shadow-md" />
               {errors.contraseña && <div className="text-red-500 text-sm">{errors.contraseña}</div>}
             </div>
+
+            {errors.api && <div className="text-red-500 text-sm">{errors.api}</div>} {/* Error del backend */}
 
             <div className="flex flex-col items-center">
               <button type="submit" className="p-3 bg-[#00204A] text-white rounded-lg text-base w-1/3 mt-8 transition-transform duration-200 hover:bg-[#001737] hover:-translate-y-1 hover:shadow-lg">
@@ -137,7 +157,7 @@ function RegistroEstudiante() {
           </p>
           <a href="/iniciar-sesion" className="text-black underline mb-6"><strong>¿Ya tienes cuenta? Inicia sesión ahora.</strong></a>
           <button onClick={handleCancel} className="p-3 bg-[#3684DB] text-white rounded-lg text-lg w-1/3 transition-transform duration-200 hover:bg-[#2a6ab1] hover:-translate-y-1 hover:shadow-lg">
-          Iniciar Sesión
+            Iniciar Sesión
           </button>
         </div>
       </div>
