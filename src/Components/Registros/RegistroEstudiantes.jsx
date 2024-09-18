@@ -1,8 +1,73 @@
-import React from 'react';
+import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom'; // Importar useNavigate para la navegación
 import logo from '../../assets/images/logo.png';
 import logoGrande from '../../assets/images/logo-grande.png';
 
 function RegistroEstudiante() {
+  const [formData, setFormData] = useState({
+    codigoSIS: '',
+    nombre: '',
+    apellidos: '',
+    correo: '',
+    contraseña: ''
+  });
+  const [errors, setErrors] = useState({});
+  const [showModal, setShowModal] = useState(false);
+  const [showCancelModal, setShowCancelModal] = useState(false);
+  const navigate = useNavigate(); // Hook de navegación
+
+  const handleChange = (e) => {
+    const { id, value } = e.target;
+    setFormData({ ...formData, [id]: value });
+  };
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    // Validar formulario
+    const newErrors = {};
+    if (!formData.nombre || formData.nombre.length < 3 || formData.nombre.length > 60 || /[^a-zA-Z'-]/.test(formData.nombre)) {
+      newErrors.nombre = 'Nombre debe tener entre 3 y 60 caracteres y solo contener letras y caracteres especiales: - \'';
+    }
+    if (!formData.apellidos || formData.apellidos.length < 3 || formData.apellidos.length > 80 || /[^a-zA-Z'-]/.test(formData.apellidos)) {
+      newErrors.apellidos = 'Apellidos debe tener entre 3 y 80 caracteres y solo contener letras y caracteres especiales: - \'';
+    }
+    if (!formData.correo || !/^[\w-]+@est\.umss\.edu$/.test(formData.correo) || formData.correo.length !== 21) {
+      newErrors.correo = 'Correo debe tener formato válido y 21 caracteres.';
+    }
+    if (!formData.codigoSIS || formData.codigoSIS.length < 6 || formData.codigoSIS.length > 10) {
+      newErrors.codigoSIS = 'Código de clase debe tener entre 6 y 10 caracteres.';
+    }
+    if (!formData.contraseña || formData.contraseña.length < 12 || formData.contraseña.length > 30 || !/[A-Z]/.test(formData.contraseña) || !/[a-z]/.test(formData.contraseña)) {
+      newErrors.contraseña = 'Contraseña debe tener entre 12 y 30 caracteres, y contener mayúsculas y minúsculas.';
+    }
+    setErrors(newErrors);
+
+    if (Object.keys(newErrors).length === 0) {
+      setShowModal(true); // Mostrar modal de éxito
+    }
+  };
+
+  const handleModalClose = () => {
+    setShowModal(false);
+    navigate('/iniciar-sesion'); // Redirigir al inicio de sesión
+  };
+
+  const handleCancel = () => {
+    if (Object.values(formData).some(val => val !== '')) {
+      setShowCancelModal(true); // Mostrar modal de confirmación
+    } else {
+      navigate('/iniciar-sesion');
+    }
+  };
+
+  const handleCancelModalClose = (confirm) => {
+    if (confirm) {
+      navigate('/iniciar-sesion');
+    } else {
+      setShowCancelModal(false); // Cerrar modal sin redirigir
+    }
+  };
+
   return (
     <div className="h-screen overflow-hidden">
       {/* Barra superior */}
@@ -21,30 +86,35 @@ function RegistroEstudiante() {
         {/* Contenedor izquierdo (formulario) */}
         <div className="flex flex-col justify-start p-12 w-[48%] bg-[#3684DB] text-white rounded-r-[250px]">
           <h2 className="text-2xl mb-6 font-bold text-center">Registro Estudiantes</h2>
-          <form>
+          <form onSubmit={handleSubmit}>
             <div className="relative mb-4">
               <label htmlFor="codigoSIS" className="block font-bold mb-2">Código SIS*</label>
-              <input id="codigoSIS" type="text" placeholder="Ingrese su código SIS" required className="w-[90%] py-2 px-3 border-none rounded-full text-base text-black bg-white shadow-md"  />
+              <input id="codigoSIS" type="text" value={formData.codigoSIS} onChange={handleChange} placeholder="Ingrese su código SIS" required className="w-[90%] py-2 px-3 border-none rounded-full text-base text-black bg-white shadow-md" />
+              {errors.codigoSIS && <div className="text-red-500 text-sm">{errors.codigoSIS}</div>}
             </div>
 
             <div className="relative mb-4">
               <label htmlFor="nombre" className="block font-bold mb-2">Nombre(s)*</label>
-              <input id="nombre" type="text" placeholder="Ingrese su nombre(s)" required className="w-[90%] py-2 px-3 border-none rounded-full text-base text-black bg-white shadow-md"  />
+              <input id="nombre" type="text" value={formData.nombre} onChange={handleChange} placeholder="Ingrese su nombre(s)" required className="w-[90%] py-2 px-3 border-none rounded-full text-base text-black bg-white shadow-md" />
+              {errors.nombre && <div className="text-red-500 text-sm">{errors.nombre}</div>}
             </div>
 
             <div className="relative mb-4">
               <label htmlFor="apellidos" className="block font-bold mb-2">Apellidos*</label>
-              <input id="apellidos" type="text" placeholder="Ingrese sus apellidos" required className="w-[90%] py-2 px-3 border-none rounded-full text-base text-black bg-white shadow-md"  />
+              <input id="apellidos" type="text" value={formData.apellidos} onChange={handleChange} placeholder="Ingrese sus apellidos" required className="w-[90%] py-2 px-3 border-none rounded-full text-base text-black bg-white shadow-md" />
+              {errors.apellidos && <div className="text-red-500 text-sm">{errors.apellidos}</div>}
             </div>
 
             <div className="relative mb-4">
               <label htmlFor="correo" className="block font-bold mb-2">Correo Electrónico*</label>
-              <input id="correo" type="email" placeholder="Ingrese su correo institucional" required className="w-[90%] py-2 px-3 border-none rounded-full text-base text-black bg-white shadow-md"  />
+              <input id="correo" type="email" value={formData.correo} onChange={handleChange} placeholder="Ingrese su correo institucional" required className="w-[90%] py-2 px-3 border-none rounded-full text-base text-black bg-white shadow-md" />
+              {errors.correo && <div className="text-red-500 text-sm">{errors.correo}</div>}
             </div>
 
             <div className="relative mb-4">
               <label htmlFor="contraseña" className="block font-bold mb-2">Contraseña*</label>
-              <input id="contraseña" type="password" placeholder="Ingrese su contraseña" required className="w-[90%] py-2 px-3 border-none rounded-full text-base text-black bg-white shadow-md"  />
+              <input id="contraseña" type="password" value={formData.contraseña} onChange={handleChange} placeholder="Ingrese su contraseña" required className="w-[90%] py-2 px-3 border-none rounded-full text-base text-black bg-white shadow-md" />
+              {errors.contraseña && <div className="text-red-500 text-sm">{errors.contraseña}</div>}
             </div>
 
             <div className="flex flex-col items-center">
@@ -65,13 +135,35 @@ function RegistroEstudiante() {
           <p className="text-lg text-gray-800 mb-8">
             Regístrate en MTIS y comienza a gestionar tus proyectos de forma eficiente. Únete a una plataforma diseñada para facilitar la colaboración y el seguimiento en tiempo real.
           </p>
-          <a href="#" className="text-black underline mb-6"><strong>¿Ya tienes cuenta? Inicia sesión ahora.</strong></a>
-
-          <button className="p-3 bg-[#3684DB] text-white rounded-lg text-lg w-1/3 transition-transform duration-200 hover:bg-[#001737] hover:-translate-y-1 hover:shadow-lg">
-            Iniciar Sesión
+          <a href="/iniciar-sesion" className="text-black underline mb-6"><strong>¿Ya tienes cuenta? Inicia sesión ahora.</strong></a>
+          <button onClick={handleCancel} className="p-3 bg-[#3684DB] text-white rounded-lg text-lg w-1/3 transition-transform duration-200 hover:bg-[#001737] hover:-translate-y-1 hover:shadow-lg">
+            Cancelar Registro
           </button>
         </div>
       </div>
+
+      {/* Modal de éxito */}
+      {showModal && (
+        <div className="fixed inset-0 flex items-center justify-center bg-[#00204A] bg-opacity-50">
+          <div className="bg-white p-6 rounded-lg shadow-lg">
+            <h3 className="text-lg font-bold text-[#00204A]">Estudiante registrado correctamente</h3>
+            <button onClick={handleModalClose} className="mt-4 p-2 bg-[#3684DB] text-white rounded-lg">Aceptar</button>
+          </div>
+        </div>
+      )}
+
+      {/* Modal de confirmación de cancelación */}
+      {showCancelModal && (
+        <div className="fixed inset-0 flex items-center justify-center bg-[#00204A] bg-opacity-50">
+          <div className="bg-white p-6 rounded-lg shadow-lg text-center">
+            <p className="text-lg font-bold text-[#00204A]">¿Estás seguro de que deseas cancelar el registro de estudiante?</p>
+            <div className="flex justify-center gap-4 mt-4">
+              <button onClick={() => handleCancelModalClose(true)} className="p-2 bg-red-500 text-white rounded-lg">Sí</button>
+              <button onClick={() => handleCancelModalClose(false)} className="p-2 bg-gray-300 text-black rounded-lg">No</button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
