@@ -137,7 +137,7 @@ function RegistroEstudiante() {
           </p>
           <a href="/iniciar-sesion" className="text-black underline mb-6"><strong>¿Ya tienes cuenta? Inicia sesión ahora.</strong></a>
           <button onClick={handleCancel} className="p-3 bg-[#3684DB] text-white rounded-lg text-lg w-1/3 transition-transform duration-200 hover:bg-[#2a6ab1] hover:-translate-y-1 hover:shadow-lg">
-            Cancelar
+          Iniciar Sesión
           </button>
         </div>
       </div>
