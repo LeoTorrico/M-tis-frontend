@@ -1,4 +1,4 @@
-import { BrowserRouter as Router, Route, Routes, useLocation } from 'react-router-dom';
+import { BrowserRouter as Router, Route, Routes, Navigate, useLocation } from 'react-router-dom';
 import Sidebar from './Components/Sidebar';
 import Navbar from './Components/Navbar';
 import './App.css';
@@ -13,6 +13,7 @@ function App() {
       <div className="flex flex-col w-screen h-screen">
         <Layout>
           <Routes>
+            <Route path="/" element={<Navigate to="/LoginEstudiantes" />} />
             <Route path="/Inicio" element={<Inicio />} />
             <Route path="/LoginEstudiantes" element={<LoginEstudiantes />} />
             <Route path="/LoginDocentes" element={<LoginDocentes/>} />

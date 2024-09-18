@@ -60,25 +60,7 @@ function LoginDocentes() {
       {/* Contenido derecha */}
       <div className="flex-1 bg-sky-blue text-white flex flex-col justify-center p-12 rounded-tl-custom-sm rounded-bl-custom-md">
       <form onSubmit={handleSubmit} className="w-full max-w-lg mx-auto">
-          <h2 className="text-2xl font-Montserrat text-center font-bold mb-6">Inicio Sesión Estudiantes</h2>
-
-          <div className="mb-4">
-          <label 
-             className="block text-white text-sm font-Montserrat font-bold mb-2"
-          >
-             Código SIS*
-          </label>
-
-            <input
-              type="text"
-              name="codsis"
-              placeholder="Codigo SIS"
-              value={formState.codsis}
-              onChange={handleInputChange}
-              required
-              className="w-full px-2 py-2 text-black border border-gray-300 rounded-full focus:outline-none focus:ring-2 focus:ring-blue-500"
-            />
-          </div>
+          <h2 className="text-2xl font-Montserrat text-center font-bold mb-6">Inicio Sesión Docentes</h2>
 
           <div className="mb-4">
           <label 
