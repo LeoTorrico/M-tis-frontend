@@ -1,66 +1,73 @@
 import React from 'react';
-import './RegistroEstudiantes.css'; // Estilos específicos para este archivo
 import logo from '../../assets/images/logo.png';
 import logoGrande from '../../assets/images/logo-grande.png';
 
 function RegistroEstudiante() {
   return (
-    <div>
-      <header className="header">
+    <div className="h-screen overflow-hidden">
+      {/* Barra superior */}
+      <header className="flex justify-between items-center p-4 bg-[#00204A] text-white shadow-lg">
         <div className="logo">
-          <img src={logo} alt="Logo MTIS" className="logo-image" />
+          <img src={logo} alt="Logo MTIS" className="h-12" />
         </div>
-        <nav className="nav-links">
-          <a href="#estudiantes" className="nav-link" aria-label="Sección Estudiantes">Estudiantes</a>
-          <a href="#docentes" className="nav-link" aria-label="Sección Docentes">Docentes</a>
+        <nav className="flex gap-6">
+          <a href="#estudiantes" className="text-white text-lg font-bold hover:text-[#A9CCE3]" aria-label="Sección Estudiantes">Estudiantes</a>
+          <a href="#docentes" className="text-white text-lg font-bold hover:text-[#A9CCE3]" aria-label="Sección Docentes">Docentes</a>
         </nav>
       </header>
 
-      <div className="main-container">
-        <div className="left-container">
-          <h2>Registro Estudiantes</h2>
+      {/* Contenedor principal */}
+      <div className="flex h-full">
+        {/* Contenedor izquierdo (formulario) */}
+        <div className="flex flex-col justify-start p-12 w-[48%] bg-[#3684DB] text-white rounded-r-[250px]">
+          <h2 className="text-2xl mb-6 font-bold">Registro Estudiantes</h2>
           <form>
-            <div className="input-group">
-              <label htmlFor="codigoSIS">Código SIS*</label>
-              <input id="codigoSIS" type="text" placeholder="Ingrese su código SIS" required />
+            <div className="relative mb-4">
+              <label htmlFor="codigoSIS" className="block font-bold mb-2">Código SIS*</label>
+              <input id="codigoSIS" type="text" placeholder="Ingrese su código SIS" required className="w-3/4 py-2 px-3 border-none rounded-full text-base text-black bg-white shadow-md" />
             </div>
 
-            <div className="input-group">
-              <label htmlFor="nombre">Nombre(s)*</label>
-              <input id="nombre" type="text" placeholder="Ingrese su nombre(s)" required />
+            <div className="relative mb-4">
+              <label htmlFor="nombre" className="block font-bold mb-2">Nombre(s)*</label>
+              <input id="nombre" type="text" placeholder="Ingrese su nombre(s)" required className="w-3/4 py-2 px-3 border-none rounded-full text-base text-black bg-white shadow-md"/>
             </div>
 
-            <div className="input-group">
-              <label htmlFor="apellidos">Apellidos*</label>
-              <input id="apellidos" type="text" placeholder="Ingrese sus apellidos" required />
+            <div className="relative mb-4">
+              <label htmlFor="apellidos" className="block font-bold mb-2">Apellidos*</label>
+              <input id="apellidos" type="text" placeholder="Ingrese sus apellidos" required className="w-3/4 py-2 px-3 border-none rounded-full text-base text-black bg-white shadow-md" />
             </div>
 
-            <div className="input-group">
-              <label htmlFor="correo">Correo Electrónico*</label>
-              <input id="correo" type="email" placeholder="Ingrese su correo institucional" required />
+            <div className="relative mb-4">
+              <label htmlFor="correo" className="block font-bold mb-2">Correo Electrónico*</label>
+              <input id="correo" type="email" placeholder="Ingrese su correo institucional" required className="w-3/4 py-2 px-3 border-none rounded-full text-base text-black bg-white shadow-md"/>
             </div>
 
-            <div className="input-group">
-              <label htmlFor="contraseña">Contraseña*</label>
-              <input id="contraseña" type="password" placeholder="Ingrese su contraseña" required />
+            <div className="relative mb-4">
+              <label htmlFor="contraseña" className="block font-bold mb-2">Contraseña*</label>
+              <input id="contraseña" type="password" placeholder="Ingrese su contraseña" required className="w-3/4 py-2 px-3 border-none rounded-full text-base text-black bg-white shadow-md" />
             </div>
 
-            <button type="submit" className="btn-register">Registrarse</button>
+            <button type="submit" className="p-3 bg-[#00204A] text-white rounded-lg text-base w-1/3 mx-auto mt-8 transition-transform duration-200 hover:bg-[#001737] hover:-translate-y-1 hover:shadow-lg">
+              Registrarse
+            </button>
           </form>
         </div>
 
-        <div className="right-container">
-          <h2 className="welcome-text">
+        {/* Contenedor derecho */}
+        <div className="flex flex-col items-center justify-center p-12 w-[50%] bg-white text-center">
+          <h2 className="text-6xl text-[#00204A] mb-6 -mt-16">
             <strong>Bienvenidos de</strong> <br />
             <strong>nuevo a</strong> <br />
           </h2>
-          <img src={logoGrande} alt="Logo Grande" className="logo-grande" />
-          <p>
-            Regístrate en MTIS y comienza a gestionar tus proyectos de forma eficiente. 
-            Únete a una plataforma diseñada para facilitar la colaboración y el seguimiento en tiempo real.
+          <img src={logoGrande} alt="Logo Grande" className="w-[350px] h-auto mt-110" /> {/* Logo más grande */}
+          <p className="text-lg text-gray-800 mb-8">
+          Regístrate en MTIS y comienza a gestionar tus proyectos de forma eficiente. Únete a una plataforma diseñada para facilitar la colaboración y el seguimiento en tiempo real.
           </p>
-          <a href="#" className="login-link">¿Ya tienes cuenta? Inicia sesión ahora</a>
-          <button className="btn-login">Iniciar Sesión</button>
+          <a href="#" className="text-black underline mb-6"><strong>¿Ya tienes cuenta? Inicia sesión ahora.</strong></a>
+
+          <button className="p-3 bg-[#3684DB] text-white rounded-lg text-lg w-1/3 transition-transform duration-200 hover:bg-[#001737] hover:-translate-y-1 hover:shadow-lg">
+            Iniciar Sesión
+          </button>
         </div>
       </div>
     </div>
