@@ -5,7 +5,7 @@ import './App.css';
 import Inicio from './Pages/Inicio';
 import LoginEstudiantes from './pages/LoginEstudiantes';
 import PlanificacionDocente from './Pages/PlanificacionDocente'; // Importa el nuevo componente
-
+import Tablero from './Pages/Tablero';
 function App() {
   return (
     <Router>
@@ -39,6 +39,17 @@ function App() {
                   <Sidebar />
                   <div className="flex-grow p-4">
                     <PlanificacionDocente />
+                  </div>
+                </>
+              }
+            />
+            <Route
+              path="/tablero"
+              element={
+                <>
+                  <Sidebar />
+                  <div className="flex-grow p-4">
+                    <Tablero />
                   </div>
                 </>
               }
