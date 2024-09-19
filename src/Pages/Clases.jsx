@@ -1,68 +1,87 @@
 import React, { useState } from 'react';
 
 const Clases = () => {
-  // Estado para controlar la visibilidad del botón "Crear clase"
   const [mostrarBoton, setMostrarBoton] = useState(false);
+  const [mostrarModal, setMostrarModal] = useState(false);
+  const [nombreClase, setNombreClase] = useState('');
+  const [gestion, setGestion] = useState('');
+  const [clases, setClases] = useState([]);
 
-  // Función para manejar el clic en el ícono "+"
   const handleMostrarBoton = () => {
-    setMostrarBoton(true); // Mostrar el botón al hacer clic en "+"
+    setMostrarBoton(true);
+  };
+
+  const handleAbrirModal = () => {
+    setMostrarModal(true);
+  };
+
+  const handleCerrarModal = () => {
+    setMostrarModal(false);
+  };
+
+  const handleCrearClase = () => {
+    if (nombreClase.trim() !== '' && gestion.trim() !== '') {
+      setClases([...clases, { nombreClase, gestion }]);
+      setNombreClase('');
+      setGestion('');
+      setMostrarModal(false);
+    }
   };
 
   return (
-    <div className="flex-1 p-10 bg-gray-100">
+    <div className="h-screen bg-gray-50 p-10">
       <div className="flex justify-between items-center mb-10">
         <h1 className="text-3xl font-bold">Clases</h1>
-
-        {/* Ícono "+" */}
         {!mostrarBoton && (
-          <button
-            onClick={handleMostrarBoton}
-            className="bg-blue-900 text-white font-bold py-2 px-4 rounded-full"
-          >
+          <button onClick={handleMostrarBoton} className="bg-blue-800 text-white font-bold py-2 px-4 rounded-full">
             +
           </button>
         )}
-
-        {/* Botón "Crear clase" que se muestra después de presionar "+" */}
         {mostrarBoton && (
-          <button className="bg-blue-900 text-white font-bold py-2 px-4 rounded">
+          <button onClick={handleAbrirModal} className="bg-blue-800 text-white font-bold py-2 px-4 rounded">
             Crear clase
           </button>
         )}
       </div>
 
-      {/* Class card */}
-      <div className="flex justify-center">
-        <div className="bg-blue-900 text-white p-5 rounded-lg w-80 relative shadow-lg">
-          <h2 className="text-lg font-semibold mb-2">Taller de Ingeniería de Software</h2>
-          <p className="text-sm mb-4">David Escalera Fernandez<br />II-2024</p>
-          <div className="w-full bg-gray-700 rounded-full h-2.5 mb-4">
-            <div className="bg-blue-500 h-2.5 rounded-full w-3/4"></div>
-          </div>
-          <button className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
-            Ver clase
-          </button>
-          <div className="absolute top-2 right-2">
-            <button className="text-gray-400">
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                fill="none"
-                viewBox="0 0 24 24"
-                strokeWidth="1.5"
-                stroke="currentColor"
-                className="w-6 h-6"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  d="M6.75 12a.75.75 0 010-1.5h10.5a.75.75 0 010 1.5H6.75zM6.75 9a.75.75 0 010-1.5h10.5a.75.75 0 010 1.5H6.75zM6.75 15a.75.75 0 010-1.5h10.5a.75.75 0 010 1.5H6.75z"
-                />
-              </svg>
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+        {clases.map((clase, index) => (
+          <div key={index} className="bg-blue-800 text-white p-6 rounded-lg shadow-lg">
+            <h2 className="text-xl font-semibold mb-2">{clase.nombreClase}</h2>
+            <p className="text-sm mb-4">{clase.gestion}</p>
+            <div className="w-full bg-gray-700 rounded-full h-2.5 mb-4">
+              <div className="bg-blue-500 h-2.5 rounded-full" style={{ width: '75%' }}></div>
+            </div>
+            <button className="bg-blue-700 hover:bg-blue-900 text-white font-bold py-2 px-4 rounded">
+              Ver clase
             </button>
           </div>
-        </div>
+        ))}
       </div>
+
+      {mostrarModal && (
+        <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
+          <div className="bg-white p-8 rounded-lg w-full max-w-md">
+            <h2 className="text-xl font-bold mb-4">Crear clase</h2>
+            <div className="mb-4">
+              <label className="block text-sm font-bold mb-2">Nombre de la clase*</label>
+              <input type="text" className="w-full p-2 border border-gray-300 rounded-lg" placeholder="Introduce el nombre de la clase" value={nombreClase} onChange={(e) => setNombreClase(e.target.value)} />
+            </div>
+            <div className="mb-4">
+              <label className="block text-sm font-bold mb-2">Gestión*</label>
+              <input type="text" className="w-full p-2 border border-gray-300 rounded-lg" placeholder="Introduce la gestión" value={gestion} onChange={(e) => setGestion(e.target.value)} />
+            </div>
+            <div className="flex justify-between">
+              <button onClick={handleCerrarModal} className="bg-gray-400 text-white font-bold py-2 px-4 rounded">
+                Cancelar
+              </button>
+              <button onClick={handleCrearClase} className="bg-blue-800 text-white font-bold py-2 px-4 rounded">
+                Crear clase
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };
