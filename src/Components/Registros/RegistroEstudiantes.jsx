@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import axios from 'axios'; // Importar Axios para realizar la solicitud HTTP
 import logo from '../../assets/images/logo.png';
 import logoGrande from '../../assets/images/logo-grande.png';
+import { FaEye, FaEyeSlash } from 'react-icons/fa'; // Importar los íconos
 
 function RegistroEstudiante() {
   const [formData, setFormData] = useState({
@@ -15,11 +16,16 @@ function RegistroEstudiante() {
   const [errors, setErrors] = useState({});
   const [showModal, setShowModal] = useState(false);
   const [showCancelModal, setShowCancelModal] = useState(false);
+  const [showPassword, setShowPassword] = useState(false); // Estado para mostrar/ocultar contraseña
   const navigate = useNavigate(); // Hook de navegación
 
   const handleChange = (e) => {
     const { id, value } = e.target;
     setFormData({ ...formData, [id]: value });
+  };
+
+  const togglePasswordVisibility = () => {
+    setShowPassword(!showPassword); // Alternar entre mostrar y ocultar la contraseña
   };
 
   const handleSubmit = async (e) => {
@@ -35,7 +41,7 @@ function RegistroEstudiante() {
     if (!formData.codigo_sis || formData.codigo_sis.length < 6 || formData.codigo_sis.length > 10) {
       newErrors.codigo_sis = 'Código SIS debe tener entre 6 y 10 caracteres.';
     }
-    if (!formData.correo || !/^[\w-.]+@umss\.edu\.bo$/.test(formData.correo)) {
+    if (!formData.correo || !/^[\w-.]+@est\.umss\.edu$/.test(formData.correo)) {
       newErrors.correo = 'Correo debe seguir el formato: [códigoSIS]@umss.edu.bo';
     }
     if (!formData.contraseña || formData.contraseña.length < 12 || formData.contraseña.length > 30 || !/[A-Z]/.test(formData.contraseña) || !/[a-z]/.test(formData.contraseña)) {
@@ -131,7 +137,22 @@ function RegistroEstudiante() {
 
             <div className="relative mb-4">
               <label htmlFor="contraseña" className="block font-bold mb-2">Contraseña*</label>
-              <input id="contraseña" type="password" value={formData.contraseña} onChange={handleChange} placeholder="Ingrese su contraseña" required className="w-[90%] py-2 px-3 border-none rounded-full text-base text-black bg-white shadow-md" />
+              <input
+                id="contraseña"
+                type={showPassword ? "text" : "password"} // Cambiar entre 'text' y 'password' según el estado
+                value={formData.contraseña}
+                onChange={handleChange}
+                placeholder="Ingrese su contraseña"
+                required
+                className="w-[90%] py-2 px-3 border-none rounded-full text-base text-black bg-white shadow-md"
+              />
+              <button
+                type="button"
+                onClick={togglePasswordVisibility} // Alternar visibilidad
+                className="absolute right-20 top-11 text-gray-500" // Ajustar el estilo para posicionar el botón al lado del input
+              >
+                {showPassword ? <FaEyeSlash /> : <FaEye />} {/* Ícono que cambia según el estado */}
+              </button>
               {errors.contraseña && <div className="text-red-500 text-sm">{errors.contraseña}</div>}
             </div>
 
