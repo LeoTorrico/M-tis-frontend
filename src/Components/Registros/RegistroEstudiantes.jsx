@@ -21,6 +21,12 @@ function RegistroEstudiante() {
 
   const handleChange = (e) => {
     const { id, value } = e.target;
+
+    // Verificar si el input es 'codigo_sis' y solo permitir números
+    if (id === 'codigo_sis' && !/^\d*$/.test(value)) {
+      return; // Si no es numérico, no hacer nada
+    }
+
     setFormData({ ...formData, [id]: value });
   };
 
@@ -113,7 +119,15 @@ function RegistroEstudiante() {
           <form onSubmit={handleSubmit}>
             <div className="relative mb-4">
               <label htmlFor="codigo_sis" className="block font-bold mb-2">Código SIS*</label>
-              <input id="codigo_sis" type="text" value={formData.codigo_sis} onChange={handleChange} placeholder="Ingrese su código SIS" required className="w-[90%] py-2 px-3 border-none rounded-full text-base text-black bg-white shadow-md" />
+              <input 
+                id="codigo_sis" 
+                type="number" // Cambiado a tipo 'number'
+                value={formData.codigo_sis} 
+                onChange={handleChange} 
+                placeholder="Ingrese su código SIS" 
+                required 
+                className="w-[90%] py-2 px-3 border-none rounded-full text-base text-black bg-white shadow-md" 
+              />
               {errors.codigo_sis && <div className="text-red-500 text-sm">{errors.codigo_sis}</div>}
             </div>
 
