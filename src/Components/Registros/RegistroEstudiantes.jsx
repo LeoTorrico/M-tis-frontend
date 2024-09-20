@@ -159,7 +159,7 @@ function RegistroEstudiante() {
             {errors.api && <div className="text-red-500 text-sm">{errors.api}</div>} {/* Error del backend */}
 
             <div className="flex flex-col items-center">
-              <button type="submit" className="p-3 bg-[#00204A] text-white rounded-lg text-base w-1/3 mt-8 transition-transform duration-200 hover:bg-[#001737] hover:-translate-y-1 hover:shadow-lg">
+              <button type="submit" className="p-3 bg-[#00204A] text-white rounded-lg text-base w-1/3 mt-70 transition-transform duration-200 hover:bg-[#001737] hover:-translate-y-1 hover:shadow-lg">
                 Registrarse
               </button>
             </div>
