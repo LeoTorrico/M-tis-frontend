@@ -1,9 +1,9 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import axios from 'axios'; // Importar Axios para realizar la solicitud HTTP
+import axios from 'axios';
 import logo from '../../assets/images/logo.png';
 import logoGrande from '../../assets/images/logo-grande.png';
-import { FaEye, FaEyeSlash } from 'react-icons/fa'; // Importar los íconos
+import { FaEye, FaEyeSlash } from 'react-icons/fa';
 
 function RegistroEstudiante() {
   const [formData, setFormData] = useState({
@@ -22,9 +22,11 @@ function RegistroEstudiante() {
   const handleChange = (e) => {
     const { id, value } = e.target;
 
-    // Verificar si el input es 'codigo_sis' y solo permitir números
-    if (id === 'codigo_sis' && !/^\d*$/.test(value)) {
-      return; 
+    // Permitir solo números en el campo 'codigo_sis' y limitar a 10 caracteres
+    if (id === 'codigo_sis') {
+      if (!/^\d*$/.test(value) || value.length > 10) {
+        return;
+      }
     }
 
     // Limitar el campo de contraseña a 30 caracteres
@@ -119,7 +121,7 @@ function RegistroEstudiante() {
               <label htmlFor="codigo_sis" className="block font-bold mb-2">Código SIS*</label>
               <input 
                 id="codigo_sis" 
-                type="number"
+                type="text" // Cambiado a "text" para permitir el control de caracteres
                 value={formData.codigo_sis} 
                 onChange={handleChange} 
                 placeholder="Ingrese su código SIS" 
