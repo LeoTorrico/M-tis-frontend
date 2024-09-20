@@ -7,8 +7,8 @@ import { FaEye, FaEyeSlash } from 'react-icons/fa'; // Importar los íconos
 
 function RegistroEstudiante() {
   const [formData, setFormData] = useState({
-    codigo_sis: '', // Cambiado de codigoSIS a codigo_sis
-    nombres: '',    // Cambiado de nombre a nombres
+    codigo_sis: '',
+    nombres: '',
     apellidos: '',
     correo: '',
     contraseña: ''
@@ -16,27 +16,31 @@ function RegistroEstudiante() {
   const [errors, setErrors] = useState({});
   const [showModal, setShowModal] = useState(false);
   const [showCancelModal, setShowCancelModal] = useState(false);
-  const [showPassword, setShowPassword] = useState(false); // Estado para mostrar/ocultar contraseña
-  const navigate = useNavigate(); // Hook de navegación
+  const [showPassword, setShowPassword] = useState(false);
+  const navigate = useNavigate();
 
   const handleChange = (e) => {
     const { id, value } = e.target;
 
     // Verificar si el input es 'codigo_sis' y solo permitir números
     if (id === 'codigo_sis' && !/^\d*$/.test(value)) {
-      return; // Si no es numérico, no hacer nada
+      return; 
+    }
+
+    // Limitar el campo de contraseña a 30 caracteres
+    if (id === 'contraseña' && value.length > 30) {
+      return; 
     }
 
     setFormData({ ...formData, [id]: value });
   };
 
   const togglePasswordVisibility = () => {
-    setShowPassword(!showPassword); // Alternar entre mostrar y ocultar la contraseña
+    setShowPassword(!showPassword);
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    // Validar formulario
     const newErrors = {};
     if (!formData.nombres || formData.nombres.length < 3 || formData.nombres.length > 60 || /[^a-zA-Z\s']/.test(formData.nombres)) {
       newErrors.nombres = 'Nombre debe tener entre 3 y 60 caracteres y solo contener letras, espacios y apóstrofes.';
@@ -57,19 +61,16 @@ function RegistroEstudiante() {
 
     if (Object.keys(newErrors).length === 0) {
       try {
-        // Enviar los datos al backend usando Axios
         const response = await axios.post('http://localhost:4000/estudiantes/registro', formData, {
           headers: {
             'Content-Type': 'application/json'
           }
         });
 
-        // Mostrar modal de éxito si el registro fue exitoso
         if (response.status === 201) {
           setShowModal(true);
         }
       } catch (error) {
-        // Mostrar errores del backend (por ejemplo, si el correo ya está registrado)
         if (error.response && error.response.data) {
           setErrors({ api: error.response.data.detalle || 'Error al registrar el estudiante' });
         }
@@ -79,12 +80,12 @@ function RegistroEstudiante() {
 
   const handleModalClose = () => {
     setShowModal(false);
-    navigate('/iniciar-sesion'); // Redirigir al inicio de sesión
+    navigate('/iniciar-sesion');
   };
 
   const handleCancel = () => {
     if (Object.values(formData).some(val => val !== '')) {
-      setShowCancelModal(true); // Mostrar modal de confirmación
+      setShowCancelModal(true);
     } else {
       navigate('/iniciar-sesion');
     }
@@ -94,13 +95,12 @@ function RegistroEstudiante() {
     if (confirm) {
       navigate('/iniciar-sesion');
     } else {
-      setShowCancelModal(false); // Cerrar modal sin redirigir
+      setShowCancelModal(false);
     }
   };
 
   return (
     <div className="h-screen overflow-hidden">
-      {/* Barra superior */}
       <header className="flex justify-between items-center p-4 bg-[#00204A] text-white shadow-lg">
         <div className="logo">
           <img src={logo} alt="Logo MTIS" className="h-12" />
@@ -111,9 +111,7 @@ function RegistroEstudiante() {
         </nav>
       </header>
 
-      {/* Contenedor principal */}
       <div className="flex h-full">
-        {/* Contenedor izquierdo (formulario) */}
         <div className="flex flex-col justify-start p-12 w-[48%] bg-[#3684DB] text-white rounded-r-[250px]">
           <h2 className="text-2xl mb-6 font-bold text-center">Registro Estudiantes</h2>
           <form onSubmit={handleSubmit}>
@@ -121,7 +119,7 @@ function RegistroEstudiante() {
               <label htmlFor="codigo_sis" className="block font-bold mb-2">Código SIS*</label>
               <input 
                 id="codigo_sis" 
-                type="number" // Cambiado a tipo 'number'
+                type="number"
                 value={formData.codigo_sis} 
                 onChange={handleChange} 
                 placeholder="Ingrese su código SIS" 
@@ -153,7 +151,7 @@ function RegistroEstudiante() {
               <label htmlFor="contraseña" className="block font-bold mb-2">Contraseña*</label>
               <input
                 id="contraseña"
-                type={showPassword ? "text" : "password"} // Cambiar entre 'text' y 'password' según el estado
+                type={showPassword ? "text" : "password"}
                 value={formData.contraseña}
                 onChange={handleChange}
                 placeholder="Ingrese su contraseña"
@@ -162,15 +160,15 @@ function RegistroEstudiante() {
               />
               <button
                 type="button"
-                onClick={togglePasswordVisibility} // Alternar visibilidad
-                className="absolute right-20 top-11 text-gray-500" // Ajustar el estilo para posicionar el botón al lado del input
+                onClick={togglePasswordVisibility}
+                className="absolute right-20 top-11 text-gray-500"
               >
-                {showPassword ? <FaEyeSlash /> : <FaEye />} {/* Ícono que cambia según el estado */}
+                {showPassword ? <FaEyeSlash /> : <FaEye />}
               </button>
               {errors.contraseña && <div className="text-red-500 text-sm">{errors.contraseña}</div>}
             </div>
 
-            {errors.api && <div className="text-red-500 text-sm">{errors.api}</div>} {/* Error del backend */}
+            {errors.api && <div className="text-red-500 text-sm">{errors.api}</div>}
 
             <div className="flex flex-col items-center">
               <button type="submit" className="p-3 bg-[#00204A] text-white rounded-lg text-base w-1/3 mt-70 transition-transform duration-200 hover:bg-[#001737] hover:-translate-y-1 hover:shadow-lg">
@@ -180,13 +178,12 @@ function RegistroEstudiante() {
           </form>
         </div>
 
-        {/* Contenedor derecho */}
         <div className="flex flex-col items-center justify-center p-12 w-[50%] bg-white text-center">
           <h2 className="text-6xl text-[#00204A] mb-6 -mt-16">
             <strong>Bienvenidos de</strong> <br />
             <strong>nuevo a</strong> <br />
           </h2>
-          <img src={logoGrande} alt="Logo Grande" className="w-[350px] h-auto mt-110" /> {/* Logo más grande */}
+          <img src={logoGrande} alt="Logo Grande" className="w-[350px] h-auto mt-110" />
           <p className="text-lg text-gray-800 mb-8">
             Regístrate en MTIS y comienza a gestionar tus proyectos de forma eficiente. Únete a una plataforma diseñada para facilitar la colaboración y el seguimiento en tiempo real.
           </p>
