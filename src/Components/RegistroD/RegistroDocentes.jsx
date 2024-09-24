@@ -252,63 +252,58 @@ function RegistroDocentes() {
             className="w-[350px] h-auto mt-110"
           />
           <div className="max-w-full mx-auto px-32">
-    <p className="text-4xl text-gray-800 mb-8 text-center whitespace-pre-wrap">
-        MTIS es una plataforma de 
-        gestionamiento de proyectos
-    </p>
-</div>
-
-
-          <a href="/iniciar-sesion" className="text-black underline mb-6">
-            <strong>¿Ya tienes cuenta? Inicia sesión ahora.</strong>
-          </a>
+            <p className="text-4xl text-gray-800 mb-8 text-center whitespace-normal">
+              MTIS es una plataforma de gestionamiento de proyectos
+            </p>
+          </div>
           <button
             onClick={handleCancel}
-            className="p-3 bg-[#3684DB] text-white rounded-lg text-lg w-1/3 transition-transform duration-200 hover:bg-[#2a6ab1] hover:-translate-y-1 hover:shadow-lg"
+            className="px-5 py-3 bg-[#3684DB] text-white rounded-lg transition-transform duration-200 hover:bg-[#2e6cbb] hover:-translate-y-1 hover:shadow-lg"
           >
             Iniciar Sesión
           </button>
         </div>
       </div>
 
-      {/* Modal de confirmación de registro */}
+      {/* Modal de éxito */}
       {showModal && (
-        <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
-          <div className="bg-white p-6 rounded-lg shadow-lg">
-            <h3 className="text-xl font-semibold mb-4">Registro Exitoso</h3>
-            <p className="mb-4">El docente ha sido registrado correctamente.</p>
-            <button
-              onClick={handleModalClose}
-              className="px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-700"
-            >
-              Iniciar sesión
-            </button>
+        <div className="fixed inset-0 bg-gray-600 bg-opacity-50 flex justify-center items-center">
+          <div className="bg-white rounded-lg p-6 shadow-lg">
+            <h2 className="text-lg font-bold mb-4">Registro Exitoso</h2>
+            <p>El docente ha sido registrado exitosamente.</p>
+            <div className="flex justify-end mt-4">
+              <button
+                onClick={handleModalClose}
+                className="px-4 py-2 bg-[#00204A] text-white rounded-lg"
+              >
+                Aceptar
+              </button>
+            </div>
           </div>
         </div>
       )}
 
-      {/* Modal de confirmación de cancelar */}
+      {/* Modal de confirmación de cancelación */}
       {showCancelModal && (
-        <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
-          <div className="bg-white p-6 rounded-lg shadow-lg">
-            <h3 className="text-xl font-semibold mb-4">
-              Confirmación de Cancelación
-            </h3>
-            <p className="mb-4">
-              ¿Estás seguro de que deseas cancelar el registro?
+        <div className="fixed inset-0 bg-gray-600 bg-opacity-50 flex justify-center items-center">
+          <div className="bg-white rounded-lg p-6 shadow-lg">
+            <h2 className="text-lg font-bold mb-4">¿Estás seguro?</h2>
+            <p>
+              Tienes cambios sin guardar. ¿Quieres cancelar el registro y volver
+              a la pantalla de inicio de sesión?
             </p>
-            <div className="flex justify-end">
+            <div className="flex justify-end mt-4">
               <button
                 onClick={() => handleCancelModalClose(false)}
-                className="px-4 py-2 bg-gray-500 text-white rounded-lg hover:bg-gray-700 mr-4"
+                className="px-4 py-2 bg-gray-300 text-black rounded-lg mr-2"
               >
                 No
               </button>
               <button
                 onClick={() => handleCancelModalClose(true)}
-                className="px-4 py-2 bg-red-500 text-white rounded-lg hover:bg-red-700"
+                className="px-4 py-2 bg-[#00204A] text-white rounded-lg"
               >
-                Sí, cancelar
+                Sí
               </button>
             </div>
           </div>
