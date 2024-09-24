@@ -8,8 +8,9 @@ import Sidebar from "./Components/Sidebar";
 import Navbar from "./Components/Navbar";
 import "./App.css";
 import Inicio from "./Pages/Inicio";
-import LoginEstudiantes from "./pages/LoginEstudiantes";
-import PlanificacionDocente from "./pages/PlanificacionDocente";
+import LoginEstudiantes from "./Pages/LoginEstudiantes";
+import PlanificacionDocente from "./Pages/PlanificacionDocente";
+import VistaCurso from "./Pages/VistaCurso";
 
 function App() {
   return (
@@ -23,6 +24,7 @@ function App() {
               path="/planificacion-docente"
               element={<PlanificacionDocente />}
             />
+            <Route path="/Vista-Curso" element={<VistaCurso />} />
           </Routes>
         </Layout>
       </div>
@@ -35,7 +37,8 @@ function Layout({ children }) {
   const isLoginPage = location.pathname === "/login";
   const isSidebarPage =
     location.pathname === "/Inicio" ||
-    location.pathname === "/planificacion-docente";
+    location.pathname === "/planificacion-docente" ||
+    location.pathname === "/Vista-Curso";
 
   return (
     <div className="flex flex-grow">
