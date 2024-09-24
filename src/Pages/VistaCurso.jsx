@@ -1,7 +1,9 @@
 import React, { useState } from "react";
 import HeaderCurso from "../Components/HeaderCurso";
 import { MdGroups } from "react-icons/md";
+import Modal from "react-modal"; // Importar el modal
 
+// Curso y grupos simulados
 const curso = {
   nombre: "Taller de Ingeniería de Software",
   gestion: "II-2024",
@@ -39,11 +41,83 @@ const GruposEmpresas = () => (
     ))}
   </div>
 );
+
 const Alumnos = () => <div className="p-4">Lista de Alumnos</div>;
 
 function VistaCurso() {
-  // Manejo de pestañas seleccionadas
   const [activeTab, setActiveTab] = useState("GruposEmpresas");
+  const [modalIsOpen, setModalIsOpen] = useState(false); // Estado para controlar el modal
+  const [groupData, setGroupData] = useState({
+    logo: null,
+    nombreLargo: "",
+    nombreCorto: "",
+    integrantes: [],
+  });
+
+  const integrantesPosibles = [
+    "Michelle Barriga",
+    "Omar Mamani",
+    "Mauricio Vallejos",
+  ];
+
+  // Función para abrir/cerrar el modal
+  const openModal = () => setModalIsOpen(true);
+  const closeModal = () => setModalIsOpen(false);
+
+  // Función para manejar los cambios en el formulario
+  const handleInputChange = (e) => {
+    const { name, value } = e.target;
+    setGroupData({
+      ...groupData,
+      [name]: value,
+    });
+  };
+
+  const handleFileChange = (e) => {
+    setGroupData({
+      ...groupData,
+      logo: e.target.files[0],
+    });
+  };
+
+  const handleCheckboxChange = (integrante) => {
+    const newIntegrantes = groupData.integrantes.includes(integrante)
+      ? groupData.integrantes.filter((i) => i !== integrante)
+      : [...groupData.integrantes, integrante];
+
+    setGroupData({
+      ...groupData,
+      integrantes: newIntegrantes,
+    });
+  };
+
+  // Función para enviar datos al backend
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+
+    const formData = new FormData();
+    formData.append("logo", groupData.logo);
+    formData.append("nombreLargo", groupData.nombreLargo);
+    formData.append("nombreCorto", groupData.nombreCorto);
+    formData.append("integrantes", JSON.stringify(groupData.integrantes));
+
+    try {
+      const response = await fetch("http://localhost:5000/api/grupos", {
+        method: "POST",
+        body: formData,
+      });
+
+      if (response.ok) {
+        alert("Grupo creado exitosamente");
+        closeModal(); // Cerrar el modal tras enviar los datos
+      } else {
+        alert("Error al crear el grupo");
+      }
+    } catch (error) {
+      console.error("Error al enviar los datos:", error);
+      alert("Error al crear el grupo");
+    }
+  };
 
   // Función para renderizar el contenido basado en la pestaña activa
   const renderContent = () => {
@@ -72,7 +146,10 @@ function VistaCurso() {
         {/* Mostrar el botón "Crear grupo" solo si la pestaña activa es "GruposEmpresas" */}
         {activeTab === "GruposEmpresas" && (
           <div className="flex justify-end">
-            <button className="bg-white text-dark-blue font-semibold px-4 py-2 rounded-lg border border-blue-800 flex items-center">
+            <button
+              className="bg-white text-dark-blue font-semibold px-4 py-2 rounded-lg border border-blue-800 flex items-center"
+              onClick={openModal} // Abrir modal al hacer clic
+            >
               Crear grupo
               <span className="ml-2 text-xl">+</span>
             </button>
@@ -82,6 +159,80 @@ function VistaCurso() {
 
       {/* Contenido dinámico basado en la pestaña activa */}
       {renderContent()}
+
+      {/* Modal para crear grupo */}
+      <Modal
+        isOpen={modalIsOpen}
+        onRequestClose={closeModal}
+        className="fixed inset-0 flex items-center justify-center"
+        overlayClassName="fixed inset-0 bg-black bg-opacity-50"
+      >
+        <div className="bg-white p-6 rounded-lg w-1/2">
+          <h2 className="text-2xl font-semibold mb-4">
+            Registrar Grupo empresa
+          </h2>
+          <form onSubmit={handleSubmit} className="space-y-4">
+            <div>
+              <label className="block font-semibold mb-2">Logotipo*</label>
+              <input
+                type="file"
+                name="logo"
+                onChange={handleFileChange}
+                className="block w-full"
+              />
+            </div>
+            <div>
+              <label className="block font-semibold mb-2">Nombre Largo*</label>
+              <input
+                type="text"
+                name="nombreLargo"
+                value={groupData.nombreLargo}
+                onChange={handleInputChange}
+                className="block w-full border border-gray-300 rounded-lg p-2"
+              />
+            </div>
+            <div>
+              <label className="block font-semibold mb-2">Nombre Corto*</label>
+              <input
+                type="text"
+                name="nombreCorto"
+                value={groupData.nombreCorto}
+                onChange={handleInputChange}
+                className="block w-full border border-gray-300 rounded-lg p-2"
+              />
+            </div>
+            <div>
+              <label className="block font-semibold mb-2">Integrantes*</label>
+              {integrantesPosibles.map((integrante) => (
+                <div key={integrante} className="flex items-center">
+                  <input
+                    type="checkbox"
+                    checked={groupData.integrantes.includes(integrante)}
+                    onChange={() => handleCheckboxChange(integrante)}
+                    className="mr-2"
+                  />
+                  <span>{integrante}</span>
+                </div>
+              ))}
+            </div>
+            <div className="flex justify-end space-x-4">
+              <button
+                type="button"
+                onClick={closeModal}
+                className="bg-gray-300 text-black px-4 py-2 rounded-lg"
+              >
+                Cancelar
+              </button>
+              <button
+                type="submit"
+                className="bg-blue-600 text-white px-4 py-2 rounded-lg"
+              >
+                Guardar
+              </button>
+            </div>
+          </form>
+        </div>
+      </Modal>
     </div>
   );
 }
