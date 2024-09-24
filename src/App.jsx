@@ -6,6 +6,7 @@ import Inicio from './Pages/Inicio';
 import LoginEstudiantes from './pages/LoginEstudiantes';
 import PlanificacionDocente from './Pages/PlanificacionDocente'; // Importa el nuevo componente
 import Clases from './Pages/Clases';
+import UnirseClase from './Pages/UnirseClase';
 function App() {
   return (
     <Router>
@@ -50,6 +51,17 @@ function App() {
                   <Sidebar />
                   <div className="flex-grow p-4">
                     <Clases />
+                  </div>
+                </>
+              }
+            />
+            <Route
+              path="/unirse"
+              element={
+                <>
+                  <Sidebar />
+                  <div className="flex-grow p-4">
+                    <UnirseClase />
                   </div>
                 </>
               }
