@@ -32,7 +32,7 @@ function RegistroEstudiante() {
     // Limitar el campo de contraseña a 30 caracteres
     if (id === 'contraseña' && value.length > 30) {
       return; 
-    }
+    } 
 
     setFormData({ ...formData, [id]: value });
   };
@@ -44,6 +44,8 @@ function RegistroEstudiante() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     const newErrors = {};
+
+    // Validaciones existentes
     if (!formData.nombres || formData.nombres.length < 3 || formData.nombres.length > 60 || /[^a-zA-Z\s']/.test(formData.nombres)) {
       newErrors.nombres = 'Nombre debe tener entre 3 y 60 caracteres y solo contener letras, espacios y apóstrofes.';
     }
@@ -53,12 +55,16 @@ function RegistroEstudiante() {
     if (!formData.codigo_sis || formData.codigo_sis.length < 6 || formData.codigo_sis.length > 10) {
       newErrors.codigo_sis = 'Código SIS debe tener entre 6 y 10 caracteres.';
     }
-    if (!formData.correo || !/^[\w-.]+@est\.umss\.edu$/.test(formData.correo)) {
-      newErrors.correo = 'Correo debe seguir el formato: [códigoSIS]@umss.edu.bo';
+
+    // Validar que el correo tenga el formato adecuado y que sea equivalente al código SIS
+    if (!formData.correo || !/^[\w-.]+@est\.umss\.edu$/.test(formData.correo) || !formData.correo.startsWith(formData.codigo_sis)) {
+      newErrors.correo = 'El código SIS y el correo deben ser equivalentes.';
     }
+
     if (!formData.contraseña || formData.contraseña.length < 12 || formData.contraseña.length > 30 || !/[A-Z]/.test(formData.contraseña) || !/[a-z]/.test(formData.contraseña)) {
       newErrors.contraseña = 'Contraseña debe tener entre 12 y 30 caracteres, y contener mayúsculas y minúsculas.';
     }
+
     setErrors(newErrors);
 
     if (Object.keys(newErrors).length === 0) {
@@ -121,7 +127,7 @@ function RegistroEstudiante() {
               <label htmlFor="codigo_sis" className="block font-bold mb-2">Código SIS*</label>
               <input 
                 id="codigo_sis" 
-                type="text" // Cambiado a "text" para permitir el control de caracteres
+                type="text"
                 value={formData.codigo_sis} 
                 onChange={handleChange} 
                 placeholder="Ingrese su código SIS" 
@@ -201,7 +207,7 @@ function RegistroEstudiante() {
         <div className="fixed inset-0 flex items-center justify-center bg-gray-800 bg-opacity-75">
           <div className="bg-white p-6 rounded-lg shadow-lg w-1/3 text-center">
             <h3 className="text-lg font-bold mb-4">Registro Exitoso</h3>
-            <p className="mb-4">Tu registro se ha completado exitosamente. Ahora puedes iniciar sesión.</p>
+            <p className="mb-4">Tu registro se ha 1do exitosamente. Ahora puedes iniciar sesión.</p>
             <button onClick={handleModalClose} className="p-3 bg-[#00204A] text-white rounded-lg transition-transform duration-200 hover:bg-[#001737] hover:-translate-y-1 hover:shadow-lg">
               Aceptar
             </button>
