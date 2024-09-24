@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { FaEye, FaEyeSlash } from 'react-icons/fa';
 import ReCAPTCHA from 'react-google-recaptcha';
+import axios from 'axios';
 
 function LoginDocentes() {
   const [formState, setFormState] = useState({
@@ -20,11 +21,22 @@ function LoginDocentes() {
     });
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     if (!captchaValue) {
       alert('Por favor, completa el CAPTCHA.');
       return;
+    }
+    try {
+      const response = await axios.post('http://localhost:3000/login/docente', {
+        codigoSis: formState.codsis,
+        password: formState.password,
+        correo: formState.email
+      });
+  
+      console.log('Autenticación exitosa:', response.data);
+    } catch (error) {
+      console.error('Error al iniciar sesión', error);
     }
     console.log('Form Submitted', formState);
   };
