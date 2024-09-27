@@ -54,7 +54,7 @@ function RegistroDocentes() {
       /[^a-zA-Z\s']/.test(formData.apellido)
     ) {
       newErrors.apellido =
-        "apellido debe tener entre 3 y 80 caracteres y solo contener letras, espacios y apóstrofes.";
+        "Apellido debe tener entre 3 y 80 caracteres y solo contener letras, espacios y apóstrofes.";
     }
     if (
       !formData.correo ||
@@ -77,9 +77,7 @@ function RegistroDocentes() {
 
     if (Object.keys(newErrors).length === 0) {
       try {
-        const response = await 
-        
-        axios.post(
+        const response = await axios.post(
           "http://localhost:4000/docentes/registro",
           formData,
           {
@@ -147,9 +145,9 @@ function RegistroDocentes() {
         </nav>
       </header>
 
-      <div className="flex h-full">
-        <div className="flex flex-col justify-start p-12 w-[48%] bg-[#3684DB] text-white rounded-r-[250px]">
-          <h2 className="text-2xl mb-6 font-bold text-center">
+      <div className="flex flex-col md:flex-row h-full">
+        <div className="flex flex-col justify-start p-8 md:p-12 w-full md:w-[50%] bg-[#3684DB] text-white rounded-r-[50px] md:rounded-r-[250px]">
+          <h2 className="text-xl md:text-2xl mb-6 font-bold text-center">
             Registro Docentes
           </h2>
           <form onSubmit={handleSubmit}>
@@ -164,7 +162,7 @@ function RegistroDocentes() {
                 onChange={handleChange}
                 placeholder="Ingrese su nombre(s)"
                 required
-                className="w-[90%] py-2 px-3 border-none rounded-full text-base text-black bg-white shadow-md"
+                className="w-full md:w-[90%] py-2 px-3 border-none rounded-full text-base text-black bg-white shadow-md"
               />
               {errors.nombre && (
                 <div className="text-red-500 text-sm">{errors.nombre}</div>
@@ -173,16 +171,16 @@ function RegistroDocentes() {
 
             <div className="relative mb-4">
               <label htmlFor="apellido" className="block font-bold mb-2">
-                apellido*
+                Apellido*
               </label>
               <input
                 id="apellido"
                 type="text"
                 value={formData.apellido}
                 onChange={handleChange}
-                placeholder="Ingrese sus apellido"
+                placeholder="Ingrese sus apellidos"
                 required
-                className="w-[90%] py-2 px-3 border-none rounded-full text-base text-black bg-white shadow-md"
+                className="w-full md:w-[90%] py-2 px-3 border-none rounded-full text-base text-black bg-white shadow-md"
               />
               {errors.apellido && (
                 <div className="text-red-500 text-sm">{errors.apellido}</div>
@@ -200,7 +198,7 @@ function RegistroDocentes() {
                 onChange={handleChange}
                 placeholder="Ingrese su correo institucional"
                 required
-                className="w-[90%] py-2 px-3 border-none rounded-full text-base text-black bg-white shadow-md"
+                className="w-full md:w-[90%] py-2 px-3 border-none rounded-full text-base text-black bg-white shadow-md"
               />
               {errors.correo && (
                 <div className="text-red-500 text-sm">{errors.correo}</div>
@@ -218,12 +216,12 @@ function RegistroDocentes() {
                 onChange={handleChange}
                 placeholder="Ingrese su contraseña"
                 required
-                className="w-[90%] py-2 px-3 border-none rounded-full text-base text-black bg-white shadow-md"
+                className="w-full md:w-[90%] py-2 px-3 border-none rounded-full text-base text-black bg-white shadow-md"
               />
               <button
                 type="button"
                 onClick={togglePasswordVisibility}
-                className="absolute right-20 top-11 text-gray-500"
+                className="absolute right-5 top-10 text-gray-500"
               >
                 {showPassword ? <FaEyeSlash /> : <FaEye />}
               </button>
@@ -239,7 +237,7 @@ function RegistroDocentes() {
             <div className="flex flex-col items-center">
               <button
                 type="submit"
-                className="p-3 bg-[#00204A] text-white rounded-lg text-base w-1/3 mt-70 transition-transform duration-200 hover:bg-[#001737] hover:-translate-y-1 hover:shadow-lg"
+                className="p-3 bg-[#00204A] text-white rounded-lg text-base w-full md:w-1/3 mt-6 transition-transform duration-200 hover:bg-[#001737] hover:-translate-y-1 hover:shadow-lg"
               >
                 Registrarse
               </button>
@@ -247,15 +245,14 @@ function RegistroDocentes() {
           </form>
         </div>
 
-        <div className="flex flex-col items-center justify-center p-12 w-[50%] bg-white text-center">
-          <h2 className="text-6xl text-[#00204A] mb-6 -mt-16">
-            <strong>Bienvenidos de</strong> <br />
-            <strong>nuevo a</strong> <br />
+        <div className="flex flex-col items-center justify-center p-8 md:p-12 w-full md:w-[50%] bg-white text-center">
+          <h2 className="text-3xl md:text-6xl text-[#00204A] mb-6">
+            <strong>Bienvenidos de nuevo a</strong>
           </h2>
           <img
             src={logoGrande}
             alt="Logo Grande"
-            className="w-[350px] h-auto mt-110"
+            className="h-auto md:w-[40%] mb-8"
           />
           <div className="max-w-full mx-auto px-32">
             <p className="text-4xl text-gray-800 mb-8 text-center whitespace-normal">
