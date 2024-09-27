@@ -28,8 +28,13 @@ function RegistroEstudiante() {
         return;
       }
     }
-
-    // Limitar el campo de contraseña a 30 caracteres
+     if (id === "nombres" && value.length > 60) {
+       return;
+     }
+     if (id === "apellidos" && value.length > 80) {
+       return;
+     }
+    
     if (id === 'contraseña' && value.length > 30) {
       return; 
     } 
@@ -58,7 +63,7 @@ function RegistroEstudiante() {
 
     // Validar que el correo tenga el formato adecuado y que sea equivalente al código SIS
     if (!formData.correo || !/^[\w-.]+@est\.umss\.edu$/.test(formData.correo) || !formData.correo.startsWith(formData.codigo_sis)) {
-      newErrors.correo = 'El código SIS y el correo deben ser equivalentes.';
+      newErrors.correo = 'El código SIS y el correo deben ser equivalentes y seguir con  el formato [CodSis]@est.umss.edu';
     }
 
     if (!formData.contraseña || formData.contraseña.length < 12 || formData.contraseña.length > 30 || !/[A-Z]/.test(formData.contraseña) || !/[a-z]/.test(formData.contraseña)) {
@@ -114,49 +119,125 @@ function RegistroEstudiante() {
           <img src={logo} alt="Logo MTIS" className="h-12" />
         </div>
         <nav className="flex gap-6">
-          <a href="#estudiantes" className="text-white text-lg font-bold hover:text-[#A9CCE3]" aria-label="Sección Estudiantes">Estudiantes</a>
-          <a href="#docentes" className="text-white text-lg font-bold hover:text-[#A9CCE3]" aria-label="Sección Docentes">Docentes</a>
+          <a
+            href="#estudiantes"
+            className="text-white text-lg font-bold hover:text-[#A9CCE3]"
+            aria-label="Sección Estudiantes"
+          >
+            Estudiantes
+          </a>
+          <a
+            href="#docentes"
+            className="text-white text-lg font-bold hover:text-[#A9CCE3]"
+            aria-label="Sección Docentes"
+          >
+            Docentes
+          </a>
         </nav>
       </header>
 
       <div className="flex h-full">
         <div className="flex flex-col justify-start p-12 w-[48%] bg-[#3684DB] text-white rounded-r-[250px]">
-          <h2 className="text-2xl mb-6 font-bold text-center">Registro Estudiantes</h2>
+          <h2 className="text-2xl mb-6 font-bold text-center">
+            Registro Estudiantes
+          </h2>
           <form onSubmit={handleSubmit}>
             <div className="relative mb-4">
-              <label htmlFor="codigo_sis" className="block font-bold mb-2">Código SIS*</label>
-              <input 
-                id="codigo_sis" 
+              <label htmlFor="codigo_sis" className="block font-bold mb-2">
+                Código SIS*
+              </label>
+              <input
+                id="codigo_sis"
                 type="text"
-                value={formData.codigo_sis} 
-                onChange={handleChange} 
-                placeholder="Ingrese su código SIS" 
-                required 
-                className="w-[90%] py-2 px-3 border-none rounded-full text-base text-black bg-white shadow-md" 
+                value={formData.codigo_sis}
+                onChange={handleChange}
+                placeholder="Ingrese su código SIS"
+                required
+                className="w-[90%] py-2 px-3 border-none rounded-full text-base text-black bg-white shadow-md"
               />
-              {errors.codigo_sis && <div className="text-red-500 text-sm">{errors.codigo_sis}</div>}
+              {errors.codigo_sis && (
+                <div className="absolute left-1/2 transform -translate-y-1/2 mt-1 bg-white text-red-500 border border-red-500 p-2 rounded-lg shadow-md">
+                  <span role="alert" className="text-sm font-semibold">
+                    {errors.codigo_sis}
+                  </span>
+                  <div className="absolute top-[-10px] left-1/2 transform -translate-x-1/2 w-3 h-3 bg-white border-l border-t border-red-500 rotate-45"></div>
+                </div>
+              )}
             </div>
 
             <div className="relative mb-4">
-              <label htmlFor="nombres" className="block font-bold mb-2">Nombre(s)*</label>
-              <input id="nombres" type="text" value={formData.nombres} onChange={handleChange} placeholder="Ingrese su nombre(s)" required className="w-[90%] py-2 px-3 border-none rounded-full text-base text-black bg-white shadow-md" />
-              {errors.nombres && <div className="text-red-500 text-sm">{errors.nombres}</div>}
+              <label htmlFor="nombres" className="block font-bold mb-2">
+                Nombre(s)*
+              </label>
+              <input
+                id="nombres"
+                type="text"
+                value={formData.nombres}
+                onChange={handleChange}
+                placeholder="Ingrese su nombre(s)"
+                required
+                className="w-[90%] py-2 px-3 border-none rounded-full text-base text-black bg-white shadow-md"
+              />
+              {errors.nombres && (
+                <div className="absolute left-1/2 transform -translate-y-1/2 mt-1 bg-white text-red-500 border border-red-500 p-2 rounded-lg shadow-md">
+                  <span role="alert" className="text-sm font-semibold">
+                    {errors.nombres}
+                  </span>
+                  <div className="absolute top-[-10px] left-1/2 transform -translate-x-1/2 w-3 h-3 bg-white border-l border-t border-red-500 rotate-45"></div>
+                </div>
+              )}
             </div>
 
             <div className="relative mb-4">
-              <label htmlFor="apellidos" className="block font-bold mb-2">Apellidos*</label>
-              <input id="apellidos" type="text" value={formData.apellidos} onChange={handleChange} placeholder="Ingrese sus apellidos" required className="w-[90%] py-2 px-3 border-none rounded-full text-base text-black bg-white shadow-md" />
-              {errors.apellidos && <div className="text-red-500 text-sm">{errors.apellidos}</div>}
+              <label htmlFor="apellidos" className="block font-bold mb-2">
+                Apellidos*
+              </label>
+              <input
+                id="apellidos"
+                type="text"
+                value={formData.apellidos}
+                onChange={handleChange}
+                placeholder="Ingrese sus apellidos"
+                required
+                className="w-[90%] py-2 px-3 border-none rounded-full text-base text-black bg-white shadow-md"
+              />
+              {errors.apellidos && (
+                <div className="absolute left-1/2 transform -translate-y-1/2 mt-1 bg-white text-red-500 border border-red-500 p-2 rounded-lg shadow-md">
+                  <span role="alert" className="text-sm font-semibold">
+                    {errors.apellidos}
+                  </span>
+                  <div className="absolute top-[-10px] left-1/2 transform -translate-x-1/2 w-3 h-3 bg-white border-l border-t border-red-500 rotate-45"></div>
+                </div>
+              )}
             </div>
 
             <div className="relative mb-4">
-              <label htmlFor="correo" className="block font-bold mb-2">Correo Electrónico*</label>
-              <input id="correo" type="email" value={formData.correo} onChange={handleChange} placeholder="Ingrese su correo institucional" required className="w-[90%] py-2 px-3 border-none rounded-full text-base text-black bg-white shadow-md" />
-              {errors.correo && <div className="text-red-500 text-sm">{errors.correo}</div>}
+              <label htmlFor="correo" className="block font-bold mb-2">
+                Correo Electrónico*
+              </label>
+              <input
+                id="correo"
+                type="email"
+                value={formData.correo}
+                onChange={handleChange}
+                placeholder="Ingrese su correo institucional"
+                required
+                className="w-[90%] py-2 px-3 border-none rounded-full text-base text-black bg-white shadow-md"
+              />
+              {errors.correo && (
+                <div className="absolute left-1/2 transform -translate-y-1/2 mt-1 bg-white text-red-500 border border-red-500 p-2 rounded-lg shadow-md">
+                  <span role="alert" className="text-sm font-semibold">
+                    {errors.correo}
+                  </span>
+                  <div className="absolute top-[-10px] left-1/2 transform -translate-x-1/2 w-3 h-3 bg-white border-l border-t border-red-500 rotate-45"></div>
+                </div>
+              )}
             </div>
 
             <div className="relative mb-4">
-              <label htmlFor="contraseña" className="block font-bold mb-2">Contraseña*</label>
+              <label htmlFor="contraseña" className="block font-bold mb-2">
+                Contraseña*
+              </label>
               <input
                 id="contraseña"
                 type={showPassword ? "text" : "password"}
@@ -173,13 +254,25 @@ function RegistroEstudiante() {
               >
                 {showPassword ? <FaEyeSlash /> : <FaEye />}
               </button>
-              {errors.contraseña && <div className="text-red-500 text-sm">{errors.contraseña}</div>}
+              {errors.contraseña && (
+                <div className="absolute left-1/2 transform -translate-y-1/2 mt-1 bg-white text-red-500 border border-red-500 p-2 rounded-lg shadow-md">
+                  <span role="alert" className="text-sm font-semibold">
+                    {errors.contraseña}
+                  </span>
+                  <div className="absolute top-[-10px] left-1/2 transform -translate-x-1/2 w-3 h-3 bg-white border-l border-t border-red-500 rotate-45"></div>
+                </div>
+              )}
             </div>
 
-            {errors.api && <div className="text-red-500 text-sm">{errors.api}</div>}
+            {errors.api && (
+              <div className="text-red-500 text-sm">{errors.api}</div>
+            )}
 
             <div className="flex flex-col items-center">
-              <button type="submit" className="p-3 bg-[#00204A] text-white rounded-lg text-base w-1/3 mt-70 transition-transform duration-200 hover:bg-[#001737] hover:-translate-y-1 hover:shadow-lg">
+              <button
+                type="submit"
+                className="p-3 bg-[#00204A] text-white rounded-lg text-base w-1/3 mt-70 transition-transform duration-200 hover:bg-[#001737] hover:-translate-y-1 hover:shadow-lg"
+              >
                 Registrarse
               </button>
             </div>
@@ -191,12 +284,23 @@ function RegistroEstudiante() {
             <strong>Bienvenidos de</strong> <br />
             <strong>nuevo a</strong> <br />
           </h2>
-          <img src={logoGrande} alt="Logo Grande" className="w-[350px] h-auto mt-110" />
+          <img
+            src={logoGrande}
+            alt="Logo Grande"
+            className="w-[350px] h-auto mt-110"
+          />
           <p className="text-lg text-gray-800 mb-8">
-            Regístrate en MTIS y comienza a gestionar tus proyectos de forma eficiente. Únete a una plataforma diseñada para facilitar la colaboración y el seguimiento en tiempo real.
+            Regístrate en MTIS y comienza a gestionar tus proyectos de forma
+            eficiente. Únete a una plataforma diseñada para facilitar la
+            colaboración y el seguimiento en tiempo real.
           </p>
-          <a href="/iniciar-sesion" className="text-black underline mb-6"><strong>¿Ya tienes cuenta? Inicia sesión ahora.</strong></a>
-          <button onClick={handleCancel} className="p-3 bg-[#3684DB] text-white rounded-lg text-lg w-1/3 transition-transform duration-200 hover:bg-[#2a6ab1] hover:-translate-y-1 hover:shadow-lg">
+          <a href="/iniciar-sesion" className="text-black underline mb-6">
+            <strong>¿Ya tienes cuenta? Inicia sesión ahora.</strong>
+          </a>
+          <button
+            onClick={handleCancel}
+            className="p-3 bg-[#3684DB] text-white rounded-lg text-lg w-1/3 transition-transform duration-200 hover:bg-[#2a6ab1] hover:-translate-y-1 hover:shadow-lg"
+          >
             Iniciar Sesión
           </button>
         </div>
@@ -207,8 +311,13 @@ function RegistroEstudiante() {
         <div className="fixed inset-0 flex items-center justify-center bg-gray-800 bg-opacity-75">
           <div className="bg-white p-6 rounded-lg shadow-lg w-1/3 text-center">
             <h3 className="text-lg font-bold mb-4">Registro Exitoso</h3>
-            <p className="mb-4">Tu registro se ha 1do exitosamente. Ahora puedes iniciar sesión.</p>
-            <button onClick={handleModalClose} className="p-3 bg-[#00204A] text-white rounded-lg transition-transform duration-200 hover:bg-[#001737] hover:-translate-y-1 hover:shadow-lg">
+            <p className="mb-4">
+              Tu registro se ha 1do exitosamente. Ahora puedes iniciar sesión.
+            </p>
+            <button
+              onClick={handleModalClose}
+              className="p-3 bg-[#00204A] text-white rounded-lg transition-transform duration-200 hover:bg-[#001737] hover:-translate-y-1 hover:shadow-lg"
+            >
               Aceptar
             </button>
           </div>
@@ -220,12 +329,21 @@ function RegistroEstudiante() {
         <div className="fixed inset-0 flex items-center justify-center bg-gray-800 bg-opacity-75">
           <div className="bg-white p-6 rounded-lg shadow-lg w-1/3 text-center">
             <h3 className="text-lg font-bold mb-4">Confirmar Cancelación</h3>
-            <p className="mb-4">¿Estás seguro de que deseas cancelar? Los datos ingresados se perderán.</p>
+            <p className="mb-4">
+              ¿Estás seguro de que deseas cancelar? Los datos ingresados se
+              perderán.
+            </p>
             <div className="flex justify-around">
-              <button onClick={() => handleCancelModalClose(true)} className="p-3 bg-[#E74C3C] text-white rounded-lg transition-transform duration-200 hover:bg-[#c0392b] hover:-translate-y-1 hover:shadow-lg">
+              <button
+                onClick={() => handleCancelModalClose(true)}
+                className="p-3 bg-[#E74C3C] text-white rounded-lg transition-transform duration-200 hover:bg-[#c0392b] hover:-translate-y-1 hover:shadow-lg"
+              >
                 Sí, cancelar
               </button>
-              <button onClick={() => handleCancelModalClose(false)} className="p-3 bg-[#2ECC71] text-white rounded-lg transition-transform duration-200 hover:bg-[#27ae60] hover:-translate-y-1 hover:shadow-lg">
+              <button
+                onClick={() => handleCancelModalClose(false)}
+                className="p-3 bg-[#2ECC71] text-white rounded-lg transition-transform duration-200 hover:bg-[#27ae60] hover:-translate-y-1 hover:shadow-lg"
+              >
                 No, continuar
               </button>
             </div>
