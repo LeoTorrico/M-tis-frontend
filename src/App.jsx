@@ -11,11 +11,13 @@ import Inicio from "./Pages/Inicio";
 import LoginEstudiantes from "./Pages/LoginEstudiantes";
 import PlanificacionDocente from "./Pages/PlanificacionDocente";
 import VistaCurso from "./Pages/VistaCurso";
+import Modal from "react-modal";
+Modal.setAppElement("#root");
 
 function App() {
   return (
     <Router>
-      <div className="flex flex-col w-screen h-screen">
+      <div className="flex flex-col w-screen h-screen font-title">
         <Layout>
           <Routes>
             <Route path="/Inicio" element={<Inicio />} />
