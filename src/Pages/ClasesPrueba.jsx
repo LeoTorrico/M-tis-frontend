@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 
 const ClasesPrueba = () => {
-  const rol = 'docente'; // Asignar el rol directamente para pruebas
+  const rol = 'estudiante'; // Asignar el rol directamente para pruebas
   const [mostrarBoton, setMostrarBoton] = useState(false);
   const [mostrarModal, setMostrarModal] = useState(false);
   const [nombreClase, setNombreClase] = useState('');

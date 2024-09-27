@@ -19,7 +19,7 @@ function App() {
                 <>
                   <Sidebar />
                   <div className="flex-grow p-4">
-                    <Inicio />
+                    <ClasesPrueba />
                   </div>
                 </>
               }
@@ -43,17 +43,7 @@ function App() {
                 </>
               }
             />
-            <Route
-              path="/prueba"
-              element={
-                <>
-                  <Sidebar />
-                  <div className="flex-grow p-4">
-                    <ClasesPrueba />
-                  </div>
-                </>
-              }
-            />
+            
           </Routes>
         </div>
       </div>
