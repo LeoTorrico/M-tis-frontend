@@ -246,7 +246,7 @@ function RegistroDocentes() {
         </div>
 
         <div className="flex flex-col items-center justify-center p-8 md:p-12 w-full md:w-[50%] bg-white text-center">
-          <h2 className="text-3xl md:text-6xl text-[#00204A] mb-6">
+          <h2 className="text-3xl md:text-6xl text-[#00204A] mb-16">
             <strong>Bienvenidos de nuevo a</strong>
           </h2>
           <img
