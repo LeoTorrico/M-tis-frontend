@@ -7,8 +7,8 @@ import { FaEye, FaEyeSlash } from "react-icons/fa";
 
 function RegistroDocentes() {
   const [formData, setFormData] = useState({
-    nombres: "",
-    apellidos: "",
+    nombre: "",
+    apellido: "",
     correo: "",
     contraseña: "",
   });
@@ -20,10 +20,10 @@ function RegistroDocentes() {
 
   const handleChange = (e) => {
     const { id, value } = e.target;
-    if (id === "nombres" && value.length > 60) {
+    if (id === "nombre" && value.length > 60) {
       return;
     }
-    if (id === "apellidos" && value.length > 80) {
+    if (id === "apellido" && value.length > 80) {
       return;
     }
 
@@ -44,22 +44,22 @@ function RegistroDocentes() {
 
     // Validaciones existentes
     if (
-      !formData.nombres ||
-      formData.nombres.length < 3 ||
-      formData.nombres.length > 60 ||
-      /[^a-zA-Z\s']/.test(formData.nombres)
+      !formData.nombre ||
+      formData.nombre.length < 3 ||
+      formData.nombre.length > 60 ||
+      /[^a-zA-Z\s']/.test(formData.nombre)
     ) {
-      newErrors.nombres =
+      newErrors.nombre =
         "Nombre debe tener entre 3 y 60 caracteres y solo contener letras, espacios y apóstrofes.";
     }
     if (
-      !formData.apellidos ||
-      formData.apellidos.length < 3 ||
-      formData.apellidos.length > 80 ||
-      /[^a-zA-Z\s']/.test(formData.apellidos)
+      !formData.apellido ||
+      formData.apellido.length < 3 ||
+      formData.apellido.length > 80 ||
+      /[^a-zA-Z\s']/.test(formData.apellido)
     ) {
-      newErrors.apellidos =
-        "Apellidos debe tener entre 3 y 80 caracteres y solo contener letras, espacios y apóstrofes.";
+      newErrors.apellido =
+        "Apellido debe tener entre 3 y 80 caracteres y solo contener letras, espacios y apóstrofes.";
     }
     if (
       !formData.correo ||
@@ -162,18 +162,18 @@ function RegistroDocentes() {
                 Nombre(s)*
               </label>
               <input
-                id="nombres"
+                id="nombre"
                 type="text"
-                value={formData.nombres}
+                value={formData.nombre}
                 onChange={handleChange}
                 placeholder="Ingrese su nombre(s)"
                 required
                 className="w-[90%] py-2 px-3 border-none rounded-full text-base text-black bg-white shadow-md"
               />
-              {errors.nombres && (
+              {errors.nombre && (
                 <div className="absolute left-1/2 transform -translate-y-1/2 mt-1 bg-white text-red-500 border border-red-500 p-2 rounded-lg shadow-md">
                   <span role="alert" className="text-sm font-semibold">
-                    {errors.nombres}
+                    {errors.nombre}
                   </span>
                   <div className="absolute top-[-10px] left-1/2 transform -translate-x-1/2 w-3 h-3 bg-white border-l border-t border-red-500 rotate-45"></div>
                 </div>
@@ -181,22 +181,22 @@ function RegistroDocentes() {
             </div>
 
             <div className="relative mb-4">
-              <label htmlFor="apellidos" className="block font-bold mb-2">
+              <label htmlFor="apellido" className="block font-bold mb-2">
                 Apellidos*
               </label>
               <input
-                id="apellidos"
+                id="apellido"
                 type="text"
-                value={formData.apellidos}
+                value={formData.apellido}
                 onChange={handleChange}
                 placeholder="Ingrese sus apellidos"
                 required
                 className="w-[90%] py-2 px-3 border-none rounded-full text-base text-black bg-white shadow-md"
               />
-              {errors.apellidos && (
+              {errors.apellido && (
                 <div className="absolute left-1/2 transform -translate-y-1/2 mt-1 bg-white text-red-500 border border-red-500 p-2 rounded-lg shadow-md">
                   <span role="alert" className="text-sm font-semibold">
-                    {errors.apellidos}
+                    {errors.apellido}
                   </span>
                   <div className="absolute top-[-10px] left-1/2 transform -translate-x-1/2 w-3 h-3 bg-white border-l border-t border-red-500 rotate-45"></div>
                 </div>
