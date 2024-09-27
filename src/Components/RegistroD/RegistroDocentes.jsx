@@ -37,7 +37,7 @@ function RegistroDocentes() {
     e.preventDefault();
     const newErrors = {};
 
-    // Validaciones 
+    // Validaciones existentes
     if (
       !formData.nombres ||
       formData.nombres.length < 3 ||
@@ -56,7 +56,7 @@ function RegistroDocentes() {
       newErrors.apellidos =
         "Apellidos debe tener entre 3 y 80 caracteres y solo contener letras, espacios y apóstrofes.";
     }
- if (
+    if (
       !formData.correo ||
       !/^[\w-.]+@(umss\.edu\.bo|fcyt\.umss\.edu\.bo)$/.test(formData.correo)
     ) {
@@ -166,7 +166,12 @@ function RegistroDocentes() {
                 className="w-[90%] py-2 px-3 border-none rounded-full text-base text-black bg-white shadow-md"
               />
               {errors.nombres && (
-                <div className="text-red-500 text-sm">{errors.nombres}</div>
+                <div className="absolute left-1/2 transform -translate-y-1/2 mt-1 bg-white text-red-500 border border-red-500 p-2 rounded-lg shadow-md">
+                  <span role="alert" className="text-sm font-semibold">
+                    {errors.nombres}
+                  </span>
+                  <div className="absolute top-[-10px] left-1/2 transform -translate-x-1/2 w-3 h-3 bg-white border-l border-t border-red-500 rotate-45"></div>
+                </div>
               )}
             </div>
 
@@ -184,7 +189,12 @@ function RegistroDocentes() {
                 className="w-[90%] py-2 px-3 border-none rounded-full text-base text-black bg-white shadow-md"
               />
               {errors.apellidos && (
-                <div className="text-red-500 text-sm">{errors.apellidos}</div>
+                <div className="absolute left-1/2 transform -translate-y-1/2 mt-1 bg-white text-red-500 border border-red-500 p-2 rounded-lg shadow-md">
+                  <span role="alert" className="text-sm font-semibold">
+                    {errors.apellidos}
+                  </span>
+                  <div className="absolute top-[-10px] left-1/2 transform -translate-x-1/2 w-3 h-3 bg-white border-l border-t border-red-500 rotate-45"></div>
+                </div>
               )}
             </div>
 
@@ -202,7 +212,12 @@ function RegistroDocentes() {
                 className="w-[90%] py-2 px-3 border-none rounded-full text-base text-black bg-white shadow-md"
               />
               {errors.correo && (
-                <div className="text-red-500 text-sm">{errors.correo}</div>
+                <div className="absolute left-1/2 transform -translate-y-1/2 mt-1 bg-white text-red-500 border border-red-500 p-2 rounded-lg shadow-md">
+                  <span role="alert" className="text-sm font-semibold">
+                    {errors.correo}
+                  </span>
+                  <div className="absolute top-[-10px] left-1/2 transform -translate-x-1/2 w-3 h-3 bg-white border-l border-t border-red-500 rotate-45"></div>
+                </div>
               )}
             </div>
 
@@ -227,7 +242,12 @@ function RegistroDocentes() {
                 {showPassword ? <FaEyeSlash /> : <FaEye />}
               </button>
               {errors.contraseña && (
-                <div className="text-red-500 text-sm">{errors.contraseña}</div>
+                <div className="absolute left-1/2 transform -translate-y-1/2 mt-1 bg-white text-red-500 border border-red-500 p-2 rounded-lg shadow-md">
+                  <span role="alert" className="text-sm font-semibold">
+                    {errors.contraseña}
+                  </span>
+                  <div className="absolute top-[-10px] left-1/2 transform -translate-x-1/2 w-3 h-3 bg-white border-l border-t border-red-500 rotate-45"></div>
+                </div>
               )}
             </div>
 
@@ -273,7 +293,6 @@ function RegistroDocentes() {
         </div>
       </div>
 
-      {/* Modal de éxito */}
       {showModal && (
         <div className="fixed inset-0 flex items-center justify-center bg-gray-800 bg-opacity-75">
           <div className="bg-white p-6 rounded-lg shadow-lg w-1/3 text-center">
@@ -293,7 +312,6 @@ function RegistroDocentes() {
         </div>
       )}
 
-      {/* Modal de cancelación */}
       {showCancelModal && (
         <div className="fixed inset-0 flex items-center justify-center bg-gray-800 bg-opacity-75">
           <div className="bg-white p-6 rounded-lg shadow-lg w-1/3 text-center">
