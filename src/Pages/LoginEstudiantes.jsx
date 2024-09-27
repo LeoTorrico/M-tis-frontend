@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { FaEye, FaEyeSlash } from 'react-icons/fa';
 import ReCAPTCHA from 'react-google-recaptcha';
 import axios from 'axios';
+import { useNavigate } from 'react-router-dom';
 
 function LoginEstudiantes() {
   const [formState, setFormState] = useState({
@@ -12,7 +13,7 @@ function LoginEstudiantes() {
 
   const [showPassword, setShowPassword] = useState(false);
   const [captchaValue, setCaptchaValue] = useState(null);
-
+  const navigate = useNavigate();
   const handleInputChange = (e) => {
     const { name, value } = e.target;
     setFormState({
@@ -37,9 +38,13 @@ function LoginEstudiantes() {
       });
   
       console.log('Autenticación exitosa:', response.data);
+      localStorage.setItem('token', response.data.estudiante.token);
+      navigate('/Inicio'); 
+
     } catch (error) {
       console.error('Error al iniciar sesión', error);
     }
+    console.log('Form Submitted', formState);
   };
 
   const handleCaptchaChange = (value) => {
