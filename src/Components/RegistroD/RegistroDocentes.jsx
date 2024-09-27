@@ -1,14 +1,14 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
-//import axios from "axios";
+import axios from "axios";
 import logo from "../../assets/images/logo.png";
 import logoGrande from "../../assets/images/logo-grande.png";
 import { FaEye, FaEyeSlash } from "react-icons/fa";
 
 function RegistroDocentes() {
   const [formData, setFormData] = useState({
-    nombres: "",
-    apellidos: "",
+    nombre: "",
+    apellido: "",
     correo: "",
     contraseña: "",
   });
@@ -39,25 +39,29 @@ function RegistroDocentes() {
 
     // Validaciones
     if (
-      !formData.nombres ||
-      formData.nombres.length < 3 ||
-      formData.nombres.length > 60 ||
-      /[^a-zA-Z\s']/.test(formData.nombres)
+      !formData.nombre ||
+      formData.nombre.length < 3 ||
+      formData.nombre.length > 60 ||
+      /[^a-zA-Z\s']/.test(formData.nombre)
     ) {
-      newErrors.nombres =
+      newErrors.nombre =
         "Nombre debe tener entre 3 y 60 caracteres y solo contener letras, espacios y apóstrofes.";
     }
     if (
-      !formData.apellidos ||
-      formData.apellidos.length < 3 ||
-      formData.apellidos.length > 80 ||
-      /[^a-zA-Z\s']/.test(formData.apellidos)
+      !formData.apellido ||
+      formData.apellido.length < 3 ||
+      formData.apellido.length > 80 ||
+      /[^a-zA-Z\s']/.test(formData.apellido)
     ) {
-      newErrors.apellidos =
-        "Apellidos debe tener entre 3 y 80 caracteres y solo contener letras, espacios y apóstrofes.";
+      newErrors.apellido =
+        "apellido debe tener entre 3 y 80 caracteres y solo contener letras, espacios y apóstrofes.";
     }
-    if (!formData.correo || !/^[\w-.]+@umss\.edu$/.test(formData.correo)) {
-      newErrors.correo = "El correo debe tener el formato correcto de la UMSS.";
+    if (
+      !formData.correo ||
+      !/^[\w-.]+@(umss\.edu\.bo|fcyt\.umss\.edu\.bo)$/.test(formData.correo)
+    ) {
+      newErrors.correo =
+        "El correo debe ser institucional y terminar en @umss.edu.bo o @fcyt.umss.edu.bo.";
     }
     if (
       !formData.contraseña ||
@@ -73,7 +77,9 @@ function RegistroDocentes() {
 
     if (Object.keys(newErrors).length === 0) {
       try {
-        const response = await axios.post(
+        const response = await 
+        
+        axios.post(
           "http://localhost:4000/docentes/registro",
           formData,
           {
@@ -148,38 +154,38 @@ function RegistroDocentes() {
           </h2>
           <form onSubmit={handleSubmit}>
             <div className="relative mb-4">
-              <label htmlFor="nombres" className="block font-bold mb-2">
+              <label htmlFor="nombre" className="block font-bold mb-2">
                 Nombre(s)*
               </label>
               <input
-                id="nombres"
+                id="nombre"
                 type="text"
-                value={formData.nombres}
+                value={formData.nombre}
                 onChange={handleChange}
                 placeholder="Ingrese su nombre(s)"
                 required
                 className="w-[90%] py-2 px-3 border-none rounded-full text-base text-black bg-white shadow-md"
               />
-              {errors.nombres && (
-                <div className="text-red-500 text-sm">{errors.nombres}</div>
+              {errors.nombre && (
+                <div className="text-red-500 text-sm">{errors.nombre}</div>
               )}
             </div>
 
             <div className="relative mb-4">
-              <label htmlFor="apellidos" className="block font-bold mb-2">
-                Apellidos*
+              <label htmlFor="apellido" className="block font-bold mb-2">
+                apellido*
               </label>
               <input
-                id="apellidos"
+                id="apellido"
                 type="text"
-                value={formData.apellidos}
+                value={formData.apellido}
                 onChange={handleChange}
-                placeholder="Ingrese sus apellidos"
+                placeholder="Ingrese sus apellido"
                 required
                 className="w-[90%] py-2 px-3 border-none rounded-full text-base text-black bg-white shadow-md"
               />
-              {errors.apellidos && (
-                <div className="text-red-500 text-sm">{errors.apellidos}</div>
+              {errors.apellido && (
+                <div className="text-red-500 text-sm">{errors.apellido}</div>
               )}
             </div>
 
