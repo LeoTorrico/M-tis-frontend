@@ -20,8 +20,13 @@ function RegistroDocentes() {
 
   const handleChange = (e) => {
     const { id, value } = e.target;
+    if (id === "nombres" && value.length > 60) {
+      return;
+    }
+    if (id === "apellidos" && value.length > 80) {
+      return;
+    }
 
-    // Limitar el campo de contraseña a 30 caracteres
     if (id === "contraseña" && value.length > 30) {
       return;
     }
