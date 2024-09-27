@@ -15,9 +15,6 @@ return(
         <a href="/LoginDocentes" className="flex items-center px-8 py-7 hover:bg-light-gray transition-colors">
           DOCENTES
         </a>
-        <Link to="/Inicio" className="flex items-center px-4 py-2 hover:bg-light-blue transition-colors">
-          Inicio
-        </Link>
       </nav>
 </div>
   

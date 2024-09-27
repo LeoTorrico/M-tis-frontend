@@ -2,17 +2,17 @@ import React, { useState } from 'react';
 import { FaEye, FaEyeSlash } from 'react-icons/fa';
 import ReCAPTCHA from 'react-google-recaptcha';
 import axios from 'axios';
+import { useNavigate } from 'react-router-dom';
 
 function LoginDocentes() {
   const [formState, setFormState] = useState({
-    codsis:'',
     email: '',
     password: ''
   });
 
   const [showPassword, setShowPassword] = useState(false);
   const [captchaValue, setCaptchaValue] = useState(null);
-
+  const navigate = useNavigate(); 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
     setFormState({
@@ -29,12 +29,15 @@ function LoginDocentes() {
     }
     try {
       const response = await axios.post('http://localhost:3000/login/docente', {
-        codigoSis: formState.codsis,
         password: formState.password,
         correo: formState.email
       });
-  
+
       console.log('Autenticación exitosa:', response.data);
+      
+      localStorage.setItem('token', response.data.docente.token);
+      navigate('/Inicio'); 
+
     } catch (error) {
       console.error('Error al iniciar sesión', error);
     }
