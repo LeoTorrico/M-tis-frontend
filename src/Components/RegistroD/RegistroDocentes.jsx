@@ -7,8 +7,8 @@ import { FaEye, FaEyeSlash } from "react-icons/fa";
 
 function RegistroDocentes() {
   const [formData, setFormData] = useState({
-    nombre: "",
-    apellido: "",
+    nombres: "",
+    apellidos: "",
     correo: "",
     contraseña: "",
   });
@@ -37,26 +37,26 @@ function RegistroDocentes() {
     e.preventDefault();
     const newErrors = {};
 
-    // Validaciones
+    // Validaciones 
     if (
-      !formData.nombre ||
-      formData.nombre.length < 3 ||
-      formData.nombre.length > 60 ||
-      /[^a-zA-Z\s']/.test(formData.nombre)
+      !formData.nombres ||
+      formData.nombres.length < 3 ||
+      formData.nombres.length > 60 ||
+      /[^a-zA-Z\s']/.test(formData.nombres)
     ) {
-      newErrors.nombre =
+      newErrors.nombres =
         "Nombre debe tener entre 3 y 60 caracteres y solo contener letras, espacios y apóstrofes.";
     }
     if (
-      !formData.apellido ||
-      formData.apellido.length < 3 ||
-      formData.apellido.length > 80 ||
-      /[^a-zA-Z\s']/.test(formData.apellido)
+      !formData.apellidos ||
+      formData.apellidos.length < 3 ||
+      formData.apellidos.length > 80 ||
+      /[^a-zA-Z\s']/.test(formData.apellidos)
     ) {
-      newErrors.apellido =
-        "Apellido debe tener entre 3 y 80 caracteres y solo contener letras, espacios y apóstrofes.";
+      newErrors.apellidos =
+        "Apellidos debe tener entre 3 y 80 caracteres y solo contener letras, espacios y apóstrofes.";
     }
-    if (
+ if (
       !formData.correo ||
       !/^[\w-.]+@(umss\.edu\.bo|fcyt\.umss\.edu\.bo)$/.test(formData.correo)
     ) {
@@ -73,6 +73,7 @@ function RegistroDocentes() {
       newErrors.contraseña =
         "Contraseña debe tener entre 12 y 30 caracteres, y contener mayúsculas y minúsculas.";
     }
+
     setErrors(newErrors);
 
     if (Object.keys(newErrors).length === 0) {
@@ -145,9 +146,9 @@ function RegistroDocentes() {
         </nav>
       </header>
 
-      <div className="flex flex-col md:flex-row h-full">
-        <div className="flex flex-col justify-start p-8 md:p-12 w-full md:w-[50%] bg-[#3684DB] text-white rounded-r-[50px] md:rounded-r-[250px]">
-          <h2 className="text-xl md:text-2xl mb-6 font-bold text-center">
+      <div className="flex h-full">
+        <div className="flex flex-col justify-start p-12 w-[48%] bg-[#3684DB] text-white rounded-r-[250px]">
+          <h2 className="text-2xl mb-6 font-bold text-center">
             Registro Docentes
           </h2>
           <form onSubmit={handleSubmit}>
@@ -156,34 +157,34 @@ function RegistroDocentes() {
                 Nombre(s)*
               </label>
               <input
-                id="nombre"
+                id="nombres"
                 type="text"
-                value={formData.nombre}
+                value={formData.nombres}
                 onChange={handleChange}
                 placeholder="Ingrese su nombre(s)"
                 required
-                className="w-full md:w-[90%] py-2 px-3 border-none rounded-full text-base text-black bg-white shadow-md"
+                className="w-[90%] py-2 px-3 border-none rounded-full text-base text-black bg-white shadow-md"
               />
-              {errors.nombre && (
-                <div className="text-red-500 text-sm">{errors.nombre}</div>
+              {errors.nombres && (
+                <div className="text-red-500 text-sm">{errors.nombres}</div>
               )}
             </div>
 
             <div className="relative mb-4">
-              <label htmlFor="apellido" className="block font-bold mb-2">
-                Apellido*
+              <label htmlFor="apellidos" className="block font-bold mb-2">
+                Apellidos*
               </label>
               <input
-                id="apellido"
+                id="apellidos"
                 type="text"
-                value={formData.apellido}
+                value={formData.apellidos}
                 onChange={handleChange}
                 placeholder="Ingrese sus apellidos"
                 required
-                className="w-full md:w-[90%] py-2 px-3 border-none rounded-full text-base text-black bg-white shadow-md"
+                className="w-[90%] py-2 px-3 border-none rounded-full text-base text-black bg-white shadow-md"
               />
-              {errors.apellido && (
-                <div className="text-red-500 text-sm">{errors.apellido}</div>
+              {errors.apellidos && (
+                <div className="text-red-500 text-sm">{errors.apellidos}</div>
               )}
             </div>
 
@@ -198,7 +199,7 @@ function RegistroDocentes() {
                 onChange={handleChange}
                 placeholder="Ingrese su correo institucional"
                 required
-                className="w-full md:w-[90%] py-2 px-3 border-none rounded-full text-base text-black bg-white shadow-md"
+                className="w-[90%] py-2 px-3 border-none rounded-full text-base text-black bg-white shadow-md"
               />
               {errors.correo && (
                 <div className="text-red-500 text-sm">{errors.correo}</div>
@@ -216,12 +217,12 @@ function RegistroDocentes() {
                 onChange={handleChange}
                 placeholder="Ingrese su contraseña"
                 required
-                className="w-full md:w-[90%] py-2 px-3 border-none rounded-full text-base text-black bg-white shadow-md"
+                className="w-[90%] py-2 px-3 border-none rounded-full text-base text-black bg-white shadow-md"
               />
               <button
                 type="button"
                 onClick={togglePasswordVisibility}
-                className="absolute right-5 top-10 text-gray-500"
+                className="absolute right-20 top-11 text-gray-500"
               >
                 {showPassword ? <FaEyeSlash /> : <FaEye />}
               </button>
@@ -237,7 +238,7 @@ function RegistroDocentes() {
             <div className="flex flex-col items-center">
               <button
                 type="submit"
-                className="p-3 bg-[#00204A] text-white rounded-lg text-base w-full md:w-1/3 mt-6 transition-transform duration-200 hover:bg-[#001737] hover:-translate-y-1 hover:shadow-lg"
+                className="p-3 bg-[#00204A] text-white rounded-lg text-base w-1/3 mt-70 transition-transform duration-200 hover:bg-[#001737] hover:-translate-y-1 hover:shadow-lg"
               >
                 Registrarse
               </button>
@@ -245,23 +246,27 @@ function RegistroDocentes() {
           </form>
         </div>
 
-        <div className="flex flex-col items-center justify-center p-8 md:p-12 w-full md:w-[50%] bg-white text-center">
-          <h2 className="text-3xl md:text-6xl text-[#00204A] mb-16">
-            <strong>Bienvenidos de nuevo a</strong>
+        <div className="flex flex-col items-center justify-center p-12 w-[50%] bg-white text-center">
+          <h2 className="text-6xl text-[#00204A] mb-6 -mt-16">
+            <strong>Bienvenidos de</strong> <br />
+            <strong>nuevo a</strong> <br />
           </h2>
           <img
             src={logoGrande}
             alt="Logo Grande"
-            className="h-auto md:w-[40%] mb-8"
+            className="w-[350px] h-auto mt-110"
           />
-          <div className="max-w-full mx-auto px-32">
-            <p className="text-4xl text-gray-800 mb-8 text-center whitespace-normal">
-              MTIS es una plataforma de gestionamiento de proyectos
-            </p>
-          </div>
+          <p className="text-lg text-gray-800 mb-8">
+            Regístrate en MTIS y comienza a gestionar tus proyectos de forma
+            eficiente. Únete a una plataforma diseñada para facilitar la
+            colaboración y el seguimiento en tiempo real.
+          </p>
+          <a href="/iniciar-sesion" className="text-black underline mb-6">
+            <strong>¿Ya tienes cuenta? Inicia sesión ahora.</strong>
+          </a>
           <button
             onClick={handleCancel}
-            className="px-5 py-3 bg-[#3684DB] text-white rounded-lg transition-transform duration-200 hover:bg-[#2e6cbb] hover:-translate-y-1 hover:shadow-lg"
+            className="p-3 bg-[#3684DB] text-white rounded-lg text-lg w-1/3 transition-transform duration-200 hover:bg-[#2a6ab1] hover:-translate-y-1 hover:shadow-lg"
           >
             Iniciar Sesión
           </button>
@@ -270,14 +275,16 @@ function RegistroDocentes() {
 
       {/* Modal de éxito */}
       {showModal && (
-        <div className="fixed inset-0 bg-gray-600 bg-opacity-50 flex justify-center items-center">
-          <div className="bg-white rounded-lg p-6 shadow-lg">
-            <h2 className="text-lg font-bold mb-4">Registro Exitoso</h2>
-            <p>El docente ha sido registrado exitosamente.</p>
+        <div className="fixed inset-0 flex items-center justify-center bg-gray-800 bg-opacity-75">
+          <div className="bg-white p-6 rounded-lg shadow-lg w-1/3 text-center">
+            <h3 className="text-lg font-bold mb-4">Registro Exitoso</h3>
+            <p className="mb-4">
+              Tu registro se ha 1do exitosamente. Ahora puedes iniciar sesión.
+            </p>
             <div className="flex justify-end mt-4">
               <button
                 onClick={handleModalClose}
-                className="px-4 py-2 bg-[#00204A] text-white rounded-lg"
+                className="p-3 bg-[#00204A] text-white rounded-lg transition-transform duration-200 hover:bg-[#001737] hover:-translate-y-1 hover:shadow-lg"
               >
                 Aceptar
               </button>
@@ -286,27 +293,27 @@ function RegistroDocentes() {
         </div>
       )}
 
-      {/* Modal de confirmación de cancelación */}
+      {/* Modal de cancelación */}
       {showCancelModal && (
-        <div className="fixed inset-0 bg-gray-600 bg-opacity-50 flex justify-center items-center">
-          <div className="bg-white rounded-lg p-6 shadow-lg">
-            <h2 className="text-lg font-bold mb-4">¿Estás seguro?</h2>
-            <p>
-              Tienes cambios sin guardar. ¿Quieres cancelar el registro y volver
-              a la pantalla de inicio de sesión?
+        <div className="fixed inset-0 flex items-center justify-center bg-gray-800 bg-opacity-75">
+          <div className="bg-white p-6 rounded-lg shadow-lg w-1/3 text-center">
+            <h3 className="text-lg font-bold mb-4">Confirmar Cancelación</h3>
+            <p className="mb-4">
+              ¿Estás seguro de que deseas cancelar? Los datos ingresados se
+              perderán.
             </p>
-            <div className="flex justify-end mt-4">
-              <button
-                onClick={() => handleCancelModalClose(false)}
-                className="px-4 py-2 bg-gray-300 text-black rounded-lg mr-2"
-              >
-                No
-              </button>
+            <div className="flex justify-around">
               <button
                 onClick={() => handleCancelModalClose(true)}
-                className="px-4 py-2 bg-[#00204A] text-white rounded-lg"
+                className="p-3 bg-[#E74C3C] text-white rounded-lg transition-transform duration-200 hover:bg-[#c0392b] hover:-translate-y-1 hover:shadow-lg"
               >
-                Sí
+                Sí, cancelar
+              </button>
+              <button
+                onClick={() => handleCancelModalClose(false)}
+                className="p-3 bg-[#2ECC71] text-white rounded-lg transition-transform duration-200 hover:bg-[#27ae60] hover:-translate-y-1 hover:shadow-lg"
+              >
+                No, continuar
               </button>
             </div>
           </div>
