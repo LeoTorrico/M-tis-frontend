@@ -36,6 +36,7 @@ const VistaCurso = () => {
     "Omar Mamani",
     "Mauricio Vallejos",
   ];
+  const rolesPosibles = ["Líder", "Desarrollador", "Analista", "Tester"];
 
   const openModal = () => setModalIsOpen(true);
   const closeModal = () => setModalIsOpen(false);
@@ -133,6 +134,7 @@ const VistaCurso = () => {
         handleCheckboxChange={handleCheckboxChange}
         handleSubmit={handleSubmit}
         integrantesPosibles={integrantesPosibles}
+        rolesPosibles={rolesPosibles}
       />
     </div>
   );
