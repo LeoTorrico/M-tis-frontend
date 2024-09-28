@@ -1,61 +1,58 @@
-import { BrowserRouter as Router, Route, Routes, useLocation } from 'react-router-dom';
-import Sidebar from './Components/Sidebar';
-import Navbar from './Components/Navbar';
-import './App.css';
-import Inicio from './Pages/Inicio';
-import LoginEstudiantes from './pages/LoginEstudiantes';
-import PlanificacionDocente from './Pages/PlanificacionDocente'; // Importa el nuevo componente
-import ClasesPrueba from './Pages/ClasesPrueba';
+import {
+  BrowserRouter as Router,
+  Route,
+  Routes,
+  useLocation,
+} from "react-router-dom";
+import Sidebar from "./Components/Sidebar";
+import Navbar from "./Components/Navbar";
+import "./App.css";
+import Inicio from "./Pages/Inicio";
+import LoginEstudiantes from "./Pages/LoginEstudiantes";
+import PlanificacionDocente from "./Pages/PlanificacionDocente";
+import VistaCurso from "./Pages/VistaCurso";
+import Modal from "react-modal";
+import ClasesPrueba from "./Pages/ClasesPrueba";
+Modal.setAppElement("#root");
+
 function App() {
   return (
     <Router>
-      <div className="flex flex-col w-screen h-screen ">
-        <NavbarAndSidebar />
-        <div className="flex flex-grow font-title">
+      <div className="flex flex-col w-screen h-screen font-title">
+        <Layout>
           <Routes>
-            <Route
-              path="/Inicio"
-              element={
-                <>
-                  <Sidebar />
-                  <div className="flex-grow p-4">
-                    <ClasesPrueba />
-                  </div>
-                </>
-              }
-            />
-            <Route
-              path="/login"
-              element={
-                <div className="flex flex-grow p-4">
-                  <LoginEstudiantes />
-                </div>
-              }
-            />
+            <Route path="/Inicio" element={<ClasesPrueba />} />
+            <Route path="/login" element={<LoginEstudiantes />} />
             <Route
               path="/planificacion-docente"
-              element={
-                <>
-                  <Sidebar />
-                  <div className="flex-grow p-4">
-                    <PlanificacionDocente />
-                  </div>
-                </>
-              }
+              element={<PlanificacionDocente />}
             />
-            
+            <Route path="/Vista-Curso" element={<VistaCurso />} />
           </Routes>
-        </div>
+        </Layout>
       </div>
     </Router>
   );
 }
 
-function NavbarAndSidebar() {
+function Layout({ children }) {
   const location = useLocation();
-  const showNavbar = location.pathname === '/login'; 
+  const isLoginPage = location.pathname === "/login";
+  const isSidebarPage =
+    location.pathname === "/Inicio" ||
+    location.pathname === "/planificacion-docente" ||
+    location.pathname === "/Vista-Curso";
 
-  return <>{showNavbar && <Navbar />}</>;
+  return (
+    <div className="flex flex-grow">
+      {isSidebarPage && <Sidebar />}{" "}
+      {/* Mostrar Sidebar solo en Inicio y Planificación Docente */}
+      <div className={`flex-grow ${isSidebarPage ? "ml-64" : ""}`}>
+        {isLoginPage && <Navbar />} {/* Mostrar Navbar solo en Login */}
+        {children}
+      </div>
+    </div>
+  );
 }
 
 export default App;
