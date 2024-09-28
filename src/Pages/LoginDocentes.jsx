@@ -11,18 +11,53 @@ function LoginDocentes() {
   });
 
   const [showPassword, setShowPassword] = useState(false);
+  const [errors, setErrors] = useState({});
   const [captchaValue, setCaptchaValue] = useState(null);
   const navigate = useNavigate(); 
+  const [credentialError, setCredentialError] = useState(''); 
+
+  const validateForm = () => {
+    let newErrors = {};
+
+    if (!formState.email) {
+      newErrors.email = 'El correo electrónico es obligatorio.';
+    } else if (!/\S+@\S+\.\S+/.test(formState.email)) {
+      newErrors.email = 'El correo electrónico no es válido.';
+    }
+
+    if (!formState.password) {
+      newErrors.password = 'La contraseña es obligatoria.';
+    }
+
+    setErrors(newErrors);
+    return Object.keys(newErrors).length === 0;
+  };
+
   const handleInputChange = (e) => {
     const { name, value } = e.target;
     setFormState({
       ...formState,
-      [name]: value
+      [name]: value,
     });
+
+    // Limpia el error
+    if (errors[name]) {
+      setErrors({
+        ...errors,
+        [name]: '',
+      });
+    }
+
+    if (credentialError) {
+      setCredentialError('');
+    }
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    if (!validateForm()) {
+      return;
+    }
     if (!captchaValue) {
       alert('Por favor, completa el CAPTCHA.');
       return;
@@ -34,12 +69,11 @@ function LoginDocentes() {
       });
 
       console.log('Autenticación exitosa:', response.data);
-      
       localStorage.setItem('token', response.data.docente.token);
       navigate('/Inicio'); 
-
     } catch (error) {
       console.error('Error al iniciar sesión', error);
+      setCredentialError('Credenciales incorrectas.'); 
     }
     console.log('Form Submitted', formState);
   };
@@ -77,7 +111,7 @@ function LoginDocentes() {
       <form onSubmit={handleSubmit} className="w-full max-w-lg mx-auto">
           <h2 className="text-2xl font-Montserrat text-center font-bold mb-6">Inicio Sesión Docentes</h2>
 
-          <div className="mb-4">
+          <div className="mb-4 relative">
           <label 
              className="block text-white text-sm font-Montserrat font-bold mb-2"
           >
@@ -90,9 +124,14 @@ function LoginDocentes() {
               placeholder="Correo Electrónico"
               value={formState.email}
               onChange={handleInputChange}
-              required
               className="w-full px-2 py-2 text-black border border-gray-300 rounded-full focus:outline-none focus:ring-2 focus:ring-blue-500"
             />
+             {errors.email && (
+              <div className="absolute top-1/2 right-0 mt-1 w-64 bg-white text-red-500 p-2 rounded-md shadow-lg text-sm border border-red-500"> 
+                <span>{errors.email}</span>
+                <div className="absolute top-0 right-4 transform -translate-y-full border-8 border-transparent border-b-red-500"></div>
+              </div>
+            )}
           </div>
 
           <div className="mb-6 relative">
@@ -105,7 +144,6 @@ function LoginDocentes() {
               placeholder="Contraseña"
               value={formState.password}
               onChange={handleInputChange}
-              required
               className="w-full px-2 py-2 text-black border border-gray-300 rounded-full focus:outline-none focus:ring-2 focus:ring-blue-500 pr-10"
             />
             <button
@@ -114,12 +152,15 @@ function LoginDocentes() {
               onClick={() => setShowPassword(!showPassword)}
             >
               {showPassword ? (
-                <FaEyeSlash className="text-black" />
-              ) : (
-                <FaEye className="text-black" />
+                <FaEyeSlash className="text-black" /> ) : (<FaEye className="text-black" />
               )}
             </button>
-
+            {errors.password && (
+              <div className="absolute top-1/2 right-0 mt-1 w-64 bg-white text-red-500 p-2 rounded-md shadow-lg text-sm border border-red-500"> 
+                <span>{errors.password}</span>
+                <div className="absolute top-0 right-4 transform -translate-y-full border-8 border-transparent border-b-red-500"></div>
+              </div>
+            )}
             <div className="flex justify-end mt-2">
               <a href="#" className="text-white text-sm font-Montserrat font-bold underline">
                 ¿Olvidaste tu contraseña?
@@ -127,6 +168,12 @@ function LoginDocentes() {
             </div>
           </div>
 
+          {/* Mensaje de credenciales incorrectas */}
+          {credentialError && (
+            <div className="mb-4 w-full bg-white text-red-500 p-2 rounded-md text-sm border border-red-500 text-center">
+              {credentialError}
+            </div>
+          )}
           <div className="flex mb-6 justify-center">
             <ReCAPTCHA
               sitekey="6LeW-EIqAAAAAKzpUQfxGq7wtwr-37KO-bpSA8lJ"
