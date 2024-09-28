@@ -1,4 +1,5 @@
 
+
 import {
   BrowserRouter as Router,
   Route,
@@ -19,6 +20,10 @@ import { Route, Routes } from "react-router-dom";
 import "./App.css";
 import RegistroDocentes from "./Components/RegistroD/RegistroDocentes";
 import Home from "./Pages/Home";
+import { Route, Routes } from 'react-router-dom';
+import './App.css'
+import RegistroEstudiante from './Components/Registros/RegistroEstudiantes'
+import Home from './Pages/Home/Home';
 function App() {
   return (
     <Router>
@@ -36,6 +41,8 @@ function App() {
           path="/RegistroDocentes"
           element={<RegistroDocentes></RegistroDocentes>}
         />
+        <Route path='/RegistroEstudiante' element={<RegistroEstudiante></RegistroEstudiante>} />
+        <Route path='/' element={<Home></Home>} />
         <Route path="/" element={<Home></Home>} />
      
           </Routes>
@@ -43,6 +50,7 @@ function App() {
       </div>
     </Router>
   );
+
 }
 
 function Layout({ children }) {
