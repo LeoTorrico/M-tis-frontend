@@ -6,45 +6,84 @@ import { useNavigate } from 'react-router-dom';
 
 function LoginEstudiantes() {
   const [formState, setFormState] = useState({
-    codsis:'',
+    codsis: '',
     email: '',
-    password: ''
+    password: '',
   });
 
+  const [errors, setErrors] = useState({});
   const [showPassword, setShowPassword] = useState(false);
   const [captchaValue, setCaptchaValue] = useState(null);
+  const [credentialError, setCredentialError] = useState(''); 
   const navigate = useNavigate();
+
+  const validateForm = () => {
+    let newErrors = {};
+
+    if (!formState.codsis) {
+      newErrors.codsis = 'El Código SIS es obligatorio.';
+    }
+
+    if (!formState.email) {
+      newErrors.email = 'El correo electrónico es obligatorio.';
+    } else if (!/\S+@\S+\.\S+/.test(formState.email)) {
+      newErrors.email = 'El correo electrónico no es válido.';
+    }
+
+    if (!formState.password) {
+      newErrors.password = 'La contraseña es obligatoria.';
+    }
+
+    setErrors(newErrors);
+    return Object.keys(newErrors).length === 0;
+  };
+
   const handleInputChange = (e) => {
     const { name, value } = e.target;
     setFormState({
       ...formState,
-      [name]: value
+      [name]: value,
     });
+
+    // Limpia el error
+    if (errors[name]) {
+      setErrors({
+        ...errors,
+        [name]: '',
+      });
+    }
+
+    if (credentialError) {
+      setCredentialError('');
+    }
   };
 
-  const handleSubmit =async (e) =>{
+  const handleSubmit = async (e) => {
     e.preventDefault();
-  
+
+    if (!validateForm()) {
+      return;
+    }
+
     if (!captchaValue) {
       alert('Por favor, completa el CAPTCHA.');
       return;
     }
-  
+
     try {
       const response = await axios.post('http://localhost:3000/login/estudiante', {
         codigoSis: formState.codsis,
         password: formState.password,
-        correo: formState.email
+        correo: formState.email,
       });
-  
+
       console.log('Autenticación exitosa:', response.data);
       localStorage.setItem('token', response.data.estudiante.token);
-      navigate('/Inicio'); 
-
+      navigate('/Inicio');
     } catch (error) {
       console.error('Error al iniciar sesión', error);
+      setCredentialError('Credenciales incorrectas.'); 
     }
-    console.log('Form Submitted', formState);
   };
 
   const handleCaptchaChange = (value) => {
@@ -55,16 +94,16 @@ function LoginEstudiantes() {
     <div className="flex h-[calc(100vh-5rem)]">
       {/* Formulario a la izquierda */}
       <div className="flex-1 bg-white flex flex-col justify-center items-center p-12 mt-6">
-        <div className='flex flex-col w-2/3'>      
-        <h1 className="flex text-5xl font-bold mb-2 justify-center">Bienvenidos a</h1>
-        <img src="/LogoColor.svg" alt="Logo Color" className="w-full h-full" />
-        <p className="text-xl mb-2 text-center">MTIS es la plataforma de gestión de proyectos para organizar, colaborar y seguir el progreso en tiempo real. Inicia sesión y optimiza tus proyectos de manera eficiente y segura.</p>
+        <div className="flex flex-col w-2/3">
+          <h1 className="flex text-5xl font-bold mb-2 justify-center">Bienvenidos a</h1>
+          <img src="/LogoColor.svg" alt="Logo Color" className="w-full h-full" />
+          <p className="text-xl mb-2 text-center">MTIS es la plataforma de gestión de proyectos para organizar, colaborar y seguir el progreso en tiempo real. Inicia sesión y optimiza tus proyectos de manera eficiente y segura.</p>
 
-        <div className="flex justify-center mt-4">
-              <a href="#" className="text-black text-sm font-Montserrat font-bold underline">
-              ¿No tienes cuenta aun? Registrate ahora
-              </a>
-            </div>
+          <div className="flex justify-center mt-4">
+            <a href="#" className="text-black text-sm font-Montserrat font-bold underline">
+              ¿No tienes cuenta aún? Regístrate ahora
+            </a>
+          </div>
 
           <button
             type="submit"
@@ -72,61 +111,58 @@ function LoginEstudiantes() {
           >
             Registrarse
           </button>
-          </div>
+        </div>
       </div>
 
       {/* Contenido derecha */}
       <div className="flex-1 bg-sky-blue text-white flex flex-col justify-center p-12 rounded-tl-custom-sm rounded-bl-custom-md">
-      <form onSubmit={handleSubmit} className="w-full max-w-lg mx-auto">
+        <form onSubmit={handleSubmit} className="w-full max-w-lg mx-auto">
           <h2 className="text-2xl font-Montserrat text-center font-bold mb-6">Inicio Sesión Estudiantes</h2>
 
-          <div className="mb-4">
-          <label 
-             className="block text-white text-sm font-Montserrat font-bold mb-2"
-          >
-             Código SIS*
-          </label>
-
+          <div className="mb-4 relative">
+            <label className="block text-white text-sm font-Montserrat font-bold mb-2">Código SIS*</label>
             <input
               type="text"
               name="codsis"
-              placeholder="Codigo SIS"
+              placeholder="Código SIS"
               value={formState.codsis}
               onChange={handleInputChange}
-              required
               className="w-full px-2 py-2 text-black border border-gray-300 rounded-full focus:outline-none focus:ring-2 focus:ring-blue-500"
             />
+            {errors.codsis && (
+              <div className="absolute top-1/2 right-0 mt-1 w-64 bg-white text-red-500 p-2 rounded-md shadow-lg text-sm border border-red-500"> 
+                <span>{errors.codsis}</span>
+                <div className="absolute top-0 right-4 transform -translate-y-full border-8 border-transparent border-b-red-500"></div>
+              </div>
+            )}
           </div>
 
-          <div className="mb-4">
-          <label 
-             className="block text-white text-sm font-Montserrat font-bold mb-2"
-          >
-             Correo Electrónico*
-          </label>
-
+          <div className="mb-4 relative">
+            <label className="block text-white text-sm font-Montserrat font-bold mb-2">Correo Electrónico*</label>
             <input
               type="email"
               name="email"
               placeholder="Correo Electrónico"
               value={formState.email}
               onChange={handleInputChange}
-              required
               className="w-full px-2 py-2 text-black border border-gray-300 rounded-full focus:outline-none focus:ring-2 focus:ring-blue-500"
             />
+            {errors.email && (
+              <div className="absolute top-1/2 right-0 mt-1 w-64 bg-white text-red-500 p-2 rounded-md shadow-lg text-sm border border-red-500"> 
+                <span>{errors.email}</span>
+                <div className="absolute top-0 right-4 transform -translate-y-full border-8 border-transparent border-b-red-500"></div>
+              </div>
+            )}
           </div>
 
           <div className="mb-6 relative">
-            <label className="block text-white text-sm font-Montserrat font-bold mb-2">
-              Contraseña*
-            </label>
+            <label className="block text-white text-sm font-Montserrat font-bold mb-2">Contraseña*</label>
             <input
               type={showPassword ? 'text' : 'password'}
               name="password"
               placeholder="Contraseña"
               value={formState.password}
               onChange={handleInputChange}
-              required
               className="w-full px-2 py-2 text-black border border-gray-300 rounded-full focus:outline-none focus:ring-2 focus:ring-blue-500 pr-10"
             />
             <button
@@ -134,13 +170,14 @@ function LoginEstudiantes() {
               className="absolute inset-y-0 right-0 flex items-center pr-3"
               onClick={() => setShowPassword(!showPassword)}
             >
-              {showPassword ? (
-                <FaEyeSlash className="text-black" />
-              ) : (
-                <FaEye className="text-black" />
-              )}
+              {showPassword ? <FaEyeSlash className="text-black" /> : <FaEye className="text-black" />}
             </button>
-
+            {errors.password && (
+              <div className="absolute top-1/2 right-0 mt-1 w-64 bg-white text-red-500 p-2 rounded-md shadow-lg text-sm border border-red-500"> 
+                <span>{errors.password}</span>
+                <div className="absolute top-0 right-4 transform -translate-y-full border-8 border-transparent border-b-red-500"></div>
+              </div>
+            )}
             <div className="flex justify-end mt-2">
               <a href="#" className="text-white text-sm font-Montserrat font-bold underline">
                 ¿Olvidaste tu contraseña?
@@ -148,17 +185,18 @@ function LoginEstudiantes() {
             </div>
           </div>
 
+          {/* Mensaje de credenciales incorrectas */}
+          {credentialError && (
+            <div className="mb-4 w-full bg-white text-red-500 p-2 rounded-md text-sm border border-red-500 text-center">
+              {credentialError}
+            </div>
+          )}
+
           <div className="flex mb-6 justify-center">
-            <ReCAPTCHA
-              sitekey="6LeW-EIqAAAAAKzpUQfxGq7wtwr-37KO-bpSA8lJ"
-              onChange={handleCaptchaChange}
-            />
+            <ReCAPTCHA sitekey="6LeW-EIqAAAAAKzpUQfxGq7wtwr-37KO-bpSA8lJ" onChange={handleCaptchaChange} />
           </div>
 
-          <button
-            type="submit"
-            className="flex justify-center w-1/3 mx-auto bg-dark-blue text-white py-2 rounded-lg"
-          >
+          <button type="submit" className="flex justify-center w-1/3 mx-auto bg-dark-blue text-white py-2 rounded-lg">
             Iniciar Sesión
           </button>
         </form>
