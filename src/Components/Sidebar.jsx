@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom';
 
 const Sidebar = () => {
   return (
-    <div className="flex flex-col h-screen w-64 bg-dark-blue text-white font-title">
+    <div className="flex flex-col h-full w-64 bg-dark-blue text-white font-title fixed ">
       
       <div className="flex items-center justify-center py-4">
           <img src="/logoSidebar.svg" alt="Logo Blanco" className="w-22 h-20" />

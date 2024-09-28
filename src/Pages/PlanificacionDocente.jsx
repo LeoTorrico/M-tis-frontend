@@ -1,5 +1,6 @@
 import React from 'react'
 import TablaActividades from '../Components/TablaActividades';
+import GanttChart from '../Components/GanttChart';
 
 function PlanificacionDocente() {
     const actividades = [
@@ -29,6 +30,8 @@ function PlanificacionDocente() {
         </button>
       </div>
       <TablaActividades actividades={actividades} />
+      <h2 className="text-2xl font-semibold mb-6 mt-4">Cronograma</h2>
+      <GanttChart />
     </div>
   )
 }
