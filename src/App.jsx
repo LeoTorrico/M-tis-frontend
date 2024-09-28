@@ -12,6 +12,7 @@ import LoginEstudiantes from "./Pages/LoginEstudiantes";
 import PlanificacionDocente from "./Pages/PlanificacionDocente";
 import VistaCurso from "./Pages/VistaCurso";
 import Modal from "react-modal";
+import ClasesPrueba from "./Pages/ClasesPrueba";
 Modal.setAppElement("#root");
 
 function App() {
@@ -20,7 +21,7 @@ function App() {
       <div className="flex flex-col w-screen h-screen font-title">
         <Layout>
           <Routes>
-            <Route path="/Inicio" element={<Inicio />} />
+            <Route path="/Inicio" element={<ClasesPrueba />} />
             <Route path="/login" element={<LoginEstudiantes />} />
             <Route
               path="/planificacion-docente"
