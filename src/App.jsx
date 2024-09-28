@@ -1,3 +1,4 @@
+
 import {
   BrowserRouter as Router,
   Route,
@@ -14,7 +15,10 @@ import VistaCurso from "./Pages/VistaCurso";
 import Modal from "react-modal";
 import ClasesPrueba from "./Pages/ClasesPrueba";
 Modal.setAppElement("#root");
-
+import { Route, Routes } from "react-router-dom";
+import "./App.css";
+import RegistroDocentes from "./Components/RegistroD/RegistroDocentes";
+import Home from "./Pages/Home";
 function App() {
   return (
     <Router>
@@ -28,6 +32,12 @@ function App() {
               element={<PlanificacionDocente />}
             />
             <Route path="/Vista-Curso" element={<VistaCurso />} />
+             <Route
+          path="/RegistroDocentes"
+          element={<RegistroDocentes></RegistroDocentes>}
+        />
+        <Route path="/" element={<Home></Home>} />
+     
           </Routes>
         </Layout>
       </div>
@@ -54,5 +64,9 @@ function Layout({ children }) {
     </div>
   );
 }
+ 
 
 export default App;
+
+
+
