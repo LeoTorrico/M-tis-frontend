@@ -10,7 +10,6 @@ const curso = {
   nombre: "Taller de Ingeniería de Software",
   gestion: "II-2024",
 };
-
 const grupos = [
   { id: 1, nombre: "CodeCraft" },
   { id: 2, nombre: "ActionSoft" },
@@ -30,13 +29,17 @@ const VistaCurso = () => {
     nombreCorto: "",
     integrantes: [],
   });
-
+  const estudiantes = [
+    { codigo_sis: "202108211", nombre: "Michelle Barriga" },
+    { codigo_sis: "202108212", nombre: "Omar Mamani" },
+    { codigo_sis: "202108213", nombre: "Mauricio Vallejos" },
+  ];
   const integrantesPosibles = [
     "Michelle Barriga",
     "Omar Mamani",
     "Mauricio Vallejos",
   ];
-  const rolesPosibles = ["Líder", "Desarrollador", "Analista", "Tester"];
+  const rolesPosibles = ["lider", "Desarrollador", "Analista", "Tester"];
 
   const openModal = () => setModalIsOpen(true);
   const closeModal = () => setModalIsOpen(false);
@@ -133,7 +136,7 @@ const VistaCurso = () => {
         handleInputChange={handleInputChange}
         handleCheckboxChange={handleCheckboxChange}
         handleSubmit={handleSubmit}
-        integrantesPosibles={integrantesPosibles}
+        integrantesPosibles={estudiantes}
         rolesPosibles={rolesPosibles}
       />
     </div>

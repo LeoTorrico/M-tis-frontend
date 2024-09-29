@@ -116,18 +116,21 @@ const ModalRegistroGrupo = ({
                           <select className="p-2 border rounded-md">
                             <option>Seleccionar</option>
                             {integrantesPosibles.map((integrante, i) => (
-                              <option key={i} value={integrante}>
-                                {integrante}
+                              <option key={i} value={integrante.codigo_sis}>
+                                {integrante.nombre}
                               </option>
                             ))}
                           </select>
                         </td>
+
                         <td>
                           <select className="p-2 border rounded-md">
-                            <option>Rol</option>
-                            <option>Líder</option>
-                            <option>Desarrollador</option>
-                            <option>Tester</option>
+                            <option>Seleccionar</option>
+                            {rolesPosibles.map((rol, i) => (
+                              <option key={i} value={rol}>
+                                {rol}
+                              </option>
+                            ))}
                           </select>
                         </td>
                       </tr>
