@@ -83,40 +83,38 @@ function LoginDocentes() {
   };
 
   return (
-    <div className="flex h-[calc(100vh-5rem)]">
+    <div className="flex flex-col md:flex-row h-[calc(100vh-5rem)]">
       {/* Formulario a la izquierda */}
-      <div className="flex-1 bg-white flex flex-col justify-center items-center p-12 mt-6">
-        <div className='flex flex-col w-2/3'>      
-        <h1 className="flex text-5xl font-bold mb-2 justify-center">Bienvenidos a</h1>
-        <img src="/LogoColor.svg" alt="Logo Color" className="w-full h-full" />
-        <p className="text-xl mb-2 text-center">MTIS es la plataforma de gestión de proyectos para organizar, colaborar y seguir el progreso en tiempo real. Inicia sesión y optimiza tus proyectos de manera eficiente y segura.</p>
+      <div className="flex-1 bg-white flex flex-col justify-center items-center p-12 mt-6 md:mt-0">
+        <div className='flex flex-col w-full md:w-2/3'>
+          <h1 className="text-5xl font-bold mb-2 text-center">Bienvenidos a</h1>
+          <img src="/LogoColor.svg" alt="Logo Color" className="w-full h-auto" />
+          <p className="text-xl mb-2 text-center">MTIS es la plataforma de gestión de proyectos para organizar, colaborar y seguir el progreso en tiempo real. Inicia sesión y optimiza tus proyectos de manera eficiente y segura.</p>
 
-        <div className="flex justify-center mt-4">
-              <a href="#" className="text-black text-sm font-Montserrat font-bold underline">
-              ¿No tienes cuenta aun? Registrate ahora
-              </a>
-            </div>
+          <div className="flex justify-center mt-4">
+            <a href="#" className="text-black text-sm font-Montserrat font-bold underline">
+              ¿No tienes cuenta aun? Regístrate ahora
+            </a>
+          </div>
 
           <button
             type="submit"
-            className="flex justify-center w-1/3 mx-auto bg-dark-blue text-white py-2 rounded-lg mt-4"
+            className="flex justify-center w-full md:w-1/3 mx-auto bg-dark-blue text-white py-2 rounded-lg mt-4"
           >
             Registrarse
           </button>
-          </div>
+        </div>
       </div>
 
       {/* Contenido derecha */}
       <div className="flex-1 bg-sky-blue text-white flex flex-col justify-center p-12 rounded-tl-custom-sm rounded-bl-custom-md">
-      <form onSubmit={handleSubmit} className="w-full max-w-lg mx-auto">
+        <form onSubmit={handleSubmit} className="w-full max-w-lg mx-auto">
           <h2 className="text-2xl font-Montserrat text-center font-bold mb-6">Inicio Sesión Docentes</h2>
 
           <div className="mb-4 relative">
-          <label 
-             className="block text-white text-sm font-Montserrat font-bold mb-2"
-          >
-             Correo Electrónico*
-          </label>
+            <label className="block text-white text-sm font-Montserrat font-bold mb-2">
+              Correo Electrónico*
+            </label>
 
             <input
               type="email"
@@ -126,7 +124,7 @@ function LoginDocentes() {
               onChange={handleInputChange}
               className="w-full px-2 py-2 text-black border border-gray-300 rounded-full focus:outline-none focus:ring-2 focus:ring-blue-500"
             />
-             {errors.email && (
+            {errors.email && (
               <div className="absolute top-1/2 right-0 mt-1 w-64 bg-white text-red-500 p-2 rounded-md shadow-lg text-sm border border-red-500"> 
                 <span>{errors.email}</span>
                 <div className="absolute top-0 right-4 transform -translate-y-full border-8 border-transparent border-b-red-500"></div>
@@ -183,7 +181,7 @@ function LoginDocentes() {
 
           <button
             type="submit"
-            className="flex justify-center w-1/3 mx-auto bg-dark-blue text-white py-2 rounded-lg"
+            className="flex justify-center w-full md:w-1/3 mx-auto bg-dark-blue text-white py-2 rounded-lg"
           >
             Iniciar Sesión
           </button>
