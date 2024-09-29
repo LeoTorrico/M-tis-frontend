@@ -11,10 +11,18 @@ const ModalRegistroGrupo = ({
   handleSubmit,
   integrantesPosibles,
   rolesPosibles,
-  handleSelectChange,
+  handleIntegranteChange,
+  handleRolChange,
+  handleAddIntegrante,
 }) => {
-  // Crear 6 filas para los integrantes
-  const integrantes = Array.from({ length: 6 }, (_, i) => i + 1);
+  // Limit the number of integrantes to 6
+  const addIntegrante = () => {
+    if (groupData.integrantes.length < 6) {
+      handleAddIntegrante();
+    } else {
+      alert("Se ha alcanzado el límite máximo de 6 integrantes.");
+    }
+  };
 
   return (
     <Modal
@@ -83,61 +91,73 @@ const ModalRegistroGrupo = ({
                   name="nombreLargo"
                   value={groupData.nombreLargo}
                   onChange={handleInputChange}
-                  className="block w-full border border-gray-300 rounded-lg p-2 bg-light-blue"
+                  className="border rounded-lg w-full p-2"
+                  required
                 />
               </div>
               <div>
                 <label className="block font-semibold mb-2">
-                  Nombre corto*
+                  Nombre Corto*
                 </label>
                 <input
                   type="text"
                   name="nombreCorto"
                   value={groupData.nombreCorto}
                   onChange={handleInputChange}
-                  className="block w-full border border-gray-300 rounded-lg p-2 bg-light-blue"
+                  className="border rounded-lg w-full p-2"
+                  required
                 />
               </div>
-              <div className="overflow-y-auto max-h-64">
-                <table className="w-full text-left">
-                  <thead>
-                    <tr>
-                      <th>Integrante</th>
-                      <th>Seleccionar Estudiante</th>
-                      <th>Rol</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {/* Filas de integrantes */}
-                    {Array.from({ length: 6 }).map((_, index) => (
-                      <tr key={index}>
-                        <td>#{index + 1}</td>
-                        <td>
-                          <select className="p-2 border rounded-md">
-                            <option>Seleccionar</option>
-                            {integrantesPosibles.map((integrante, i) => (
-                              <option key={i} value={integrante.codigo_sis}>
-                                {integrante.nombre}
-                              </option>
-                            ))}
-                          </select>
-                        </td>
 
-                        <td>
-                          <select className="p-2 border rounded-md">
-                            <option>Seleccionar</option>
-                            {rolesPosibles.map((rol, i) => (
-                              <option key={i} value={rol}>
-                                {rol}
-                              </option>
-                            ))}
-                          </select>
-                        </td>
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
+              {/* Scrollable area for integrantes */}
+              <div className="max-h-[300px] overflow-y-auto">
+                {groupData.integrantes.map((integrante, index) => (
+                  <div key={index} className="flex items-center space-x-4 p-2">
+                    <select
+                      value={integrante.codigo_sis || ""}
+                      onChange={(e) =>
+                        handleIntegranteChange(index, e.target.value)
+                      }
+                      className="border rounded-lg w-1/2 p-2"
+                      required
+                    >
+                      <option value="" disabled>
+                        Seleccionar integrante
+                      </option>
+                      {integrantesPosibles.map((estudiante) => (
+                        <option
+                          key={estudiante.codigo_sis}
+                          value={estudiante.codigo_sis}
+                        >
+                          {estudiante.nombre}
+                        </option>
+                      ))}
+                    </select>
+                    <select
+                      value={integrante.rol || ""}
+                      onChange={(e) => handleRolChange(index, e.target.value)}
+                      className="border rounded-lg w-1/2 p-2"
+                      required
+                    >
+                      <option value="" disabled>
+                        Seleccionar rol
+                      </option>
+                      {rolesPosibles.map((rol) => (
+                        <option key={rol} value={rol}>
+                          {rol}
+                        </option>
+                      ))}
+                    </select>
+                  </div>
+                ))}
               </div>
+              <button
+                type="button"
+                onClick={addIntegrante}
+                className="mt-4 bg-blue-modal text-white px-4 py-2 rounded-lg hover:bg-semi-blue"
+              >
+                Agregar Integrante
+              </button>
             </div>
           </div>
         </form>
@@ -145,6 +165,7 @@ const ModalRegistroGrupo = ({
           <button
             type="button"
             onClick={closeModal}
+            form="grupoForm"
             className="bg-white text-black px-4 py-2 rounded-lg mr-4 hover:bg-red-500 hover:text-white"
           >
             Cancelar

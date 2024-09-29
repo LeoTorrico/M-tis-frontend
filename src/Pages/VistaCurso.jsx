@@ -29,35 +29,47 @@ const VistaCurso = () => {
     nombreCorto: "",
     integrantes: [],
   });
+
   const estudiantes = [
     { codigo_sis: "202108211", nombre: "Michelle Barriga" },
     { codigo_sis: "202108212", nombre: "Omar Mamani" },
     { codigo_sis: "202108213", nombre: "Mauricio Vallejos" },
   ];
-  const integrantesPosibles = [
-    "Michelle Barriga",
-    "Omar Mamani",
-    "Mauricio Vallejos",
-  ];
+
   const rolesPosibles = ["lider", "Desarrollador", "Analista", "Tester"];
 
   const openModal = () => setModalIsOpen(true);
   const closeModal = () => setModalIsOpen(false);
+
   const handleInputChange = (e) => {
     const { name, value } = e.target;
     setGroupData({ ...groupData, [name]: value });
   };
+
   const handleFileChange = (e) => {
     setGroupData({ ...groupData, logo: e.target.files[0] });
   };
-  const handleCheckboxChange = (integrante) => {
-    const newIntegrantes = groupData.integrantes.includes(integrante)
-      ? groupData.integrantes.filter((i) => i !== integrante)
-      : [...groupData.integrantes, integrante];
+
+  const handleIntegranteChange = (index, value) => {
+    const newIntegrantes = [...groupData.integrantes];
+    newIntegrantes[index] = { ...newIntegrantes[index], codigo_sis: value };
     setGroupData({ ...groupData, integrantes: newIntegrantes });
   };
+
+  const handleRolChange = (index, value) => {
+    const newIntegrantes = [...groupData.integrantes];
+    newIntegrantes[index] = { ...newIntegrantes[index], rol: value };
+    setGroupData({ ...groupData, integrantes: newIntegrantes });
+  };
+
+  const handleAddIntegrante = () => {
+    setGroupData({
+      ...groupData,
+      integrantes: [...groupData.integrantes, { codigo_sis: "", rol: "" }],
+    });
+  };
+
   const handleSubmit = async (e) => {
-    console.log("Submitting form...");
     e.preventDefault();
     setLoading(true);
 
@@ -65,11 +77,20 @@ const VistaCurso = () => {
     formData.append("logo", groupData.logo);
     formData.append("nombreLargo", groupData.nombreLargo);
     formData.append("nombreCorto", groupData.nombreCorto);
+    formData.append("cod_clase", "123"); // Cambia esto por el valor correcto
+    formData.append("cod_docente", "1"); // Cambia esto por el valor correcto
+
+    // Enviar los integrantes como un objeto JSON
     formData.append("integrantes", JSON.stringify(groupData.integrantes));
+
+    // Imprimir el contenido de formData en consola
+    for (let [key, value] of formData.entries()) {
+      console.log(key, value);
+    }
 
     try {
       const response = await axios.post(
-        "http://localhost:5000/api/grupos",
+        "http://localhost:3000/api/grupos/registrarGrupo",
         formData,
         {
           headers: {
@@ -80,7 +101,6 @@ const VistaCurso = () => {
 
       if (response.status === 201) {
         console.log("Grupo registrado exitosamente", response.data);
-        // Aquí podrías resetear el formulario y cerrar el modal
         setGroupData({
           logo: null,
           nombreLargo: "",
@@ -97,6 +117,7 @@ const VistaCurso = () => {
       setLoading(false);
     }
   };
+
   const renderContent = () => {
     switch (activeTab) {
       case "Tablon":
@@ -119,7 +140,7 @@ const VistaCurso = () => {
         {activeTab === "GruposEmpresas" && (
           <div className="flex justify-end">
             <button
-              className="bg-white text-dark-blue  px-4 py-2 rounded-lg border border-blue-800 flex items-center mt-6"
+              className="bg-white text-dark-blue px-4 py-2 rounded-lg border border-blue-800 flex items-center mt-6"
               onClick={openModal}
             >
               Registrar grupo empresa
@@ -134,7 +155,9 @@ const VistaCurso = () => {
         groupData={groupData}
         handleFileChange={handleFileChange}
         handleInputChange={handleInputChange}
-        handleCheckboxChange={handleCheckboxChange}
+        handleIntegranteChange={handleIntegranteChange}
+        handleRolChange={handleRolChange}
+        handleAddIntegrante={handleAddIntegrante}
         handleSubmit={handleSubmit}
         integrantesPosibles={estudiantes}
         rolesPosibles={rolesPosibles}
