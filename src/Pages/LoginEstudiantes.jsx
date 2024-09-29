@@ -91,12 +91,12 @@ function LoginEstudiantes() {
   };
 
   return (
-    <div className="flex h-[calc(100vh-5rem)]">
+    <div className="flex flex-col md:flex-row h-[calc(100vh-5rem)]">
       {/* Formulario a la izquierda */}
-      <div className="flex-1 bg-white flex flex-col justify-center items-center p-12 mt-6">
-        <div className="flex flex-col w-2/3">
-          <h1 className="flex text-5xl font-bold mb-2 justify-center">Bienvenidos a</h1>
-          <img src="/LogoColor.svg" alt="Logo Color" className="w-full h-full" />
+      <div className="flex-1 bg-white flex flex-col justify-center items-center p-12 mt-6 md:mt-0">
+        <div className="flex flex-col w-full md:w-2/3">
+          <h1 className="text-5xl font-bold mb-2 text-center">Bienvenidos a</h1>
+          <img src="/LogoColor.svg" alt="Logo Color" className="w-full h-auto" />
           <p className="text-xl mb-2 text-center">MTIS es la plataforma de gestión de proyectos para organizar, colaborar y seguir el progreso en tiempo real. Inicia sesión y optimiza tus proyectos de manera eficiente y segura.</p>
 
           <div className="flex justify-center mt-4">
@@ -107,7 +107,7 @@ function LoginEstudiantes() {
 
           <button
             type="submit"
-            className="flex justify-center w-1/3 mx-auto bg-dark-blue text-white py-2 rounded-lg mt-4"
+            className="flex justify-center w-full md:w-1/3 mx-auto bg-dark-blue text-white py-2 rounded-lg mt-4"
           >
             Registrarse
           </button>
@@ -196,7 +196,7 @@ function LoginEstudiantes() {
             <ReCAPTCHA sitekey="6LeW-EIqAAAAAKzpUQfxGq7wtwr-37KO-bpSA8lJ" onChange={handleCaptchaChange} />
           </div>
 
-          <button type="submit" className="flex justify-center w-1/3 mx-auto bg-dark-blue text-white py-2 rounded-lg">
+          <button type="submit" className="flex justify-center w-full md:w-1/3 mx-auto bg-dark-blue text-white py-2 rounded-lg">
             Iniciar Sesión
           </button>
         </form>
