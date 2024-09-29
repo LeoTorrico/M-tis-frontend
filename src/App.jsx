@@ -1,9 +1,4 @@
-import {
-  BrowserRouter as Router,
-  Route,
-  Routes,
-  useLocation,
-} from "react-router-dom";
+import { Route, Routes, useLocation } from "react-router-dom";
 import Sidebar from "./Components/Sidebar";
 import Navbar from "./Components/Navbar";
 import "./App.css";
@@ -24,7 +19,8 @@ function App() {
     <div className="flex flex-col w-screen h-screen font-title">
       <Layout>
         <Routes>
-          <Route path="/Inicio" element={<ClasesPrueba />} />
+          <Route path="/Inicio" element={<Inicio />} />{" "}
+          {/* Cambiado a Inicio */}
           <Route path="/login" element={<LoginEstudiantes />} />
           <Route
             path="/planificacion-docente"
@@ -34,6 +30,8 @@ function App() {
           <Route path="/RegistroDocentes" element={<RegistroDocentes />} />
           <Route path="/RegistroEstudiante" element={<RegistroEstudiante />} />
           <Route path="/" element={<Home />} />
+          <Route path="/ClasesPrueba" element={<ClasesPrueba />} />{" "}
+          {/* Agregando ClasesPrueba */}
         </Routes>
       </Layout>
     </div>
@@ -46,7 +44,8 @@ function Layout({ children }) {
   const isSidebarPage =
     location.pathname === "/Inicio" ||
     location.pathname === "/planificacion-docente" ||
-    location.pathname === "/Vista-Curso";
+    location.pathname === "/Vista-Curso" ||
+    location.pathname === "/ClasesPrueba"; // Agregar ClasesPrueba aquí si necesita sidebar
 
   return (
     <div className="flex flex-grow">
