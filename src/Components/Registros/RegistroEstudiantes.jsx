@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
-import logo from '../../assets/images/logoE.png';
-import logoGrande from '../../assets/images/logo-grandeE.png';
+import logo from '../../assets/images/logo.png';
+import logoGrande from '../../assets/images/logo-grande.png';
 import { FaEye, FaEyeSlash } from 'react-icons/fa';
 
 function RegistroEstudiante() {
