@@ -54,7 +54,22 @@ const VistaCurso = () => {
   };
 
   const handleFileChange = (e) => {
-    setGroupData({ ...groupData, logo: e.target.files[0] });
+    const file = e.target.files[0];
+    const reader = new FileReader();
+
+    reader.onloadend = () => {
+      // Guardar el archivo en base64 en el estado
+      const base64String = reader.result.replace(
+        /^data:image\/[a-z]+;base64,/,
+        ""
+      );
+      setGroupData({ ...groupData, logo: base64String });
+    };
+
+    // Verificar si el archivo fue seleccionado antes de intentar leerlo
+    if (file) {
+      reader.readAsDataURL(file);
+    }
   };
 
   const handleIntegranteChange = (index, value) => {
@@ -80,28 +95,22 @@ const VistaCurso = () => {
     e.preventDefault();
     setLoading(true);
 
-    const formData = new FormData();
-    formData.append("logo", groupData.logo);
-    formData.append("nombreLargo", groupData.nombreLargo);
-    formData.append("nombreCorto", groupData.nombreCorto);
-    formData.append("cod_clase", "123"); // Cambia esto por el valor correcto
-    formData.append("cod_docente", "1"); // Cambia esto por el valor correcto
-
-    // Enviar los integrantes como un objeto JSON
-    formData.append("integrantes", JSON.stringify(groupData.integrantes));
-
-    // Imprimir el contenido de formData en consola
-    for (let [key, value] of formData.entries()) {
-      console.log(key, value);
-    }
-
+    const groupDataToSend = {
+      logo: groupData.logo,
+      nombreLargo: groupData.nombreLargo,
+      nombreCorto: groupData.nombreCorto,
+      cod_clase: "123", // Cambia esto por el valor correcto
+      cod_docente: "1", // Cambia esto por el valor correcto
+      integrantes: groupData.integrantes,
+    };
+    console.log("Datos enviados al backend:", groupDataToSend);
     try {
       const response = await axios.post(
         "http://localhost:3000/api/grupos/registrarGrupo",
-        formData,
+        groupDataToSend,
         {
           headers: {
-            "Content-Type": "multipart/form-data",
+            "Content-Type": "application/json",
           },
         }
       );

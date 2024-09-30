@@ -54,7 +54,7 @@ const ModalRegistroGrupo = ({
             {groupData.logo ? (
               <div className="bg-light-blue w-64 h-64 rounded-lg flex items-center justify-center">
                 <img
-                  src={URL.createObjectURL(groupData.logo)}
+                  src={`data:image/jpeg;base64,${groupData.logo}`}
                   alt="Vista previa"
                   className="w-full h-full object-cover rounded-lg"
                 />
