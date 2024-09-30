@@ -5,7 +5,7 @@ import Tablon from "../Components/Tablon";
 import Alumnos from "../Components/Alumnos";
 import ModalRegistroGrupo from "../Components/ModalRegistroGrupo";
 import axios from "axios";
-import { RingLoader } from "react-spinners";
+import Swal from "sweetalert2";
 
 const curso = {
   nombre: "Taller de Ingeniería de Software",
@@ -125,6 +125,20 @@ const VistaCurso = () => {
           integrantes: [],
         });
         closeModal();
+        await Swal.fire({
+          title: "Éxito!",
+          text: "Grupo registrado correctamente.",
+          icon: "success",
+          iconColor: "#3684DB",
+          confirmButtonText: "Aceptar",
+          customClass: {
+            confirmButton:
+              "text-white bg-blue-modal hover:bg-semi-blue px-4 py-2 rounded",
+          },
+        });
+
+        // Recargar la página
+        window.location.reload();
       } else {
         console.error("Error al registrar el grupo");
       }

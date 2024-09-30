@@ -24,7 +24,7 @@ const GruposEmpresas = () => {
     <div className="p-2">
       {grupos.map((grupo) => (
         <div
-          key={grupo.nombre_corto} // Usa un identificador único como nombreCorto o nombreLargo
+          key={grupo.cod_grupoempresa} // Usa un identificador único como nombreCorto o nombreLargo
           className="bg-light-blue rounded-lg p-4 flex justify-between items-center mb-4"
         >
           <div className="flex items-center">
