@@ -282,9 +282,7 @@ function RegistroDocentes() {
             className="w-[350px] h-auto mt-110"
           />
           <p className="text-lg text-gray-800 mb-8">
-            Regístrate en MTIS y comienza a gestionar tus proyectos de forma
-            eficiente. Únete a una plataforma diseñada para facilitar la
-            colaboración y el seguimiento en tiempo real.
+            MTIS es una plataforma de gestionamiento de proyectos
           </p>
           <a href="/iniciar-sesion" className="text-black underline mb-6">
             <strong>¿Ya tienes cuenta? Inicia sesión ahora.</strong>
@@ -300,7 +298,7 @@ function RegistroDocentes() {
 
       {showModal && (
         <div className="fixed inset-0 flex items-center justify-center bg-gray-800 bg-opacity-75">
-          <div className="bg-white p-6 rounded-lg shadow-lg w-1/3 text-center">
+          <div className="bg-[#B3D6F9] p-6 rounded-lg shadow-lg">
             <h3 className="text-lg font-bold mb-4">Registro Exitoso</h3>
             <p className="mb-4">
               Tu registro se ha 1do exitosamente. Ahora puedes iniciar sesión.
@@ -317,27 +315,40 @@ function RegistroDocentes() {
         </div>
       )}
 
+      {/* Modal de Cancelación */}
       {showCancelModal && (
-        <div className="fixed inset-0 flex items-center justify-center bg-gray-800 bg-opacity-75">
-          <div className="bg-white p-6 rounded-lg shadow-lg w-1/3 text-center">
-            <h3 className="text-lg font-bold mb-4">Confirmar Cancelación</h3>
-            <p className="mb-4">
-              ¿Estás seguro de que deseas cancelar? Los datos ingresados se
-              perderán.
-            </p>
-            <div className="flex justify-around">
-              <button
-                onClick={() => handleCancelModalClose(true)}
-                className="p-3 bg-[#E74C3C] text-white rounded-lg transition-transform duration-200 hover:bg-[#c0392b] hover:-translate-y-1 hover:shadow-lg"
-              >
-                Sí, cancelar
-              </button>
-              <button
-                onClick={() => handleCancelModalClose(false)}
-                className="p-3 bg-[#2ECC71] text-white rounded-lg transition-transform duration-200 hover:bg-[#27ae60] hover:-translate-y-1 hover:shadow-lg"
-              >
-                No, continuar
-              </button>
+        <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
+          <div className="bg-[#fdfdfd] p-0 rounded-lg shadow-lg w-1/3">
+            {" "}
+            {/* Color de fondo del modal */}
+            <div className="bg-[#3684DB] p-4 rounded-t-lg">
+              {" "}
+              {/* Encabezado del modal */}
+              <h3 className="text-lg font-bold text-white text-center">
+                Confirmar Cancelación
+              </h3>
+            </div>
+            <div className="p-6">
+              {" "}
+              {/* Espacio interno del modal */}
+              <p className="mb-4">
+                ¿Estás seguro de que deseas cancelar? Los datos ingresados se
+                perderán.
+              </p>
+              <div className="flex justify-around">
+                <button
+                  onClick={() => handleCancelModalClose(true)}
+                  className="p-3 bg-[#031930] text-white rounded-lg transition-transform duration-200 hover:bg-red-600"
+                >
+                  Sí, cancelar
+                </button>
+                <button
+                  onClick={() => handleCancelModalClose(false)}
+                  className="p-3 bg-[#031930] text-white rounded-lg transition-transform duration-200 hover:bg-green-600"
+                >
+                  No, continuar
+                </button>
+              </div>
             </div>
           </div>
         </div>
