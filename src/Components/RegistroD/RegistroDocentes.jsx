@@ -5,7 +5,19 @@ import logo from "../../assets/images/logo.png";
 import logoGrande from "../../assets/images/logo-grande.png";
 import { FaEye, FaEyeSlash } from "react-icons/fa";
 
-function RegistroDocentes() {
+function RegistroDocentes({ EyeIcon, EyeSlashIcon }) {
+  const errorMessages = {
+    nombre:
+      "Nombre debe tener entre 3 y 60 caracteres y solo contener letras, espacios y apóstrofes.",
+    apellido:
+      "Apellido debe tener entre 3 y 80 caracteres y solo contener letras, espacios y apóstrofes.",
+    correo:
+      "El correo debe ser institucional y terminar en @umss.edu.bo o @fcyt.umss.edu.bo.",
+    contraseña:
+      "Contraseña debe tener entre 12 y 30 caracteres, y contener mayúsculas y minúsculas.",
+    api: "Error al registrar el docente",
+  };
+
   const [formData, setFormData] = useState({
     nombre: "",
     apellido: "",
@@ -26,11 +38,9 @@ function RegistroDocentes() {
     if (id === "apellido" && value.length > 80) {
       return;
     }
-
     if (id === "contraseña" && value.length > 30) {
       return;
     }
-
     setFormData({ ...formData, [id]: value });
   };
 
@@ -49,8 +59,7 @@ function RegistroDocentes() {
       formData.nombre.length > 60 ||
       /[^a-zA-Z\s']/.test(formData.nombre)
     ) {
-      newErrors.nombre =
-        "Nombre debe tener entre 3 y 60 caracteres y solo contener letras, espacios y apóstrofes.";
+      newErrors.nombre = errorMessages.nombre; // Usando mensaje dinámico
     }
     if (
       !formData.apellido ||
@@ -58,15 +67,13 @@ function RegistroDocentes() {
       formData.apellido.length > 80 ||
       /[^a-zA-Z\s']/.test(formData.apellido)
     ) {
-      newErrors.apellido =
-        "Apellido debe tener entre 3 y 80 caracteres y solo contener letras, espacios y apóstrofes.";
+      newErrors.apellido = errorMessages.apellido; // Usando mensaje dinámico
     }
     if (
       !formData.correo ||
       !/^[\w-.]+@(umss\.edu\.bo|fcyt\.umss\.edu\.bo)$/.test(formData.correo)
     ) {
-      newErrors.correo =
-        "El correo debe ser institucional y terminar en @umss.edu.bo o @fcyt.umss.edu.bo.";
+      newErrors.correo = errorMessages.correo; // Usando mensaje dinámico
     }
     if (
       !formData.contraseña ||
@@ -75,8 +82,7 @@ function RegistroDocentes() {
       !/[A-Z]/.test(formData.contraseña) ||
       !/[a-z]/.test(formData.contraseña)
     ) {
-      newErrors.contraseña =
-        "Contraseña debe tener entre 12 y 30 caracteres, y contener mayúsculas y minúsculas.";
+      newErrors.contraseña = errorMessages.contraseña; // Usando mensaje dinámico
     }
 
     setErrors(newErrors);
@@ -99,13 +105,12 @@ function RegistroDocentes() {
       } catch (error) {
         if (error.response && error.response.data) {
           setErrors({
-            api: error.response.data.detalle || "Error al registrar el docente",
+            api: error.response.data.detalle || errorMessages.api, // Usando mensaje dinámico
           });
         }
       }
     }
   };
-
   const handleModalClose = () => {
     setShowModal(false);
     navigate("/iniciar-sesion");
@@ -162,8 +167,8 @@ function RegistroDocentes() {
                 Nombre(s)*
               </label>
               <input
-                id="nombre"
                 type="text"
+                id="nombre"
                 value={formData.nombre}
                 onChange={handleChange}
                 placeholder="Ingrese su nombre(s)"
@@ -282,9 +287,7 @@ function RegistroDocentes() {
             className="w-[350px] h-auto mt-110"
           />
           <p className="text-lg text-gray-800 mb-8">
-            Regístrate en MTIS y comienza a gestionar tus proyectos de forma
-            eficiente. Únete a una plataforma diseñada para facilitar la
-            colaboración y el seguimiento en tiempo real.
+            MTIS es una plataforma de gestionamiento de proyectos
           </p>
           <a href="/iniciar-sesion" className="text-black underline mb-6">
             <strong>¿Ya tienes cuenta? Inicia sesión ahora.</strong>
@@ -300,7 +303,7 @@ function RegistroDocentes() {
 
       {showModal && (
         <div className="fixed inset-0 flex items-center justify-center bg-gray-800 bg-opacity-75">
-          <div className="bg-white p-6 rounded-lg shadow-lg w-1/3 text-center">
+          <div className="bg-[#B3D6F9] p-6 rounded-lg shadow-lg">
             <h3 className="text-lg font-bold mb-4">Registro Exitoso</h3>
             <p className="mb-4">
               Tu registro se ha 1do exitosamente. Ahora puedes iniciar sesión.
@@ -317,27 +320,40 @@ function RegistroDocentes() {
         </div>
       )}
 
+      {/* Modal de Cancelación */}
       {showCancelModal && (
-        <div className="fixed inset-0 flex items-center justify-center bg-gray-800 bg-opacity-75">
-          <div className="bg-white p-6 rounded-lg shadow-lg w-1/3 text-center">
-            <h3 className="text-lg font-bold mb-4">Confirmar Cancelación</h3>
-            <p className="mb-4">
-              ¿Estás seguro de que deseas cancelar? Los datos ingresados se
-              perderán.
-            </p>
-            <div className="flex justify-around">
-              <button
-                onClick={() => handleCancelModalClose(true)}
-                className="p-3 bg-[#E74C3C] text-white rounded-lg transition-transform duration-200 hover:bg-[#c0392b] hover:-translate-y-1 hover:shadow-lg"
-              >
-                Sí, cancelar
-              </button>
-              <button
-                onClick={() => handleCancelModalClose(false)}
-                className="p-3 bg-[#2ECC71] text-white rounded-lg transition-transform duration-200 hover:bg-[#27ae60] hover:-translate-y-1 hover:shadow-lg"
-              >
-                No, continuar
-              </button>
+        <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
+          <div className="bg-[#fdfdfd] p-0 rounded-lg shadow-lg w-1/3">
+            {" "}
+            {/* Color de fondo del modal */}
+            <div className="bg-[#3684DB] p-4 rounded-t-lg">
+              {" "}
+              {/* Encabezado del modal */}
+              <h3 className="text-lg font-bold text-white text-center">
+                Confirmar Cancelación
+              </h3>
+            </div>
+            <div className="p-6">
+              {" "}
+              {/* Espacio interno del modal */}
+              <p className="mb-4">
+                ¿Estás seguro de que deseas cancelar? Los datos ingresados se
+                perderán.
+              </p>
+              <div className="flex justify-around">
+                <button
+                  onClick={() => handleCancelModalClose(true)}
+                  className="p-3 bg-[#031930] text-white rounded-lg transition-transform duration-200 hover:bg-red-600"
+                >
+                  Sí, cancelar
+                </button>
+                <button
+                  onClick={() => handleCancelModalClose(false)}
+                  className="p-3 bg-[#031930] text-white rounded-lg transition-transform duration-200 hover:bg-green-600"
+                >
+                  No, continuar
+                </button>
+              </div>
             </div>
           </div>
         </div>
@@ -347,3 +363,5 @@ function RegistroDocentes() {
 }
 
 export default RegistroDocentes;
+
+        
