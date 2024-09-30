@@ -31,12 +31,19 @@ const VistaCurso = () => {
   });
 
   const estudiantes = [
-    { codigo_sis: "202108211", nombre: "Michelle Barriga" },
-    { codigo_sis: "202108212", nombre: "Omar Mamani" },
-    { codigo_sis: "202108213", nombre: "Mauricio Vallejos" },
+    { codigo_sis: "20211036", nombre: "Michelle Barriga" },
+    { codigo_sis: "20211037", nombre: "Omar Mamani" },
+    { codigo_sis: "20111037", nombre: "Mauricio Vallejos" },
   ];
 
-  const rolesPosibles = ["lider", "Desarrollador", "Analista", "Tester"];
+  const rolesPosibles = [
+    "Scrum master",
+    "Backend",
+    "Diseño",
+    "Frontend",
+    "Gestión de calidad",
+    "Documentación",
+  ];
 
   const openModal = () => setModalIsOpen(true);
   const closeModal = () => setModalIsOpen(false);

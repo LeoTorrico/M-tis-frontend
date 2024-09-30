@@ -31,7 +31,7 @@ const ModalRegistroGrupo = ({
       className="fixed inset-0 flex items-center justify-center"
       overlayClassName="fixed inset-0 bg-black bg-opacity-50"
     >
-      <div className="bg-blue-modal w-[1050px] h-[650px] rounded-lg flex flex-col font-title">
+      <div className="bg-blue-modal w-[1050px] h-[650px] rounded-xl flex flex-col font-title">
         <div className="relative">
           <h2 className="text-2xl font-semibold text-center text-white p-4">
             Registrar Grupo empresa
@@ -161,7 +161,7 @@ const ModalRegistroGrupo = ({
             </div>
           </div>
         </form>
-        <div className="bg-blue-modal flex justify-end p-4">
+        <div className="bg-blue-modal flex justify-end p-4 rounded-xl">
           <button
             type="button"
             onClick={closeModal}
