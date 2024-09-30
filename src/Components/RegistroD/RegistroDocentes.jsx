@@ -5,7 +5,19 @@ import logo from "../../assets/images/logo.png";
 import logoGrande from "../../assets/images/logo-grande.png";
 import { FaEye, FaEyeSlash } from "react-icons/fa";
 
-function RegistroDocentes() {
+function RegistroDocentes({ EyeIcon, EyeSlashIcon }) {
+  const errorMessages = {
+    nombre:
+      "Nombre debe tener entre 3 y 60 caracteres y solo contener letras, espacios y apóstrofes.",
+    apellido:
+      "Apellido debe tener entre 3 y 80 caracteres y solo contener letras, espacios y apóstrofes.",
+    correo:
+      "El correo debe ser institucional y terminar en @umss.edu.bo o @fcyt.umss.edu.bo.",
+    contraseña:
+      "Contraseña debe tener entre 12 y 30 caracteres, y contener mayúsculas y minúsculas.",
+    api: "Error al registrar el docente",
+  };
+
   const [formData, setFormData] = useState({
     nombre: "",
     apellido: "",
@@ -26,11 +38,9 @@ function RegistroDocentes() {
     if (id === "apellido" && value.length > 80) {
       return;
     }
-
     if (id === "contraseña" && value.length > 30) {
       return;
     }
-
     setFormData({ ...formData, [id]: value });
   };
 
@@ -49,8 +59,7 @@ function RegistroDocentes() {
       formData.nombre.length > 60 ||
       /[^a-zA-Z\s']/.test(formData.nombre)
     ) {
-      newErrors.nombre =
-        "Nombre debe tener entre 3 y 60 caracteres y solo contener letras, espacios y apóstrofes.";
+      newErrors.nombre = errorMessages.nombre; // Usando mensaje dinámico
     }
     if (
       !formData.apellido ||
@@ -58,15 +67,13 @@ function RegistroDocentes() {
       formData.apellido.length > 80 ||
       /[^a-zA-Z\s']/.test(formData.apellido)
     ) {
-      newErrors.apellido =
-        "Apellido debe tener entre 3 y 80 caracteres y solo contener letras, espacios y apóstrofes.";
+      newErrors.apellido = errorMessages.apellido; // Usando mensaje dinámico
     }
     if (
       !formData.correo ||
       !/^[\w-.]+@(umss\.edu\.bo|fcyt\.umss\.edu\.bo)$/.test(formData.correo)
     ) {
-      newErrors.correo =
-        "El correo debe ser institucional y terminar en @umss.edu.bo o @fcyt.umss.edu.bo.";
+      newErrors.correo = errorMessages.correo; // Usando mensaje dinámico
     }
     if (
       !formData.contraseña ||
@@ -75,8 +82,7 @@ function RegistroDocentes() {
       !/[A-Z]/.test(formData.contraseña) ||
       !/[a-z]/.test(formData.contraseña)
     ) {
-      newErrors.contraseña =
-        "Contraseña debe tener entre 12 y 30 caracteres, y contener mayúsculas y minúsculas.";
+      newErrors.contraseña = errorMessages.contraseña; // Usando mensaje dinámico
     }
 
     setErrors(newErrors);
@@ -99,13 +105,12 @@ function RegistroDocentes() {
       } catch (error) {
         if (error.response && error.response.data) {
           setErrors({
-            api: error.response.data.detalle || "Error al registrar el docente",
+            api: error.response.data.detalle || errorMessages.api, // Usando mensaje dinámico
           });
         }
       }
     }
   };
-
   const handleModalClose = () => {
     setShowModal(false);
     navigate("/iniciar-sesion");
@@ -162,8 +167,8 @@ function RegistroDocentes() {
                 Nombre(s)*
               </label>
               <input
-                id="nombre"
                 type="text"
+                id="nombre"
                 value={formData.nombre}
                 onChange={handleChange}
                 placeholder="Ingrese su nombre(s)"
@@ -358,3 +363,5 @@ function RegistroDocentes() {
 }
 
 export default RegistroDocentes;
+
+        
