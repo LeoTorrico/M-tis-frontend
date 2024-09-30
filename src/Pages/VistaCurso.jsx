@@ -5,6 +5,7 @@ import Tablon from "../Components/Tablon";
 import Alumnos from "../Components/Alumnos";
 import ModalRegistroGrupo from "../Components/ModalRegistroGrupo";
 import axios from "axios";
+import { RingLoader } from "react-spinners";
 
 const curso = {
   nombre: "Taller de Ingeniería de Software",
@@ -175,6 +176,7 @@ const VistaCurso = () => {
         handleRolChange={handleRolChange}
         handleAddIntegrante={handleAddIntegrante}
         handleSubmit={handleSubmit}
+        loading={loading} //
         integrantesPosibles={estudiantes}
         rolesPosibles={rolesPosibles}
       />
