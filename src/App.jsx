@@ -11,6 +11,10 @@ import ClasesPrueba from "./Pages/ClasesPrueba";
 import RegistroDocentes from "./Components/RegistroD/RegistroDocentes";
 import Home from "./Pages/Home";
 import RegistroEstudiante from "./Components/Registros/RegistroEstudiantes";
+import EnviarSolicitud from "./Pages/EnviarSolicitud";
+import RestablecerContrasenia from "./Pages/RestablecerContrasenia";
+import LoginEstudiantes from "./pages/LoginEstudiantes";
+import LoginDocentes from "./Pages/LoginDocentes";
 
 Modal.setAppElement("#root");
 
@@ -31,7 +35,13 @@ function App() {
           <Route path="/RegistroEstudiante" element={<RegistroEstudiante />} />
           <Route path="/" element={<Home />} />
           <Route path="/ClasesPrueba" element={<ClasesPrueba />} />{" "}
-          {/* Agregando ClasesPrueba */}
+          <Route path="/EnviarSolicitud" element={<EnviarSolicitud />} />
+          <Route
+            path="/reset-password/:token"
+            element={<RestablecerContrasenia />}
+          />
+          <Route path="/LoginEstudiantes" element={<LoginEstudiantes />} />
+          <Route path="/LoginDocentes" element={<LoginDocentes />} />
         </Routes>
       </Layout>
     </div>
@@ -40,17 +50,20 @@ function App() {
 
 function Layout({ children }) {
   const location = useLocation();
-  const isLoginPage = location.pathname === "/login";
+  const isLoginPage =
+    location.pathname === "/LoginEstudiantes" ||
+    location.pathname === "/LoginDocentes";
+
   const isSidebarPage =
     location.pathname === "/Inicio" ||
     location.pathname === "/planificacion-docente" ||
     location.pathname === "/Vista-Curso" ||
-    location.pathname === "/ClasesPrueba"; // Agregar ClasesPrueba aquí si necesita sidebar
+    location.pathname === "/ClasesPrueba"; 
 
   return (
     <div className="flex flex-grow">
       {isSidebarPage && <Sidebar />}
-      <div className={`flex-grow ${isSidebarPage ? "ml-64" : ""}`}>
+      <div className={flex-grow ${isSidebarPage ? "ml-64" : ""}}>
         {isLoginPage && <Navbar />}
         {children}
       </div>
