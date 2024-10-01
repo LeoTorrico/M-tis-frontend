@@ -93,20 +93,20 @@ function RegistroEstudiante() {
 
   const handleModalClose = () => {
     setShowModal(false);
-    navigate('/iniciar-sesion');
+    navigate('/LoginEstudiantes');
   };
 
   const handleCancel = () => {
     if (Object.values(formData).some(val => val !== '')) {
       setShowCancelModal(true);
     } else {
-      navigate('/iniciar-sesion');
+      navigate('/LoginEstudiantes');
     }
   };
 
   const handleCancelModalClose = (confirm) => {
     if (confirm) {
-      navigate('/iniciar-sesion');
+      navigate('/LoginEstudiantes');
     } else {
       setShowCancelModal(false);
     }
@@ -273,7 +273,7 @@ function RegistroEstudiante() {
             eficiente. Únete a una plataforma diseñada para facilitar la
             colaboración y el seguimiento en tiempo real.
           </p>
-          <a href="/iniciar-sesion" className="text-black underline mb-6">
+          <a className="text-black mb-6">
             <strong>¿Ya tienes cuenta? Inicia sesión ahora.</strong>
           </a>
           <button

@@ -113,20 +113,20 @@ function RegistroDocentes({ EyeIcon, EyeSlashIcon }) {
   };
   const handleModalClose = () => {
     setShowModal(false);
-    navigate("/iniciar-sesion");
+    navigate("/LoginDocentes");
   };
 
   const handleCancel = () => {
     if (Object.values(formData).some((val) => val !== "")) {
       setShowCancelModal(true);
     } else {
-      navigate("/iniciar-sesion");
+      navigate("/LoginDocentes");
     }
   };
 
   const handleCancelModalClose = (confirm) => {
     if (confirm) {
-      navigate("/iniciar-sesion");
+      navigate("/LoginDocentes");
     } else {
       setShowCancelModal(false);
     }
@@ -268,7 +268,7 @@ function RegistroDocentes({ EyeIcon, EyeSlashIcon }) {
           <p className="text-lg text-gray-800 mb-8">
             MTIS es una plataforma de gestionamiento de proyectos
           </p>
-          <a href="/iniciar-sesion" className="text-black underline mb-6">
+          <a className="text-black mb-6">
             <strong>¿Ya tienes cuenta? Inicia sesión ahora.</strong>
           </a>
           <button

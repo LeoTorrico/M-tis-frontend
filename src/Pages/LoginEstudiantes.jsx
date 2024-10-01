@@ -100,7 +100,7 @@ function LoginEstudiantes() {
           <p className="text-xl mb-2 text-center">MTIS es la plataforma de gestión de proyectos para organizar, colaborar y seguir el progreso en tiempo real. Inicia sesión y optimiza tus proyectos de manera eficiente y segura.</p>
 
           <div className="flex justify-center mt-4">
-            <a href="#" className="text-black text-sm font-Montserrat font-bold underline">
+            <a className="text-black text-sm font-Montserrat font-bold">
               ¿No tienes cuenta aún? Regístrate ahora
             </a>
           </div>
@@ -108,6 +108,7 @@ function LoginEstudiantes() {
           <button
             type="submit"
             className="flex justify-center w-full md:w-1/3 mx-auto bg-dark-blue text-white py-2 rounded-lg mt-4"
+            onClick={() => navigate('/RegistroEstudiante')}
           >
             Registrarse
           </button>
