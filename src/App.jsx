@@ -5,9 +5,9 @@ import './App.css';
 import Inicio from './Pages/Inicio';
 import LoginEstudiantes from './pages/LoginEstudiantes';
 import LoginDocentes from './Pages/LoginDocentes';
-import RestablecerContraseniaEstudiante from './Pages/RestablecerContraseniaEstudiante';
+import RestablecerContrasenia from './Pages/RestablecerContrasenia';
 import PlanificacionDocente from './pages/PlanificacionDocente';
-import EnviarSolicitudE from './Pages/EnviarSolicitudE';
+import EnviarSolicitud from './Pages/EnviarSolicitud';
 
 function App() {
   return (
@@ -20,8 +20,8 @@ function App() {
             <Route path="/LoginEstudiantes" element={<LoginEstudiantes />} />
             <Route path="/LoginDocentes" element={<LoginDocentes/>} />
             <Route path="/planificacion-docente" element={<PlanificacionDocente />} />
-            <Route path="/reset-password/:token" element={<RestablecerContraseniaEstudiante />} />
-            <Route path="/EnviarSolicitudE" element={<EnviarSolicitudE />} />
+            <Route path="/reset-password/:token" element={<RestablecerContrasenia />} />
+            <Route path="/EnviarSolicitud" element={<EnviarSolicitud />} />
           </Routes>
         </Layout>
       </div>

@@ -179,7 +179,7 @@ function LoginEstudiantes() {
               </div>
             )}
             <div className="flex justify-end mt-2">
-              <a href="/EnviarSolicitudE" className="text-white text-sm font-Montserrat font-bold underline">
+              <a href="/EnviarSolicitud" className="text-white text-sm font-Montserrat font-bold underline">
                 ¿Olvidaste tu contraseña?
               </a>
             </div>

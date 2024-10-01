@@ -2,9 +2,9 @@ import React, { useState } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom'; // Importar el hook useNavigate
 
-function EnviarSolicitudE() {
+function EnviarSolicitud() {
   const [email, setEmail] = useState('');
-  const [codigoSis, setCodigoSis] = useState(''); 
+  const [rol, setRol] = useState('Estudiante'); // Estado para el rol
   const [error, setError] = useState('');
   const [isModalOpen, setIsModalOpen] = useState(false); // Estado para controlar el modal
   const navigate = useNavigate(); 
@@ -15,7 +15,7 @@ function EnviarSolicitudE() {
     try {
       const response = await axios.post('http://localhost:3000/email/enviar-correo-restablecer', { 
         correo: email,  
-        rol: 'Estudiante'       
+        rol       // Enviar el rol seleccionado al backend
       });
 
       // Mostrar el modal con el mensaje de éxito
@@ -47,17 +47,33 @@ function EnviarSolicitudE() {
             className="border rounded w-full py-2 px-3 text-gray-700"
           />
         </div>
+
         <div className="mb-4">
-          <label htmlFor="codigoSis" className="block text-gray-700">Código SIS</label>
-          <input
-            type="text"
-            id="codigoSis"
-            value={codigoSis}
-            onChange={(e) => setCodigoSis(e.target.value)}
-            required
-            className="border rounded w-full py-2 px-3 text-gray-700"
-          />
+          <label className="block text-gray-700">Selecciona tu rol</label>
+          <div className="flex items-center">
+            <input
+              type="radio"
+              id="estudiante"
+              name="rol"
+              value="Estudiante"
+              checked={rol === 'Estudiante'}
+              onChange={(e) => setRol(e.target.value)}
+              className="mr-2"
+            />
+            <label htmlFor="estudiante" className="mr-4">Estudiante</label>
+            <input
+              type="radio"
+              id="docente"
+              name="rol"
+              value="Docente"
+              checked={rol === 'Docente'}
+              onChange={(e) => setRol(e.target.value)}
+              className="mr-2"
+            />
+            <label htmlFor="docente">Docente</label>
+          </div>
         </div>
+
         <button type="submit" className="bg-blue-500 text-white py-2 px-4 rounded">Enviar Correo</button>
       </form>
       {error && <p className="text-red-500 mt-4">{error}</p>}
@@ -76,4 +92,4 @@ function EnviarSolicitudE() {
   );
 }
 
-export default EnviarSolicitudE;
+export default EnviarSolicitud;
