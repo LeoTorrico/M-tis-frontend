@@ -13,7 +13,7 @@ const GanttChart = () => {
   return (
     <div className="w-full overflow-x-auto">
       <table className="min-w-full table-fixed border-collapse border border-gray-200">
-        <thead>
+        <thead>                                                       
           <tr>
             <th className="w-1/4 border border-gray-200 px-4 py-2">Actividad</th>
             {fechas.map(fecha => (
