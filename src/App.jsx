@@ -20,7 +20,7 @@ function App() {
             <Route path="/LoginEstudiantes" element={<LoginEstudiantes />} />
             <Route path="/LoginDocentes" element={<LoginDocentes/>} />
             <Route path="/planificacion-docente" element={<PlanificacionDocente />} />
-            <Route path="/RestablecerContraseñaEstudiante" element={<RestablecerContraseniaEstudiante />} />
+            <Route path="/reset-password/:token" element={<RestablecerContraseniaEstudiante />} />
             <Route path="/EnviarSolicitudE" element={<EnviarSolicitudE />} />
           </Routes>
         </Layout>

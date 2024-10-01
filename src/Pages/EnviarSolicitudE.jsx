@@ -1,27 +1,35 @@
 import React, { useState } from 'react';
 import axios from 'axios';
+import { useNavigate } from 'react-router-dom'; // Importar el hook useNavigate
 
 function EnviarSolicitudE() {
   const [email, setEmail] = useState('');
-  const [codigoSis, setCodigoSis] = useState(''); // Estado para el código SIS
-  const [message, setMessage] = useState('');
+  const [codigoSis, setCodigoSis] = useState(''); 
   const [error, setError] = useState('');
+  const [isModalOpen, setIsModalOpen] = useState(false); // Estado para controlar el modal
+  const navigate = useNavigate(); 
 
   const handleSubmit = async (e) => {
     e.preventDefault();
 
     try {
-      // Enviar tanto el correo como el código SIS al backend
       const response = await axios.post('http://localhost:3000/email/enviar-correo-restablecer', { 
-        correo: email,  // Enviar el correo electrónico
-        codigoSis       // Enviar el código SIS
+        correo: email,  
+        codigoSis       
       });
-      setMessage(response.data.message); // Manejar el mensaje de éxito
+
+      // Mostrar el modal con el mensaje de éxito
+      setIsModalOpen(true); 
       setError('');
+
     } catch (err) {
       setError('Error al enviar el correo de restablecimiento.');
-      setMessage('');
     }
+  };
+
+  const handleModalClose = () => {
+    setIsModalOpen(false); // Cerrar el modal
+    navigate('/LoginEstudiantes'); // Redirigir al Login Estudiantes
   };
 
   return (
@@ -52,8 +60,18 @@ function EnviarSolicitudE() {
         </div>
         <button type="submit" className="bg-blue-500 text-white py-2 px-4 rounded">Enviar Correo</button>
       </form>
-      {message && <p className="text-green-500 mt-4">{message}</p>}
       {error && <p className="text-red-500 mt-4">{error}</p>}
+
+      {/* Modal para mostrar el mensaje de éxito */}
+      {isModalOpen && (
+        <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
+          <div className="bg-white p-6 rounded shadow-md w-80">
+            <h2 className="text-lg font-bold mb-4">Éxito</h2>
+            <p>Correo enviado exitosamente. Revise su bandeja de GMAIL.</p>
+            <button onClick={handleModalClose} className="mt-4 bg-blue-500 text-white py-2 px-4 rounded">Aceptar</button>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
