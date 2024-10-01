@@ -15,7 +15,7 @@ function EnviarSolicitudE() {
     try {
       const response = await axios.post('http://localhost:3000/email/enviar-correo-restablecer', { 
         correo: email,  
-        codigoSis       
+        rol: 'Estudiante'       
       });
 
       // Mostrar el modal con el mensaje de éxito

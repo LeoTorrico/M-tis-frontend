@@ -4,7 +4,7 @@ import axios from 'axios';
 
 function RestablecerContraseniaEstudiante() {
   const { token } = useParams(); // Captura el token desde la URL
-  const [nuevaContrasena, setNuevaContrasena] = useState('');
+  const [newPassword, setNuevaContrasena] = useState('');
   const [confirmarContrasena, setConfirmarContrasena] = useState('');
   const [mensaje, setMensaje] = useState('');
   const [error, setError] = useState('');
@@ -12,16 +12,16 @@ function RestablecerContraseniaEstudiante() {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    if (nuevaContrasena !== confirmarContrasena) {
+    if (newPassword !== confirmarContrasena) {
       setError('Las contraseñas no coinciden.');
       setMensaje('');
       return;
     }
 
     try {
-      const response = await axios.post('http://localhost:3000/estudiantes/cambiar-password', {
+      const response = await axios.post('http://localhost:3000/password/reset-password', {
         token,
-        nuevaContrasena,
+        newPassword,
       });
       setMensaje(response.data.message);
       setError('');
@@ -40,7 +40,7 @@ function RestablecerContraseniaEstudiante() {
           <input
             type="password"
             id="nuevaContrasena"
-            value={nuevaContrasena}
+            value={newPassword}
             onChange={(e) => setNuevaContrasena(e.target.value)}
             required
             className="border rounded w-full py-2 px-3 text-gray-700"
