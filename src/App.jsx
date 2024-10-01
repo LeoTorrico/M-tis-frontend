@@ -51,7 +51,9 @@ function Layout({ children }) {
   const location = useLocation();
   const isLoginPage =
     location.pathname === "/LoginEstudiantes" ||
-    location.pathname === "/LoginDocentes";
+    location.pathname === "/LoginDocentes" ||
+    location.pathname === "/RegistroDocentes" ||
+    location.pathname === "/RegistroEstudiante";
 
   const isSidebarPage =
     location.pathname === "/Inicio" ||

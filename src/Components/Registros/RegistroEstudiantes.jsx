@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
-import logo from '../../assets/images/logo.png';
+//import logo from '../../assets/images/logo.png';
 import logoGrande from '../../assets/images/logo-grande.png';
 import { FaEye, FaEyeSlash } from 'react-icons/fa';
 
@@ -114,28 +114,7 @@ function RegistroEstudiante() {
 
   return (
     <div className="h-screen overflow-hidden">
-      <header className="flex justify-between items-center p-4 bg-[#00204A] text-white shadow-lg">
-        <div className="logo">
-          <img src={logo} alt="Logo MTIS" className="h-12" />
-        </div>
-        <nav className="flex gap-6">
-          <a
-            href="#estudiantes"
-            className="text-white text-lg font-bold hover:text-[#A9CCE3]"
-            aria-label="Sección Estudiantes"
-          >
-            Estudiantes
-          </a>
-          <a
-            href="#docentes"
-            className="text-white text-lg font-bold hover:text-[#A9CCE3]"
-            aria-label="Sección Docentes"
-          >
-            Docentes
-          </a>
-        </nav>
-      </header>
-
+     
       <div className="flex h-full">
         <div className="flex flex-col justify-start p-12 w-[48%] bg-[#3684DB] text-white rounded-r-[250px]">
           <h2 className="text-2xl mb-6 font-bold text-center">
