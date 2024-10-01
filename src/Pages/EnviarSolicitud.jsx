@@ -1,12 +1,11 @@
 import React, { useState } from 'react';
 import axios from 'axios';
-import { useNavigate } from 'react-router-dom'; 
 
 function EnviarSolicitud() {
   const [email, setEmail] = useState('');
   const [rol, setRol] = useState('Estudiante'); 
   const [error, setError] = useState('');
-  const navigate = useNavigate(); 
+  const [mensajeExitoso, setMensajeExitoso] = useState('');
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -17,16 +16,12 @@ function EnviarSolicitud() {
         rol       
       });
 
-      setError('');
-
+      setError(''); 
+      setMensajeExitoso('Correo enviado exitosamente. Revisa tu bandeja de entrada.'); 
     } catch (err) {
       setError('Error al enviar el correo de restablecimiento.');
+      setMensajeExitoso(''); 
     }
-  };
-
-  const handleModalClose = () => {
-    setIsModalOpen(false); 
-    navigate('/LoginEstudiantes'); 
   };
 
   return (
@@ -84,7 +79,9 @@ function EnviarSolicitud() {
           <div className="flex justify-center mt-4">
             <button type="submit" className="bg-sky-blue text-white text-sm font-Montserrat font-bold py-2 px-4 rounded">Enviar Correo</button>
           </div>
+
           {error && <p className="text-red-500 mt-4 text-center">{error}</p>}
+          {mensajeExitoso && <p className="text-green-500 mt-4 text-center font-Montserrat font-medium">{mensajeExitoso}</p>}
 
         </form>
       </div>
