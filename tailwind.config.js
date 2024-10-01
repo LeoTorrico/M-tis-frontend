@@ -30,6 +30,10 @@ export default {
         'custom-md': '180px',
         'custom-lg': '240px',
         'custom-xl': '32px',
+      },
+
+      boxShadow: {
+        'custom': '0 4px 10px rgba(0, 0, 0, 0.5)', 
       }
     },
   },

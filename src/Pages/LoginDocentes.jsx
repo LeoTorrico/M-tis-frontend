@@ -201,13 +201,12 @@ function LoginDocentes() {
               </div>
             )}
             <div className="flex justify-end mt-2">
-              <a href="#" onClick={handleForgotPassword} className="text-white text-sm font-Montserrat font-bold underline">
+              <a href="EnviarSolicitud" onClick={handleForgotPassword} className="text-white text-sm font-Montserrat font-bold underline">
                 ¿Olvidaste tu contraseña?
               </a>
             </div>
           </div>
 
-          {/* Mensaje de credenciales incorrectas */}
           {credentialError && (
             <div className="mb-4 w-full bg-white text-red-500 p-2 rounded-md text-sm border border-red-500 text-center">
               {credentialError}
