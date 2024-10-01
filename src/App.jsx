@@ -3,7 +3,7 @@ import Sidebar from "./Components/Sidebar";
 import Navbar from "./Components/Navbar";
 import "./App.css";
 import Inicio from "./Pages/Inicio";
-import LoginEstudiantes from "./Pages/LoginEstudiantes";
+import LoginEstudiantes from "./pages/LoginEstudiantes";
 import PlanificacionDocente from "./Pages/PlanificacionDocente";
 import VistaCurso from "./Pages/VistaCurso";
 import Modal from "react-modal";
@@ -13,7 +13,6 @@ import Home from "./Pages/Home";
 import RegistroEstudiante from "./Components/Registros/RegistroEstudiantes";
 import EnviarSolicitud from "./Pages/EnviarSolicitud";
 import RestablecerContrasenia from "./Pages/RestablecerContrasenia";
-import LoginEstudiantes from "./pages/LoginEstudiantes";
 import LoginDocentes from "./Pages/LoginDocentes";
 
 Modal.setAppElement("#root");
@@ -61,9 +60,9 @@ function Layout({ children }) {
     location.pathname === "/ClasesPrueba"; 
 
   return (
-    <div className="flex flex-grow">
+<div className="flex flex-grow">
       {isSidebarPage && <Sidebar />}
-      <div className={flex-grow ${isSidebarPage ? "ml-64" : ""}}>
+      <div className={`flex-grow ${isSidebarPage ? "ml-64" : ""}`}>
         {isLoginPage && <Navbar />}
         {children}
       </div>
