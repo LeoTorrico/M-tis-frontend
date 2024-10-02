@@ -1,8 +1,6 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
-//import logo from "../../assets/images/logo.png";
-import logoGrande from "../../assets/images/logo-grande.png";
 import { FaEye, FaEyeSlash } from "react-icons/fa";
 import { motion } from "framer-motion";
 function RegistroDocentes({ EyeIcon, EyeSlashIcon }) {
@@ -266,10 +264,11 @@ function RegistroDocentes({ EyeIcon, EyeSlashIcon }) {
               <strong>Bienvenidos de</strong> <br />
               <strong>nuevo a</strong> <br />
             </h2>
+
             <img
-              src={logoGrande}
-              alt="Logo Grande"
-              className="w-[350px] h-auto mt-110"
+              src="/LogoColor.svg"
+              alt="Logo Color"
+              className="w-[450px] h-auto mt-110"
             />
             <p className="text-lg text-gray-800 mb-8">
               MTIS es una plataforma de gestionamiento de proyectos

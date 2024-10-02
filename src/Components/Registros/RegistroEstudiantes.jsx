@@ -305,9 +305,9 @@ function RegistroEstudiante() {
               <strong>nuevo a</strong> <br />
             </h2>
             <img
-              src={logoGrande}
-              alt="Logo Grande"
-              className="w-[350px] h-auto mt-110"
+              src="/LogoColor.svg"
+              alt="Logo Color"
+              className="w-[450px] h-auto mt-110"
             />
             <p className="text-lg text-gray-800 mb-8">
               Regístrate en MTIS y comienza a gestionar tus proyectos de forma
