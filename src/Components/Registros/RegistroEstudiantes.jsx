@@ -1,8 +1,6 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
-//import logo from '../../assets/images/logo.png';
-import logoGrande from '../../assets/images/logo-grande.png';
 import { FaEye, FaEyeSlash } from 'react-icons/fa';
 
 function RegistroEstudiante() {
@@ -114,7 +112,6 @@ function RegistroEstudiante() {
 
   return (
     <div className="h-screen overflow-hidden">
-     
       <div className="flex h-full">
         <div className="flex flex-col justify-start p-12 w-[48%] bg-[#3684DB] text-white rounded-r-[250px]">
           <h2 className="text-2xl mb-6 font-bold text-center">
@@ -264,9 +261,9 @@ function RegistroEstudiante() {
             <strong>nuevo a</strong> <br />
           </h2>
           <img
-            src={logoGrande}
-            alt="Logo Grande"
-            className="w-[350px] h-auto mt-110"
+            src="/LogoColor.svg"
+            alt="Logo Color"
+            className="w-[450px] h-auto mt-110"
           />
           <p className="text-lg text-gray-800 mb-8">
             Regístrate en MTIS y comienza a gestionar tus proyectos de forma
