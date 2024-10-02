@@ -247,7 +247,7 @@ function RegistroDocentes({ EyeIcon, EyeSlashIcon }) {
             <div className="flex flex-col items-center">
               <button
                 type="submit"
-                className="p-3 bg-[#00204A] text-white rounded-lg text-base w-1/3 mt-70 transition-transform duration-200 hover:bg-[#001737] hover:-translate-y-1 hover:shadow-lg"
+                className="p-3 bg-[#00204A] text-white rounded-lg text-base w-1/3 mt-70 transition-transform duration-200 :bg-[#001737]"
               >
                 Registrarse
               </button>
@@ -273,7 +273,7 @@ function RegistroDocentes({ EyeIcon, EyeSlashIcon }) {
           </a>
           <button
             onClick={handleCancel}
-            className="p-3 bg-[#3684DB] text-white rounded-lg text-lg w-1/3 transition-transform duration-200 hover:bg-[#2a6ab1] hover:-translate-y-1 hover:shadow-lg"
+            className="p-3 bg-[#3684DB] text-white rounded-lg text-lg w-1/3 transition-transform duration-200 "
           >
             Iniciar Sesión
           </button>
@@ -290,7 +290,7 @@ function RegistroDocentes({ EyeIcon, EyeSlashIcon }) {
             <div className="flex justify-end mt-4">
               <button
                 onClick={handleModalClose}
-                className="p-3 bg-[#00204A] text-white rounded-lg transition-transform duration-200 hover:bg-[#001737] hover:-translate-y-1 hover:shadow-lg"
+                className="p-3 bg-[#00204A] text-white rounded-lg transition-transform duration-200"
               >
                 Aceptar
               </button>
@@ -322,13 +322,13 @@ function RegistroDocentes({ EyeIcon, EyeSlashIcon }) {
               <div className="flex justify-around">
                 <button
                   onClick={() => handleCancelModalClose(true)}
-                  className="p-3 bg-[#031930] text-white rounded-lg transition-transform duration-200 hover:bg-red-600"
+                  className="p-3 bg-[#031930] text-white rounded-lg transition-transform duration-200"
                 >
                   Sí, cancelar
                 </button>
                 <button
                   onClick={() => handleCancelModalClose(false)}
-                  className="p-3 bg-[#031930] text-white rounded-lg transition-transform duration-200 hover:bg-green-600"
+                  className="p-3 bg-[#031930] text-white rounded-lg transition-transform duration-200"
                 >
                   No, continuar
                 </button>
