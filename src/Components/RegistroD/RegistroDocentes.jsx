@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import { FaEye, FaEyeSlash } from "react-icons/fa";
 import { motion } from "framer-motion";
-function RegistroDocentes({ EyeIcon, EyeSlashIcon }) {
+function RegistroDocentes() {
   const errorMessages = {
     nombre:
       "Nombre debe tener entre 3 y 60 caracteres y solo contener letras, espacios y apóstrofes.",
@@ -232,7 +232,11 @@ function RegistroDocentes({ EyeIcon, EyeSlashIcon }) {
                   onClick={togglePasswordVisibility}
                   className="absolute right-20 top-11 text-gray-500"
                 >
-                  {showPassword ? <FaEyeSlash /> : <FaEye />}
+                  {showPassword ? (
+                    <FaEyeSlash className="text-black" />
+                  ) : (
+                    <FaEye className="text-black" />
+                  )}
                 </button>
                 {errors.contraseña && (
                   <div className="absolute left-1/2 transform -translate-y-1/2 mt-1 bg-white text-red-500 border border-red-500 p-2 rounded-lg shadow-md">
