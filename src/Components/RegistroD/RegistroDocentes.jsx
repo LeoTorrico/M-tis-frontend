@@ -138,10 +138,10 @@ function RegistroDocentes() {
       exit={{ opacity: 0, x: -100 }} // Animación de salida
       transition={{ duration: 0.5 }} // Duración de la animación
     >
-      <div className="h-screen overflow-hidden">
-        <div className="flex h-full">
-          <div className="flex flex-col justify-start p-12 w-[48%] bg-[#3684DB] text-white rounded-r-[250px]">
-            <h2 className="text-2xl mb-6 font-bold text-center">
+      <div className="min-h-screen overflow-hidden">
+        <div className="flex flex-col md:flex-row h-full">
+          <div className="flex flex-col justify-start p-6 md:p-14 w-full md:w-1/2 bg-[#3684DB] text-white rounded-none md:rounded-r-[250px] md:rounded-b-none">
+            <h2 className="text-xl md:text-2xl mb-4 md:mb-6 font-bold text-center">
               Registro Docentes
             </h2>
             <form onSubmit={handleSubmit}>
@@ -156,7 +156,7 @@ function RegistroDocentes() {
                   onChange={handleChange}
                   placeholder="Ingrese su nombre(s)"
                   required
-                  className="w-[90%] py-2 px-3 border-none rounded-full text-base text-black bg-white shadow-md"
+                  className="w-full md:w-[90%] py-2 px-3 border-none rounded-full text-base text-black bg-white shadow-md"
                 />
                 {errors.nombre && (
                   <div className="absolute left-1/2 transform -translate-y-1/2 mt-1 bg-white text-red-500 border border-red-500 p-2 rounded-lg shadow-md">
@@ -179,7 +179,7 @@ function RegistroDocentes() {
                   onChange={handleChange}
                   placeholder="Ingrese sus apellidos"
                   required
-                  className="w-[90%] py-2 px-3 border-none rounded-full text-base text-black bg-white shadow-md"
+                  className="w-full md:w-[90%] py-2 px-3 border-none rounded-full text-base text-black bg-white shadow-md"
                 />
                 {errors.apellido && (
                   <div className="absolute left-1/2 transform -translate-y-1/2 mt-1 bg-white text-red-500 border border-red-500 p-2 rounded-lg shadow-md">
@@ -202,7 +202,7 @@ function RegistroDocentes() {
                   onChange={handleChange}
                   placeholder="Ingrese su correo institucional"
                   required
-                  className="w-[90%] py-2 px-3 border-none rounded-full text-base text-black bg-white shadow-md"
+                  className="w-full md:w-[90%] py-2 px-3 border-none rounded-full text-base text-black bg-white shadow-md"
                 />
                 {errors.correo && (
                   <div className="absolute left-1/2 transform -translate-y-1/2 mt-1 bg-white text-red-500 border border-red-500 p-2 rounded-lg shadow-md">
@@ -225,12 +225,12 @@ function RegistroDocentes() {
                   onChange={handleChange}
                   placeholder="Ingrese su contraseña"
                   required
-                  className="w-[90%] py-2 px-3 border-none rounded-full text-base text-black bg-white shadow-md"
+                  className="w-full md:w-[90%] py-2 px-3 border-none rounded-full text-base text-black bg-white shadow-md"
                 />
                 <button
                   type="button"
                   onClick={togglePasswordVisibility}
-                  className="absolute right-20 top-11 text-gray-500"
+                  className="absolute right-4 top-3/4 transform -translate-y-1/2 text-gray-500 md:right-20"
                 >
                   {showPassword ? (
                     <FaEyeSlash className="text-black" />
@@ -238,6 +238,7 @@ function RegistroDocentes() {
                     <FaEye className="text-black" />
                   )}
                 </button>
+
                 {errors.contraseña && (
                   <div className="absolute left-1/2 transform -translate-y-1/2 mt-1 bg-white text-red-500 border border-red-500 p-2 rounded-lg shadow-md">
                     <span role="alert" className="text-sm font-semibold">
@@ -247,7 +248,6 @@ function RegistroDocentes() {
                   </div>
                 )}
               </div>
-
               {errors.api && (
                 <div className="text-red-500 text-sm">{errors.api}</div>
               )}
@@ -255,7 +255,7 @@ function RegistroDocentes() {
               <div className="flex flex-col items-center">
                 <button
                   type="submit"
-                  className="p-3 bg-[#00204A] text-white rounded-lg text-base w-1/3 mt-70 transition-transform duration-200 :bg-[#001737]"
+                  className="p-2 md:p-3 bg-[#00204A] text-white rounded-lg text-sm md:text-base w-2/3 md:w-1/3 mt-4 md:mt-6 transition-transform duration-200 hover:bg-[#001737]"
                 >
                   Registrarse
                 </button>
@@ -263,8 +263,8 @@ function RegistroDocentes() {
             </form>
           </div>
 
-          <div className="flex flex-col items-center justify-center p-12 w-[50%] bg-white text-center">
-            <h2 className="text-6xl text-[#00204A] mb-6 -mt-16">
+          <div className="flex flex-col items-center justify-center p-6 md:p-12 w-full md:w-1/2 bg-white text-center">
+            <h2 className="text-3xl md:text-6xl text-[#00204A] mb-4 md:mb-6 -mt-4 md:-mt-8">
               <strong>Bienvenidos de</strong> <br />
               <strong>nuevo a</strong> <br />
             </h2>
@@ -272,17 +272,17 @@ function RegistroDocentes() {
             <img
               src="/LogoColor.svg"
               alt="Logo Color"
-              className="w-[450px] h-auto mt-110"
+              className="w-[250px] md:w-[450px] h-auto mt-2 md:mt-6"
             />
-            <p className="text-lg text-gray-800 mb-8">
+            <p className="text-base md:text-lg text-gray-800 mb-4 md:mb-8">
               MTIS es una plataforma de gestionamiento de proyectos
             </p>
-            <a className="text-black mb-6">
+            <a className="text-black mb-4 md:mb-6">
               <strong>¿Ya tienes cuenta? Inicia sesión ahora.</strong>
             </a>
             <button
               onClick={handleCancel}
-              className="p-3 bg-[#3684DB] text-white rounded-lg text-lg w-1/3 transition-transform duration-200 "
+              className="p-2 md:p-3 bg-[#3684DB] text-white rounded-lg text-base md:text-lg w-2/3 md:w-1/3 transition-transform duration-200"
             >
               Iniciar Sesión
             </button>
@@ -294,7 +294,8 @@ function RegistroDocentes() {
             <div className="bg-[#B3D6F9] p-6 rounded-lg shadow-lg">
               <h3 className="text-lg font-bold mb-4">Registro Exitoso</h3>
               <p className="mb-4">
-                Tu registro se ha 1do exitosamente. Ahora puedes iniciar sesión.
+                Tu registro se ha realizado exitosamente. Ahora puedes iniciar
+                sesión.
               </p>
               <div className="flex justify-end mt-4">
                 <button
