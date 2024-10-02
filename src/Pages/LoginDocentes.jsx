@@ -133,7 +133,7 @@ function LoginDocentes() {
       exit={{ opacity: 0, x: 100 }} // Animación de salida
       transition={{ duration: 0.5 }} // Duración de la animación
     >
-      <div className="flex flex-col md:flex-row h-[calc(100vh-5rem)]">
+      <div className="flex h-full">
         {/* Formulario a la izquierda */}
         <div className="flex-1 bg-white flex flex-col justify-center items-center p-12 mt-6 md:mt-0">
           <div className="flex flex-col w-full md:w-2/3">
