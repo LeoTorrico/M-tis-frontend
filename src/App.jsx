@@ -14,34 +14,39 @@ import RegistroEstudiante from "./Components/Registros/RegistroEstudiantes";
 import EnviarSolicitud from "./Pages/EnviarSolicitud";
 import RestablecerContrasenia from "./Pages/RestablecerContrasenia";
 import LoginDocentes from "./Pages/LoginDocentes";
-
+import { AnimatePresence } from "framer-motion";
 Modal.setAppElement("#root");
 
 function App() {
   return (
     <div className="flex flex-col w-screen h-screen font-title">
       <Layout>
-        <Routes>
-          <Route path="/Inicio" element={<Inicio />} />{" "}
-          {/* Cambiado a Inicio */}
-          <Route path="/login" element={<LoginEstudiantes />} />
-          <Route
-            path="/planificacion-docente"
-            element={<PlanificacionDocente />}
-          />
-          <Route path="/Vista-Curso" element={<VistaCurso />} />
-          <Route path="/RegistroDocentes" element={<RegistroDocentes />} />
-          <Route path="/RegistroEstudiante" element={<RegistroEstudiante />} />
-          <Route path="/" element={<Home />} />
-          <Route path="/ClasesPrueba" element={<ClasesPrueba />} />{" "}
-          <Route path="/EnviarSolicitud" element={<EnviarSolicitud />} />
-          <Route
-            path="/reset-password/:token"
-            element={<RestablecerContrasenia />}
-          />
-          <Route path="/LoginEstudiantes" element={<LoginEstudiantes />} />
-          <Route path="/LoginDocentes" element={<LoginDocentes />} />
-        </Routes>
+        <AnimatePresence>
+          <Routes>
+            <Route path="/Inicio" element={<Inicio />} />{" "}
+            {/* Cambiado a Inicio */}
+            <Route path="/login" element={<LoginEstudiantes />} />
+            <Route
+              path="/planificacion-docente"
+              element={<PlanificacionDocente />}
+            />
+            <Route path="/Vista-Curso" element={<VistaCurso />} />
+            <Route path="/RegistroDocentes" element={<RegistroDocentes />} />
+            <Route
+              path="/RegistroEstudiante"
+              element={<RegistroEstudiante />}
+            />
+            <Route path="/" element={<Home />} />
+            <Route path="/ClasesPrueba" element={<ClasesPrueba />} />{" "}
+            <Route path="/EnviarSolicitud" element={<EnviarSolicitud />} />
+            <Route
+              path="/reset-password/:token"
+              element={<RestablecerContrasenia />}
+            />
+            <Route path="/LoginEstudiantes" element={<LoginEstudiantes />} />
+            <Route path="/LoginDocentes" element={<LoginDocentes />} />
+          </Routes>
+        </AnimatePresence>
       </Layout>
     </div>
   );
@@ -59,10 +64,10 @@ function Layout({ children }) {
     location.pathname === "/Inicio" ||
     location.pathname === "/planificacion-docente" ||
     location.pathname === "/Vista-Curso" ||
-    location.pathname === "/ClasesPrueba"; 
+    location.pathname === "/ClasesPrueba";
 
   return (
-<div className="flex flex-grow">
+    <div className="flex flex-grow">
       {isSidebarPage && <Sidebar />}
       <div className={`flex-grow ${isSidebarPage ? "ml-64" : ""}`}>
         {isLoginPage && <Navbar />}
