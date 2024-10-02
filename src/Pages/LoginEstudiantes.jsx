@@ -101,7 +101,7 @@ function LoginEstudiantes() {
       exit={{ opacity: 0, x: 100 }} // Animación de salida
       transition={{ duration: 0.5 }} // Duración de la animación
     >
-      <div className="flex flex-col md:flex-row h-[calc(100vh-5rem)]">
+      <div className="flex h-full">
         {/* Formulario a la izquierda */}
         <div className="flex-1 bg-white flex flex-col justify-center items-center p-12 mt-6 md:mt-0">
           <div className="flex flex-col w-full md:w-2/3">
@@ -136,7 +136,7 @@ function LoginEstudiantes() {
         </div>
 
         {/* Contenido derecha */}
-        <div className="flex-1 bg-sky-blue text-white flex flex-col justify-center p-12 rounded-md md:rounded-tl-custom-md md:rounded-bl-custom-md">
+        <div className="flex-1 bg-sky-blue text-white flex flex-col justify-center p-6 md:p-12 rounded-none md:rounded-tl-custom-md md:rounded-bl-custom-md">
           <form onSubmit={handleSubmit} className="w-full max-w-lg mx-auto">
             <h2 className="text-2xl font-Montserrat text-center font-bold mb-6">
               Inicio Sesión Estudiantes

@@ -133,7 +133,7 @@ function LoginDocentes() {
       exit={{ opacity: 0, x: 100 }} // Animación de salida
       transition={{ duration: 0.5 }} // Duración de la animación
     >
-      <div className="flex flex-col md:flex-row h-[calc(100vh-5rem)]">
+      <div className="flex h-full">
         {/* Formulario a la izquierda */}
         <div className="flex-1 bg-white flex flex-col justify-center items-center p-12 mt-6 md:mt-0">
           <div className="flex flex-col w-full md:w-2/3">
@@ -168,7 +168,7 @@ function LoginDocentes() {
         </div>
 
         {/* Contenido derecha */}
-        <div className="flex-1 bg-sky-blue text-white flex flex-col justify-center p-12 rounded-md md:rounded-tl-custom-md md:rounded-bl-custom-md">
+        <div className="flex-1 bg-sky-blue text-white flex flex-col justify-center p-6 md:p-12 rounded-none md:rounded-tl-custom-md md:rounded-bl-custom-md">
           <form onSubmit={handleSubmit} className="w-full max-w-lg mx-auto">
             <h2 className="text-2xl font-Montserrat text-center font-bold mb-6">
               Inicio Sesión Docentes
@@ -254,42 +254,6 @@ function LoginDocentes() {
             </button>
           </form>
         </div>
-
-        {/* Modal de restablecer contraseña */}
-        {showModal && (
-          <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
-            <div className="bg-white p-6 rounded-md w-96">
-              <h2 className="text-xl font-bold mb-4">Restablecer Contraseña</h2>
-              <form onSubmit={handlePasswordReset}>
-                <label className="block text-sm font-bold mb-2">
-                  Ingresa tu correo electrónico
-                </label>
-                <input
-                  type="email"
-                  value={resetEmail}
-                  onChange={handleResetEmailChange}
-                  className="w-full px-2 py-2 text-black border border-gray-300 rounded-lg mb-4"
-                  placeholder="Correo Electrónico"
-                />
-                {resetError && (
-                  <div className="mb-4 text-red-500">{resetError}</div>
-                )}
-                <button
-                  type="submit"
-                  className="bg-blue-500 text-white py-2 px-4 rounded-md w-full"
-                >
-                  Enviar Correo de Restablecimiento
-                </button>
-              </form>
-              <button
-                onClick={handleCloseModal}
-                className="mt-4 text-blue-500 underline"
-              >
-                Cerrar
-              </button>
-            </div>
-          </div>
-        )}
       </div>
     </motion.div>
   );
