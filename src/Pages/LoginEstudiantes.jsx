@@ -136,7 +136,7 @@ function LoginEstudiantes() {
         </div>
 
         {/* Contenido derecha */}
-        <div className="flex-1 bg-sky-blue text-white flex flex-col justify-center p-12 rounded-md md:rounded-tl-custom-md md:rounded-bl-custom-md">
+        <div className="flex-1 bg-sky-blue text-white flex flex-col justify-center p-6 md:p-12 rounded-none md:rounded-tl-custom-md md:rounded-bl-custom-md">
           <form onSubmit={handleSubmit} className="w-full max-w-lg mx-auto">
             <h2 className="text-2xl font-Montserrat text-center font-bold mb-6">
               Inicio Sesión Estudiantes
