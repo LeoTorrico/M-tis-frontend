@@ -1,23 +1,44 @@
-import { Link } from 'react-router-dom';
+import { useLocation, Link } from "react-router-dom";
 
 const Navbar = () => {
-return(
-<div className="flex items-center justify-between h-20 w-full bg-dark-blue text-white font-title">
+  const location = useLocation();
 
-  <div className="flex items-center justify-center py-4">
-    <img src="/logoSidebar.svg" alt="Logo Blanco" className="w-22 h-20" />
-  </div>
+  // Verifica si la ruta actual es para estudiantes o docentes
+  const isEstudiantesRoute =
+    location.pathname === "/LoginEstudiantes" ||
+    location.pathname === "/RegistroEstudiante";
+  const isDocentesRoute =
+    location.pathname === "/LoginDocentes" ||
+    location.pathname === "/RegistroDocentes";
 
-  <nav className="flex space-x-0">
-        <a href="/LoginEstudiantes" className="flex items-center px-8 py-7 hover:bg-light-gray transition-colors">
+  return (
+    <div className="flex items-center justify-between h-20 w-full bg-dark-blue text-white font-title">
+      <div className="flex items-center justify-center py-4">
+        <img src="/logoSidebar.svg" alt="Logo Blanco" className="w-22 h-20" />
+      </div>
+
+      <nav className="flex space-x-0">
+        {/* Estudiantes link */}
+        <Link
+          to="/LoginEstudiantes"
+          className={`flex items-center px-8 py-7 transition-colors ${
+            isEstudiantesRoute ? "bg-white text-black" : "hover:bg-light-gray"
+          }`}
+        >
           ESTUDIANTES
-        </a>
-        <a href="/LoginDocentes" className="flex items-center px-8 py-7 hover:bg-light-gray transition-colors">
+        </Link>
+        {/* Docentes link */}
+        <Link
+          to="/LoginDocentes"
+          className={`flex items-center px-8 py-7 transition-colors ${
+            isDocentesRoute ? "bg-white text-black" : "hover:bg-light-gray"
+          }`}
+        >
           DOCENTES
-        </a>
+        </Link>
       </nav>
-</div>
-  
-);
+    </div>
+  );
 };
+
 export default Navbar;
