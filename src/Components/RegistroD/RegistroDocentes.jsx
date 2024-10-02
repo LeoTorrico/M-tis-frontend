@@ -264,23 +264,30 @@ function RegistroDocentes() {
           </div>
 
           <div className="flex flex-col items-center justify-center p-6 md:p-12 w-full md:w-1/2 bg-white text-center">
-            <h2 className="text-3xl md:text-6xl text-[#00204A] mb-4 md:mb-6 -mt-4 md:-mt-8">
+            <h2 className="text-3xl md:text-6xl text-[#00204A] mb-4 md:mb-6">
               <strong>Bienvenidos de</strong> <br />
               <strong>nuevo a</strong> <br />
             </h2>
-
             <img
               src="/LogoColor.svg"
               alt="Logo Color"
-              className="w-[250px] md:w-[450px] h-auto mt-2 md:mt-6"
+              className="w-[250px] md:w-[450px] h-auto mt-0 md:mt-0" // Cambia mt-2 a mt-0
             />
-            <p className="text-base md:text-lg text-gray-800 mb-4 md:mb-8">
-              MTIS es una plataforma de gestionamiento de proyectos
+
+            <p className="text-2xl mb-2 text-center">
+              MTIS es una plataforma de
             </p>
-            <a className="text-black mb-4 md:mb-6">
-              <strong>¿Ya tienes cuenta? Inicia sesión ahora.</strong>
-            </a>
+            <p className="text-2xl mb-2 text-center">
+              gestionamiento de proyectos
+            </p>
+
+            <div className="flex justify-center mt-4">
+              <a className="text-black mb-4 md:mb-6">
+                <strong>¿Ya tienes cuenta? Inicia sesión ahora.</strong>
+              </a>
+            </div>
             <button
+              type="submit"
               onClick={handleCancel}
               className="p-2 md:p-3 bg-[#3684DB] text-white rounded-lg text-base md:text-lg w-2/3 md:w-1/3 transition-transform duration-200"
             >
