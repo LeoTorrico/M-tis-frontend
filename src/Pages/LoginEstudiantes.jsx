@@ -126,7 +126,7 @@ function LoginEstudiantes() {
 
           <button
             type="button"
-            className="flex justify-center w-full md:w-1/3 mx-auto bg-dark-blue text-white py-2 rounded-lg mt-4"
+            className="flex justify-center w-full md:w-1/3 mx-auto bg-sky-blue text-white py-2 rounded-lg mt-4"
             onClick={() => navigate("/RegistroEstudiante")}
           >
             Registrarse
