@@ -143,7 +143,7 @@ function RegistroDocentes() {
     >
       <div className={`h-[${height - 80}px] overflow-hidden`}>
         <div className="flex flex-col md:flex-row h-full">
-          <div className="flex flex-col justify-center p-6 md:p-14 w-full md:w-1/2 bg-[#3684DB] text-white rounded-none md:rounded-r-[250px] md:rounded-b-none">
+          <div className="flex flex-col justify-start p-12 w-[48%] bg-[#3684DB] text-white rounded-r-[250px]">
             <h2 className="text-xl md:text-2xl mb-4 md:mb-6 font-bold text-center">
               Registro Docentes
             </h2>
