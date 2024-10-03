@@ -138,15 +138,17 @@ function RegistroDocentes() {
 
   return (
     <motion.div
-      className="h-[calc(100vh-80px)] overflow-y-auto" // Modificado para ajustar la altura
+      className={`h-[${height - 80}px] overflow-hidden`}
       initial={{ opacity: 0, x: 100 }} // Animación inicial
       animate={{ opacity: 1, x: 0 }} // Animación de entrada
       exit={{ opacity: 0, x: -100 }} // Animación de salida
       transition={{ duration: 0.5 }} // Duración de la animación
     >
-      <div className="flex flex-col md:flex-row h-full">
+      <div className={`h-[calc(100vh-80px)] overflow-auto`}>
+        {" "}
+        {/* Modificado para ajustar la altura */}
         <div className="flex flex-col md:flex-row h-full">
-          <div className="flex flex-col justify-center p-6 md:p-14 w-full md:w-1/2 bg-[#3684DB] text-white rounded-none md:rounded-r-[250px] md:rounded-b-none">
+          <div className="flex flex-col justify-center p-6 md:p-14 w-full md:w-1/2 bg-[#3684DB] text-white rounded-none md:rounded-r-[250px] md:rounded-b-[250]">
             <h2 className="text-xl md:text-2xl mb-4 md:mb-6 font-bold text-center">
               Registro Docentes
             </h2>
@@ -319,7 +321,7 @@ function RegistroDocentes() {
               </div>
             </div>
           </div>
-        )}
+        )}{" "}
         {/* Modal de Cancelación */}
         {showCancelModal && (
           <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
