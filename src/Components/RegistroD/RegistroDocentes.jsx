@@ -4,7 +4,9 @@ import axios from "axios";
 import { FaEye, FaEyeSlash } from "react-icons/fa";
 import { motion } from "framer-motion";
 import { useWindowDimensions } from "../../utils";
+
 function RegistroDocentes() {
+  // Constante que devuelve las dimensiones de la ventana
   const { height } = useWindowDimensions();
 
   const errorMessages = {
@@ -112,6 +114,7 @@ function RegistroDocentes() {
       }
     }
   };
+
   const handleModalClose = () => {
     setShowModal(false);
     navigate("/LoginDocentes");
@@ -135,15 +138,15 @@ function RegistroDocentes() {
 
   return (
     <motion.div
-      className={`h-[${height - 80}px] overflow-hidden`}
+      className="h-[calc(100vh-80px)] overflow-y-auto" // Modificado para ajustar la altura
       initial={{ opacity: 0, x: 100 }} // Animación inicial
       animate={{ opacity: 1, x: 0 }} // Animación de entrada
       exit={{ opacity: 0, x: -100 }} // Animación de salida
       transition={{ duration: 0.5 }} // Duración de la animación
     >
-      <div className={`h-[${height - 80}px] overflow-hidden`}>
+      <div className="flex flex-col md:flex-row h-full">
         <div className="flex flex-col md:flex-row h-full">
-          <div className="flex flex-col justify-start p-12 w-[48%] bg-[#3684DB] text-white rounded-r-[250px]">
+          <div className="flex flex-col justify-center p-6 md:p-14 w-full md:w-1/2 bg-[#3684DB] text-white rounded-none md:rounded-r-[250px] md:rounded-b-none">
             <h2 className="text-xl md:text-2xl mb-4 md:mb-6 font-bold text-center">
               Registro Docentes
             </h2>
@@ -298,7 +301,6 @@ function RegistroDocentes() {
             </button>
           </div>
         </div>
-
         {showModal && (
           <div className="fixed inset-0 flex items-center justify-center bg-gray-800 bg-opacity-75">
             <div className="bg-[#B3D6F9] p-6 rounded-lg shadow-lg">
@@ -318,7 +320,6 @@ function RegistroDocentes() {
             </div>
           </div>
         )}
-
         {/* Modal de Cancelación */}
         {showCancelModal && (
           <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
