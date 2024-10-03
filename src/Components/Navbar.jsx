@@ -20,12 +20,8 @@ const Navbar = () => {
 
   return (
     <div className="relative flex items-center justify-between h-20 w-full bg-dark-blue text-white font-title">
-      <div className="flex items-center justify-center py-4">
-        <img src="/logoSidebar.svg" alt="Logo Blanco" className="w-22 h-20" />
-      </div>
-
-      {/* Menú para pantallas grandes */}
-      <nav className="hidden md:flex space-x-0">
+      {/* Menú para pantallas grandes, alineado a la derecha */}
+      <nav className="hidden md:flex space-x-0 ml-auto">
         <Link
           to="/LoginEstudiantes"
           className={`flex items-center px-8 py-7 transition-colors ${
@@ -46,7 +42,7 @@ const Navbar = () => {
       </nav>
 
       {/* Botón del menú para pantallas pequeñas */}
-      <div className="md:hidden flex items-center pr-4">
+      <div className="md:hidden flex items-center ml-auto pr-4">
         <button onClick={toggleMenu} className="text-white">
           {isMenuOpen ? <FaTimes size={24} /> : <FaBars size={24} />}
         </button>
