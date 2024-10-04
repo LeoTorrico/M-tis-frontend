@@ -4,30 +4,29 @@ import axios from "axios";
 import { FaEye, FaEyeSlash } from "react-icons/fa";
 import { motion } from "framer-motion";
 
-// Hook personalizado para obtener las dimensiones de la ventana
-const useWindowDimensions = () => {
-  const [windowDimensions, setWindowDimensions] = useState({
-    width: window.innerWidth,
-    height: window.innerHeight,
-  });
-
-  useEffect(() => {
-    const handleResize = () => {
-      setWindowDimensions({
-        width: window.innerWidth,
-        height: window.innerHeight,
-      });
-    };
-
-    window.addEventListener("resize", handleResize);
-    return () => window.removeEventListener("resize", handleResize);
-  }, []);
-
-  return windowDimensions;
-};
-
 function RegistroEstudiante() {
-  const { height } = useWindowDimensions(); // Uso del hook para obtener la altura de la ventana
+
+  const useWindowDimensions = () => {
+    const [windowDimensions, setWindowDimensions] = useState({
+      width: window.innerWidth,
+      height: window.innerHeight,
+    });
+
+    useEffect(() => {
+      const handleResize = () => {
+        setWindowDimensions({
+          width: window.innerWidth,
+          height: window.innerHeight,
+        });
+      };
+
+      window.addEventListener("resize", handleResize);
+      return () => window.removeEventListener("resize", handleResize);
+    }, []);
+
+    return windowDimensions;
+  };
+  const { height } = useWindowDimensions(); 
   const [formData, setFormData] = useState({
     codigo_sis: "",
     nombres: "",
