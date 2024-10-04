@@ -1,9 +1,33 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import { FaEye, FaEyeSlash } from "react-icons/fa";
 import { motion } from "framer-motion";
+
+// Hook personalizado para obtener las dimensiones de la ventana
+const useWindowDimensions = () => {
+  const [windowDimensions, setWindowDimensions] = useState({
+    width: window.innerWidth,
+    height: window.innerHeight,
+  });
+
+  useEffect(() => {
+    const handleResize = () => {
+      setWindowDimensions({
+        width: window.innerWidth,
+        height: window.innerHeight,
+      });
+    };
+
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
+
+  return windowDimensions;
+};
+
 function RegistroEstudiante() {
+  const { height } = useWindowDimensions(); // Uso del hook para obtener la altura de la ventana
   const [formData, setFormData] = useState({
     codigo_sis: "",
     nombres: "",
@@ -20,7 +44,6 @@ function RegistroEstudiante() {
   const handleChange = (e) => {
     const { id, value } = e.target;
 
-    // Permitir solo números en el campo 'codigo_sis' y limitar a 10 caracteres
     if (id === "codigo_sis") {
       if (!/^\d*$/.test(value) || value.length > 10) {
         return;
@@ -32,7 +55,6 @@ function RegistroEstudiante() {
     if (id === "apellidos" && value.length > 80) {
       return;
     }
-
     if (id === "contraseña" && value.length > 30) {
       return;
     }
@@ -48,7 +70,6 @@ function RegistroEstudiante() {
     e.preventDefault();
     const newErrors = {};
 
-    // Validaciones existentes
     if (
       !formData.nombres ||
       formData.nombres.length < 3 ||
@@ -75,14 +96,13 @@ function RegistroEstudiante() {
       newErrors.codigo_sis = "Código SIS debe tener entre 6 y 10 caracteres.";
     }
 
-    // Validar que el correo tenga el formato adecuado y que sea equivalente al código SIS
     if (
       !formData.correo ||
       !/^[\w-.]+@est\.umss\.edu$/.test(formData.correo) ||
       !formData.correo.startsWith(formData.codigo_sis)
     ) {
       newErrors.correo =
-        "El código SIS y el correo deben ser equivalentes y seguir con  el formato [CodSis]@est.umss.edu";
+        "El código SIS y el correo deben ser equivalentes y seguir con el formato [CodSis]@est.umss.edu";
     }
 
     if (
@@ -147,16 +167,16 @@ function RegistroEstudiante() {
 
   return (
     <motion.div
-      className="h-screen overflow-hidden"
-      initial={{ opacity: 0, x: 100 }} // Animación inicial
-      animate={{ opacity: 1, x: 0 }} // Animación de entrada
-      exit={{ opacity: 0, x: -100 }} // Animación de salida
-      transition={{ duration: 0.5 }} // Duración de la animación
+      className={`h-[${height - 100}px] overflow-hidden`}
+      initial={{ opacity: 0, x: 100 }}
+      animate={{ opacity: 1, x: 0 }}
+      exit={{ opacity: 0, x: -100 }}
+      transition={{ duration: 0.5 }}
     >
-      <div className="h-screen overflow-hidden">
-        <div className="flex h-full">
-          <div className="flex flex-col justify-start p-12 w-[48%] bg-[#3684DB] text-white rounded-r-[250px]">
-            <h2 className="text-2xl mb-6 font-bold text-center">
+      <div className={`h-[calc(100vh-80px)] overflow-hidden`}>
+        <div className="flex flex-col md:flex-row h-full">
+          <div className="flex flex-col justify-center p-6 md:p-14 w-full md:w-1/2 bg-[#3684DB] text-white rounded-none md:rounded-r-[250px] md:rounded-b-[250]">
+            <h2 className="text-xl md:text-2xl mb-4 md:mb-6 font-bold text-center">
               Registro Estudiantes
             </h2>
             <form onSubmit={handleSubmit}>
@@ -171,7 +191,7 @@ function RegistroEstudiante() {
                   onChange={handleChange}
                   placeholder="Ingrese su código SIS"
                   required
-                  className="w-[90%] py-2 px-3 border-none rounded-full text-base text-black bg-white shadow-md"
+                  className="w-full md:w-[90%] py-2 px-3 border-none rounded-full text-base text-black bg-white shadow-md"
                 />
                 {errors.codigo_sis && (
                   <div className="absolute left-1/2 transform -translate-y-1/2 mt-1 bg-white text-red-500 border border-red-500 p-2 rounded-lg shadow-md">
@@ -194,7 +214,7 @@ function RegistroEstudiante() {
                   onChange={handleChange}
                   placeholder="Ingrese su nombre(s)"
                   required
-                  className="w-[90%] py-2 px-3 border-none rounded-full text-base text-black bg-white shadow-md"
+                  className="w-full md:w-[90%] py-2 px-3 border-none rounded-full text-base text-black bg-white shadow-md"
                 />
                 {errors.nombres && (
                   <div className="absolute left-1/2 transform -translate-y-1/2 mt-1 bg-white text-red-500 border border-red-500 p-2 rounded-lg shadow-md">
@@ -217,7 +237,7 @@ function RegistroEstudiante() {
                   onChange={handleChange}
                   placeholder="Ingrese sus apellidos"
                   required
-                  className="w-[90%] py-2 px-3 border-none rounded-full text-base text-black bg-white shadow-md"
+                  className="w-full md:w-[90%] py-2 px-3 border-none rounded-full text-base text-black bg-white shadow-md"
                 />
                 {errors.apellidos && (
                   <div className="absolute left-1/2 transform -translate-y-1/2 mt-1 bg-white text-red-500 border border-red-500 p-2 rounded-lg shadow-md">
@@ -240,10 +260,10 @@ function RegistroEstudiante() {
                   onChange={handleChange}
                   placeholder="Ingrese su correo institucional"
                   required
-                  className="w-[90%] py-2 px-3 border-none rounded-full text-base text-black bg-white shadow-md"
+                  className="w-full sm:w-[90%] py-2 px-3 border-none rounded-full text-base text-black bg-white shadow-md"
                 />
                 {errors.correo && (
-                  <div className="absolute left-1/2 transform -translate-y-1/2 mt-1 bg-white text-red-500 border border-red-500 p-2 rounded-lg shadow-md">
+                  <div className="absolute left-1/2 transform -translate-x-1/2 mt-1 bg-white text-red-500 border border-red-500 p-2 rounded-lg shadow-md">
                     <span role="alert" className="text-sm font-semibold">
                       {errors.correo}
                     </span>
@@ -263,12 +283,12 @@ function RegistroEstudiante() {
                   onChange={handleChange}
                   placeholder="Ingrese su contraseña"
                   required
-                  className="w-[90%] py-2 px-3 border-none rounded-full text-base text-black bg-white shadow-md"
+                  className="w-full sm:w-[90%] py-2 px-3 border-none rounded-full text-base text-black bg-white shadow-md"
                 />
                 <button
                   type="button"
                   onClick={togglePasswordVisibility}
-                  className="absolute right-20 top-11 text-gray-500"
+                  className="absolute right-4 sm:right-20 top-11 text-gray-500"
                 >
                   {showPassword ? (
                     <FaEyeSlash className="text-black" />
@@ -277,7 +297,7 @@ function RegistroEstudiante() {
                   )}
                 </button>
                 {errors.contraseña && (
-                  <div className="absolute left-1/2 transform -translate-y-1/2 mt-1 bg-white text-red-500 border border-red-500 p-2 rounded-lg shadow-md">
+                  <div className="absolute left-1/2 transform -translate-x-1/2 mt-1 bg-white text-red-500 border border-red-500 p-2 rounded-lg shadow-md">
                     <span role="alert" className="text-sm font-semibold">
                       {errors.contraseña}
                     </span>
@@ -293,7 +313,7 @@ function RegistroEstudiante() {
               <div className="flex flex-col items-center">
                 <button
                   type="submit"
-                  className="p-3 bg-[#00204A] text-white rounded-lg text-base w-1/3 mt-70 transition-transform duration-200"
+                  className="p-3 bg-[#00204A] text-white rounded-lg text-base w-full sm:w-1/3 mt-4 transition-transform duration-200"
                 >
                   Registrarse
                 </button>
@@ -301,73 +321,85 @@ function RegistroEstudiante() {
             </form>
           </div>
 
-          <div className="flex flex-col items-center justify-center p-12 w-[50%] bg-white text-center">
-            <h2 className="text-6xl text-[#00204A] mb-6 -mt-16">
+          <div className="flex flex-col items-center justify-center p-6 md:p-12 w-full md:w-1/2 bg-white text-center">
+            <h2 className="text-3xl md:text-6xl text-[#00204A] mb-4 md:mb-6">
               <strong>Bienvenidos de</strong> <br />
               <strong>nuevo a</strong> <br />
             </h2>
             <img
               src="/LogoColor.svg"
               alt="Logo Color"
-              className="w-[450px] h-auto mt-110"
+              className="w-[250px] md:w-[350px] h-auto mt-0 md:mt-0" // Cambia mt-2 a mt-0
             />
-            <p className="text-lg text-gray-800 mb-8">
+            <p className="text-base md:text-lg text-gray-800 mb-4 md:mb-8">
               Regístrate en MTIS y comienza a gestionar tus proyectos de forma
               eficiente. Únete a una plataforma diseñada para facilitar la
               colaboración y el seguimiento en tiempo real.
             </p>
-            <a className="text-black mb-6">
-              <strong>¿Ya tienes cuenta? Inicia sesión ahora.</strong>
-            </a>
+            <div className="flex justify-center mt-4">
+              <a className="text-black mb-4 md:mb-6">
+                <strong>¿Ya tienes cuenta? Inicia sesión ahora.</strong>
+              </a>
+            </div>
             <button
+              type="submit"
               onClick={handleCancel}
-              className="p-3 bg-[#3684DB] text-white rounded-lg text-lg w-1/3 transition-transform duration-200 "
+              className="p-2 md:p-3 bg-[#3684DB] text-white rounded-lg text-base md:text-lg w-2/3 md:w-1/3 transition-transform duration-200"
             >
               Iniciar Sesión
             </button>
           </div>
         </div>
-
-        {/* Modal de éxito */}
         {showModal && (
           <div className="fixed inset-0 flex items-center justify-center bg-gray-800 bg-opacity-75">
-            <div className="bg-white p-6 rounded-lg shadow-lg w-1/3 text-center">
+            <div className="bg-[#B3D6F9] p-6 rounded-lg shadow-lg">
               <h3 className="text-lg font-bold mb-4">Registro Exitoso</h3>
               <p className="mb-4">
-                Tu registro se ha 1do exitosamente. Ahora puedes iniciar sesión.
+                Tu registro se ha realizado exitosamente. Ahora puedes iniciar
+                sesión.
               </p>
-              <button
-                onClick={handleModalClose}
-                className="p-3 bg-[#00204A] text-white rounded-lg transition-transform duration-200"
-              >
-                Aceptar
-              </button>
+              <div className="flex justify-end mt-4">
+                <button
+                  onClick={handleModalClose}
+                  className="p-3 bg-[#00204A] text-white rounded-lg transition-transform duration-200"
+                >
+                  Aceptar
+                </button>
+              </div>
             </div>
           </div>
-        )}
-
-        {/* Modal de cancelación */}
+        )}{" "}
+        {/* Modal de Cancelación */}
         {showCancelModal && (
-          <div className="fixed inset-0 flex items-center justify-center bg-gray-800 bg-opacity-75">
-            <div className="bg-white p-6 rounded-lg shadow-lg w-1/3 text-center">
-              <h3 className="text-lg font-bold mb-4">Confirmar Cancelación</h3>
-              <p className="mb-4">
-                ¿Estás seguro de que deseas cancelar? Los datos ingresados se
-                perderán.
-              </p>
-              <div className="flex justify-around">
-                <button
-                  onClick={() => handleCancelModalClose(true)}
-                  className="p-3 bg-[#E74C3C] text-white rounded-lg transition-transform duration-200"
-                >
-                  Sí, cancelar
-                </button>
-                <button
-                  onClick={() => handleCancelModalClose(false)}
-                  className="p-3 bg-[#2ECC71] text-white rounded-lg transition-transform duration-200"
-                >
-                  No, continuar
-                </button>
+          <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
+            <div className="bg-[#fdfdfd] p-0 rounded-lg shadow-lg w-11/12 md:w-1/2 lg:w-1/3">
+              {/* Color de fondo del modal */}
+              <div className="bg-[#3684DB] p-4 rounded-t-lg">
+                {/* Encabezado del modal */}
+                <h3 className="text-base md:text-lg font-bold text-white text-center">
+                  Confirmar Cancelación
+                </h3>
+              </div>
+              <div className="p-4 md:p-6">
+                {/* Espacio interno del modal */}
+                <p className="mb-2 md:mb-4">
+                  ¿Estás seguro de que deseas cancelar? Los datos ingresados se
+                  perderán.
+                </p>
+                <div className="flex flex-col md:flex-row justify-around">
+                  <button
+                    onClick={() => handleCancelModalClose(true)}
+                    className="p-2 md:p-3 bg-[#031930] text-white rounded-lg transition-transform duration-200 mb-2 md:mb-0"
+                  >
+                    Sí, cancelar
+                  </button>
+                  <button
+                    onClick={() => handleCancelModalClose(false)}
+                    className="p-2 md:p-3 bg-[#031930] text-white rounded-lg transition-transform duration-200"
+                  >
+                    No, continuar
+                  </button>
+                </div>
               </div>
             </div>
           </div>

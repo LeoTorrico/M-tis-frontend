@@ -257,7 +257,7 @@ function RegistroDocentes() {
                   <button
                     type="button"
                     onClick={togglePasswordVisibility}
-                    className="absolute right-4 top-1/2 transform -translate-y-1/2 text-black-500 sm:right-8 md:right-12 lg:right-16 xl:right-20"
+                    className="absolute right-4 top-1/2 transform -translate-y-1/2 text-blanc-500 sm:right-8 md:right-12 lg:right-16 xl:right-20"
                   >
                     {showPassword ? (
                       <FaEyeSlash className="text-black" />
@@ -345,33 +345,30 @@ function RegistroDocentes() {
         {/* Modal de Cancelación */}
         {showCancelModal && (
           <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
-            <div className="bg-[#fdfdfd] p-0 rounded-lg shadow-lg w-1/3">
-              {" "}
+            <div className="bg-[#fdfdfd] p-0 rounded-lg shadow-lg w-11/12 md:w-1/2 lg:w-1/3">
               {/* Color de fondo del modal */}
-              <div className="bg-[#3684DB] p-4 rounded-t-lg">
-                {" "}
+               <div className="bg-[#3684DB] p-4 rounded-t-lg">
                 {/* Encabezado del modal */}
-                <h3 className="text-lg font-bold text-white text-center">
+                <h3 className="text-base md:text-lg font-bold text-white text-center">
                   Confirmar Cancelación
                 </h3>
               </div>
-              <div className="p-6">
-                {" "}
+              <div className="p-4 md:p-6">
                 {/* Espacio interno del modal */}
-                <p className="mb-4">
+                <p className="mb-2 md:mb-4">
                   ¿Estás seguro de que deseas cancelar? Los datos ingresados se
                   perderán.
                 </p>
-                <div className="flex justify-around">
+                <div className="flex flex-col md:flex-row justify-around">
                   <button
                     onClick={() => handleCancelModalClose(true)}
-                    className="p-3 bg-[#031930] text-white rounded-lg transition-transform duration-200"
+                    className="p-2 md:p-3 bg-[#031930] text-white rounded-lg transition-transform duration-200 mb-2 md:mb-0"
                   >
                     Sí, cancelar
                   </button>
                   <button
                     onClick={() => handleCancelModalClose(false)}
-                    className="p-3 bg-[#031930] text-white rounded-lg transition-transform duration-200"
+                    className="p-2 md:p-3 bg-[#031930] text-white rounded-lg transition-transform duration-200"
                   >
                     No, continuar
                   </button>
