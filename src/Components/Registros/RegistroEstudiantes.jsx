@@ -5,7 +5,6 @@ import { FaEye, FaEyeSlash } from "react-icons/fa";
 import { motion } from "framer-motion";
 
 function RegistroEstudiante() {
-
   const useWindowDimensions = () => {
     const [windowDimensions, setWindowDimensions] = useState({
       width: window.innerWidth,
@@ -26,7 +25,7 @@ function RegistroEstudiante() {
 
     return windowDimensions;
   };
-  const { height } = useWindowDimensions(); 
+  const { height } = useWindowDimensions();
   const [formData, setFormData] = useState({
     codigo_sis: "",
     nombres: "",
@@ -166,13 +165,13 @@ function RegistroEstudiante() {
 
   return (
     <motion.div
-      className={`h-[${height - 100}px] overflow-hidden`}
+      className={`h-[${height - 80}px] overflow-hidden`}
       initial={{ opacity: 0, x: 100 }}
       animate={{ opacity: 1, x: 0 }}
       exit={{ opacity: 0, x: -100 }}
       transition={{ duration: 0.5 }}
     >
-      <div className={`h-[calc(100vh-80px)] overflow-hidden`}>
+      <div className={`h-[calc(100vh-80px)] overflow-auto`}>
         <div className="flex flex-col md:flex-row h-full">
           <div className="flex flex-col justify-center p-6 md:p-14 w-full md:w-1/2 bg-[#3684DB] text-white rounded-none md:rounded-r-[250px] md:rounded-b-[250]">
             <h2 className="text-xl md:text-2xl mb-4 md:mb-6 font-bold text-center">
