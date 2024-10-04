@@ -1,168 +1,326 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import axios from 'axios';
+import { Button, TextField, Modal, Box, MenuItem, Typography, IconButton } from '@mui/material';
+import CloseIcon from '@mui/icons-material/Close'; // Importar el icono de cerrar
+import getDetailsFromToken from './Utils';
+import { useNavigate } from 'react-router-dom';
 
 const ClasesPrueba = () => {
-  const rol = 'estudiante'; // Asignar el rol directamente para pruebas
-  const [mostrarBoton, setMostrarBoton] = useState(false);
+  const token = localStorage.getItem('token');
+  const { codigoSis, rol } = getDetailsFromToken(token);
   const [mostrarModal, setMostrarModal] = useState(false);
   const [nombreClase, setNombreClase] = useState('');
   const [gestion, setGestion] = useState('');
   const [codigoClase, setCodigoClase] = useState('');
   const [clases, setClases] = useState([]);
+  const [gestiones, setGestiones] = useState([]); // Lista de gestiones para el dropdown
+  const [error, setError] = useState(''); // Estado para el mensaje de error
+  const navigate = useNavigate();
 
-  const handleMostrarBoton = () => {
-    setMostrarBoton(true);
-  };
+  useEffect(() => {
+    const fetchClasesDocente = async () => {
+      try {
+        const response = await axios.get('http://localhost:3000/clases/obtener', {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
+        setClases(response.data.clases);
+      } catch (error) {
+        console.error('Error fetching clases:', error);
+      }
+    };
+    const fetchClasesEstudiante = async () => {
+      try {
+        const response = await axios.get('http://localhost:3000/clases-estudiante/obtener-clases', {
+          params: {
+            codigoSis: codigoSis // Pasar el codigoSis en los query parameters
+          },
+          headers: {
+            Authorization: `Bearer ${token}` // Pasar el token en los headers
+          }
+        });
+        setClases(response.data.clases);
+      } catch (error) {
+        console.error('Error fetching clases:', error);
+      }
+    };
+  
+    const fetchGestiones = async () => {
+      try {
+        const response = await axios.get('http://localhost:3000/gestiones/', {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
+        setGestiones(response.data.gestiones);
+      } catch (error) {
+        console.error('Error fetching gestiones:', error);
+      }
+    };
 
-  const handleAbrirModal = () => {
-    setMostrarModal(true);
-  };
+    if (rol==="docente") {
+      fetchClasesDocente();
+    } else {
+      fetchClasesEstudiante();
+    }
 
+    fetchGestiones();
+  }, [token]);
+
+  const handleAbrirModal = () => setMostrarModal(true);
   const handleCerrarModal = () => {
     setMostrarModal(false);
-    setMostrarBoton(false); // Vuelve al estado original
+    setError(''); // Limpiar el mensaje de error al cerrar el modal
   };
 
-  const handleCrearClase = () => {
-    if (nombreClase.trim() !== '' && gestion.trim() !== '') {
-      setClases([...clases, { nombreClase, gestion }]);
+  const handleCrearClase = async () => {
+    if (!nombreClase && !gestion) {
+      setError('Por favor, ingresa el nombre de la clase y selecciona una gestión.'); // Mostrar mensaje de error si ambos están vacíos
+      return;
+    }
+    if (!nombreClase) {
+      setError('Por favor, ingresa el nombre de la clase.'); // Mostrar mensaje de error si nombre de clase está vacío
+      return;
+    }
+    if (!gestion) {
+      setError('Por favor, selecciona una gestión.'); // Mostrar mensaje de error si gestión está vacía
+      return;
+    }
+
+    try {
+      const requestBody = {
+        codGestion: Number(gestion),
+        nombreClase,
+      };
+      await axios.post('http://localhost:3000/clases/crear', requestBody, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+      const nameGestion = gestiones.find(gest => gest.cod_gestion === gestion);
+      setClases([...clases, { nombre_clase: nombreClase, gestion: nameGestion.gestion }]);
       setNombreClase('');
       setGestion('');
-      setMostrarModal(false);
-      setMostrarBoton(false);
+      handleCerrarModal();
+    } catch (error) {
+      console.error('Error creating class:', error);
     }
   };
 
-  const handleUnirseClase = () => {
-    if (codigoClase.trim() !== '') {
-      const nuevaClase = {
-        nombreClase: 'Taller de Ingeniería de Software', // Puedes personalizar el nombre
-        gestion: '2-2024', // Puedes personalizar la gestión
+  const handleUnirseClase = async () => {
+    if (codigoClase.trim() === '') {
+      setError('Por favor, ingresa el código de la clase'); // Mostrar mensaje de error si está vacío
+      return;
+    }
+
+    try {
+      const requestBody = {
+        token: token,
+        codigoClase: codigoClase,
       };
-      setClases([...clases, nuevaClase]);
+      const response = await axios.post(`http://localhost:3000/clases-estudiante/unirse-clase`, requestBody, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+      const clase = response.data.clase;
+      setClases([...clases, { nombre_clase: clase.nombre_clase, gestion: clase.gestion }]);
       setCodigoClase('');
-      setMostrarModal(false);
-      setMostrarBoton(false);
+      setError(''); // Limpiar mensaje de error al unirse correctamente
+      handleCerrarModal();
+    } catch (error) {
+      console.error('Error joining class:', error);
     }
   };
 
-  // Verifica si los campos están completos para habilitar los botones
-  const isFormValidCrear = nombreClase.trim() !== '' && gestion.trim() !== '';
-  const isFormValidUnirse = codigoClase.trim() !== '';
+  const handleViewClass = () => {
+    navigate('/Vista-Curso');
+  };
 
   return (
-    <div className="h-screen bg-gray-50 p-10">
-      <div className="flex justify-between items-center mb-10">
-        <h1 className="text-3xl font-bold">Clases</h1>
-        <div className="flex space-x-4">
-          {/* Botón "+" */}
-          {!mostrarBoton && (
-            <button
-              onClick={handleMostrarBoton}
-              className="bg-dark-blue text-white font-bold py-2 px-4 rounded-full hover:bg-light-blue"
-            >
-              +
-            </button>
-          )}
-          {/* Botón para crear o unirse a clase */}
-          {mostrarBoton && (
-            <button
-              onClick={handleAbrirModal}
-              className="bg-dark-blue text-white font-bold py-2 px-4 rounded hover:bg-light-blue"
-            >
-              {rol === 'docente' ? 'Crear clase' : 'Unirse a clase'}
-            </button>
-          )}
-        </div>
-      </div>
+    <Box sx={{ height: '100vh', bgcolor: 'gray.50', p: 3 }}>
+      <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 3 }}>
+        <Typography variant="h4" fontWeight="bold">
+          Clases
+        </Typography>
+        <Button variant="contained" color="primary" onClick={handleAbrirModal}>
+          {rol === 'docente' ? 'Crear clase' : 'Unirse a clase'}
+        </Button>
+      </Box>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+      <Box sx={{ display: 'grid', gridTemplateColumns: { xs: '1fr', md: '1fr 1fr', lg: 'repeat(3, 1fr)' }, gap: 2 }}>
         {clases.map((clase, index) => (
-          <div key={index} className="bg-dark-blue text-white p-6 rounded-lg shadow-lg">
-            <h2 className="text-xl font-semibold mb-2">{clase.nombreClase || 'Clase no especificada'}</h2>
-            <p className="text-sm mb-4">{clase.gestion || 'Gestión no especificada'}</p>
-            <div className="w-full bg-gray-700 rounded-full h-2.5 mb-4">
-              <div className="bg-blue-500 h-2.5 rounded-full" style={{ width: '75%' }}></div>
-            </div>
-            <button className="bg-blue-700 hover:bg-light-blue text-white font-bold py-2 px-4 rounded">
+          <Box key={index} sx={{ bgcolor: '#031930', color: 'white', p: 3, borderRadius: 2, boxShadow: 2 }}>
+            <Typography variant="h6" fontWeight="bold" gutterBottom>
+              {clase.nombre_clase || 'Clase no especificada'}
+            </Typography>
+            <Typography variant="body2" gutterBottom>
+              {clase.gestion || 'Gestión no especificada'}
+            </Typography>
+            {/* Barra del medio con el color de los headers */}
+            <Box sx={{ bgcolor: 'primary.main', borderRadius: 2, height: 10, mb: 2 }} />
+            <Button 
+              variant="contained" 
+              color="primary" 
+              sx={{ bgcolor: 'primary.main', color: 'white', borderRadius: 2 }} // Botón "Ver clase" con bordes redondeados
+              onClick={handleViewClass}
+            >
               Ver clase
-            </button>
-          </div>
+            </Button>
+          </Box>
         ))}
-      </div>
+      </Box>
 
-      {mostrarModal && (
-        <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
-          <div className="bg-[#B3D6F9] p-8 rounded-lg w-full max-w-md">
-            <h2 className="text-xl font-bold mb-4">{rol === 'docente' ? 'Crear clase' : 'Unirse a clase'}</h2>
+      <Modal open={mostrarModal} onClose={handleCerrarModal}>
+        <Box
+          sx={{
+            position: 'absolute',
+            top: '50%',
+            left: '50%',
+            transform: 'translate(-50%, -50%)',
+            width: 400,
+            bgcolor: 'background.paper',
+            boxShadow: 24,
+            borderRadius: 2,
+            overflow: 'hidden', // Para evitar que el contenido sobresalga
+          }}
+        >
+          {/* Header superior con el color del botón primary y alineado a la izquierda */}
+          <Box sx={{ bgcolor: 'primary.main', color: 'white', p: 2, position: 'relative' }}>
+            <IconButton
+              onClick={handleCerrarModal}
+              sx={{
+                position: 'absolute',
+                right: 8,
+                top: 8,
+                color: 'white', // Color de la X
+              }}
+            >
+              <CloseIcon />
+            </IconButton>
+            <Typography variant="h6" fontWeight="bold" align="left">
+              {rol === 'docente' ? 'Crear clase' : 'Unirse a clase'}
+            </Typography>
+          </Box>
+
+          {/* Contenido del modal */}
+          <Box sx={{ p: 4 }}>
             {rol === 'docente' ? (
               <>
-                <div className="mb-4">
-                  <label className="block text-sm font-bold mb-2">Nombre de la clase*</label>
-                  <input
-                    type="text"
-                    className="w-full p-2 border border-gray-300 rounded-lg"
-                    placeholder="Introduce el nombre de la clase"
-                    value={nombreClase}
-                    onChange={(e) => setNombreClase(e.target.value)}
-                  />
-                </div>
-                <div className="mb-4">
-                  <label className="block text-sm font-bold mb-2">Gestión*</label>
-                  <input
-                    type="text"
-                    className="w-full p-2 border border-gray-300 rounded-lg"
-                    placeholder="Introduce la gestión"
-                    value={gestion}
-                    onChange={(e) => setGestion(e.target.value)}
-                  />
-                </div>
-                <div className="flex justify-between space-x-4">
-                  <button
-                    onClick={handleCrearClase}
-                    className={`${
-                      isFormValidCrear ? 'bg-dark-blue hover:bg-light-blue' : 'bg-gray-400 cursor-not-allowed'
-                    } text-white font-bold py-2 px-4 rounded w-full`}
-                    disabled={!isFormValidCrear}
-                  >
-                    Crear clase
-                  </button>
-                  <button onClick={handleCerrarModal} className="bg-dark-blue text-white font-bold py-2 px-4 rounded w-full hover:bg-light-blue">
-                    Cancelar
-                  </button>
-                </div>
+                <TextField
+                  fullWidth
+                  label="Nombre de la clase"
+                  margin="normal"
+                  value={nombreClase}
+                  onChange={(e) => setNombreClase(e.target.value)}
+                  sx={{
+                    bgcolor: '#B3D6F9', // Color de fondo para el campo de nombre de clase
+                    borderRadius: 2, // Bordes redondeados
+                  }}
+                  InputProps={{
+                    sx: {
+                      borderRadius: 2, // Bordes redondeados para el input
+                    },
+                  }}
+                />
+                <TextField
+                  select
+                  fullWidth
+                  label="Gestión"
+                  margin="normal"
+                  value={gestion}
+                  onChange={(e) => setGestion(e.target.value)}
+                  sx={{
+                    bgcolor: '#B3D6F9', // Color de fondo para el campo de gestión
+                    borderRadius: 2, // Bordes redondeados
+                  }}
+                  InputProps={{
+                    sx: {
+                      borderRadius: 2, // Bordes redondeados para el input
+                    },
+                  }}
+                >
+                  {gestiones.map((gestion, index) => (
+                    <MenuItem key={index} value={gestion.cod_gestion}>
+                      {gestion.gestion}
+                    </MenuItem>
+                  ))}
+                </TextField>
               </>
             ) : (
               <>
-                <div className="mb-4">
-                  <label className="block text-sm font-bold mb-2">Código de clase*</label>
-                  <input
-                    type="text"
-                    className="w-full p-2 border border-gray-300 rounded-lg"
-                    placeholder="Introduce el código de la clase"
-                    value={codigoClase}
-                    onChange={(e) => setCodigoClase(e.target.value)}
-                  />
-                </div>
-                <div className="flex justify-between space-x-4">
-                  <button
-                    onClick={handleUnirseClase}
-                    className={`${
-                      isFormValidUnirse ? 'bg-dark-blue hover:bg-light-blue' : 'bg-gray-400 cursor-not-allowed'
-                    } text-white font-bold py-2 px-4 rounded w-full`}
-                    disabled={!isFormValidUnirse}
-                  >
-                    Unirse a clase
-                  </button>
-                  <button onClick={handleCerrarModal} className="bg-dark-blue text-white font-bold py-2 px-4 rounded w-full hover:bg-light-blue">
-                    Cancelar
-                  </button>
-                </div>
+                <TextField
+                  fullWidth
+                  label="Código de clase"
+                  margin="normal"
+                  value={codigoClase}
+                  onChange={(e) => setCodigoClase(e.target.value)}
+                  sx={{
+                    bgcolor: '#B3D6F9', // Color de fondo para el campo de código de clase
+                    borderRadius: 2, // Bordes redondeados
+                  }}
+                  InputProps={{
+                    sx: {
+                      borderRadius: 2, // Bordes redondeados para el input
+                    },
+                  }}
+                />
               </>
             )}
-          </div>
-        </div>
-      )}
-    </div>
+
+            {error && (
+              <Typography color="error" variant="body2" sx={{ mt: 1 }}>
+                {error}
+              </Typography>
+            )}
+          </Box>
+
+          {/* Footer con los botones */}
+          <Box sx={{ display: 'flex', justifyContent: 'space-between', p: 2, bgcolor: 'primary.main' }}>
+            {rol === 'docente' ? (
+              <Button
+                variant="contained"
+                sx={{
+                  bgcolor: 'white',
+                  color: 'primary.main',
+                  width: '45%',
+                  borderRadius: 2, // Bordes redondeados
+                }}
+                onClick={handleCrearClase}
+              >
+                Crear clase
+              </Button>
+            ) : (
+              <Button
+                variant="contained"
+                sx={{
+                  bgcolor: 'white',
+                  color: 'primary.main',
+                  width: '45%',
+                  borderRadius: 2, // Bordes redondeados
+                }}
+                onClick={handleUnirseClase}
+              >
+                Unirse a clase
+              </Button>
+            )}
+            <Button
+              variant="contained"
+              sx={{
+                bgcolor: 'white',
+                color: 'primary.main',
+                width: '45%',
+                borderRadius: 2, // Bordes redondeados
+              }}
+              onClick={handleCerrarModal}
+            >
+              Cancelar
+            </Button>
+          </Box>
+        </Box>
+      </Modal>
+    </Box>
   );
 };
 

@@ -1,8 +1,9 @@
 import React from 'react'
+import ClasesPrueba from './ClasesPrueba'
 
 function Inicio() {
   return (
-      <h1>Mis Proyectos</h1>
+      <ClasesPrueba/>
   )
 }
 
