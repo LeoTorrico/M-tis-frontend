@@ -1,12 +1,32 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import { FaEye, FaEyeSlash } from "react-icons/fa";
 import { motion } from "framer-motion";
-import { useWindowDimensions } from "../../utils";
 
 function RegistroDocentes() {
-  // Constante que devuelve las dimensiones de la ventana
+  // Función que devuelve las dimensiones de la ventana
+  const useWindowDimensions = () => {
+    const [windowDimensions, setWindowDimensions] = useState({
+      width: window.innerWidth,
+      height: window.innerHeight,
+    });
+
+    useEffect(() => {
+      const handleResize = () => {
+        setWindowDimensions({
+          width: window.innerWidth,
+          height: window.innerHeight,
+        });
+      };
+
+      window.addEventListener("resize", handleResize);
+      return () => window.removeEventListener("resize", handleResize);
+    }, []);
+
+    return windowDimensions;
+  };
+
   const { height } = useWindowDimensions();
 
   const errorMessages = {
@@ -62,7 +82,7 @@ function RegistroDocentes() {
       formData.nombre.length > 60 ||
       /[^a-zA-Z\s']/.test(formData.nombre)
     ) {
-      newErrors.nombre = errorMessages.nombre; // Usando mensaje dinámico
+      newErrors.nombre = errorMessages.nombre;
     }
     if (
       !formData.apellido ||
@@ -70,13 +90,13 @@ function RegistroDocentes() {
       formData.apellido.length > 80 ||
       /[^a-zA-Z\s']/.test(formData.apellido)
     ) {
-      newErrors.apellido = errorMessages.apellido; // Usando mensaje dinámico
+      newErrors.apellido = errorMessages.apellido;
     }
     if (
       !formData.correo ||
       !/^[\w-.]+@(umss\.edu\.bo|fcyt\.umss\.edu\.bo)$/.test(formData.correo)
     ) {
-      newErrors.correo = errorMessages.correo; // Usando mensaje dinámico
+      newErrors.correo = errorMessages.correo;
     }
     if (
       !formData.contraseña ||
@@ -85,7 +105,7 @@ function RegistroDocentes() {
       !/[A-Z]/.test(formData.contraseña) ||
       !/[a-z]/.test(formData.contraseña)
     ) {
-      newErrors.contraseña = errorMessages.contraseña; // Usando mensaje dinámico
+      newErrors.contraseña = errorMessages.contraseña;
     }
 
     setErrors(newErrors);
@@ -108,7 +128,7 @@ function RegistroDocentes() {
       } catch (error) {
         if (error.response && error.response.data) {
           setErrors({
-            api: error.response.data.detalle || errorMessages.api, // Usando mensaje dinámico
+            api: error.response.data.detalle || errorMessages.api,
           });
         }
       }
@@ -139,14 +159,12 @@ function RegistroDocentes() {
   return (
     <motion.div
       className={`h-[${height - 80}px] overflow-hidden`}
-      initial={{ opacity: 0, x: 100 }} // Animación inicial
-      animate={{ opacity: 1, x: 0 }} // Animación de entrada
-      exit={{ opacity: 0, x: -100 }} // Animación de salida
-      transition={{ duration: 0.5 }} // Duración de la animación
+      initial={{ opacity: 0, x: 100 }}
+      animate={{ opacity: 1, x: 0 }}
+      exit={{ opacity: 0, x: -100 }}
+      transition={{ duration: 0.5 }}
     >
       <div className={`h-[calc(100vh-80px)] overflow-auto`}>
-        {" "}
-        {/* Modificado para ajustar la altura */}
         <div className="flex flex-col md:flex-row h-full">
           <div className="flex flex-col justify-center p-6 md:p-14 w-full md:w-1/2 bg-[#3684DB] text-white rounded-none md:rounded-r-[250px] md:rounded-b-[250]">
             <h2 className="text-xl md:text-2xl mb-4 md:mb-6 font-bold text-center">
@@ -226,27 +244,28 @@ function RegistroDocentes() {
                 <label htmlFor="contraseña" className="block font-bold mb-2">
                   Contraseña*
                 </label>
-                <input
-                  id="contraseña"
-                  type={showPassword ? "text" : "password"}
-                  value={formData.contraseña}
-                  onChange={handleChange}
-                  placeholder="Ingrese su contraseña"
-                  required
-                  className="w-full md:w-[90%] py-2 px-3 border-none rounded-full text-base text-black bg-white shadow-md"
-                />
-                <button
-                  type="button"
-                  onClick={togglePasswordVisibility}
-                  className="absolute right-4 top-3/4 transform -translate-y-1/2 text-gray-500 md:right-20"
-                >
-                  {showPassword ? (
-                    <FaEyeSlash className="text-black" />
-                  ) : (
-                    <FaEye className="text-black" />
-                  )}
-                </button>
-
+                <div className="relative">
+                  <input
+                    id="contraseña"
+                    type={showPassword ? "text" : "password"}
+                    value={formData.contraseña}
+                    onChange={handleChange}
+                    placeholder="Ingrese su contraseña"
+                    required
+                    className="w-full md:w-[90%] py-2 px-3 border-none rounded-full text-base text-black bg-white shadow-md"
+                  />
+                  <button
+                    type="button"
+                    onClick={togglePasswordVisibility}
+                    className="absolute right-4 top-1/2 transform -translate-y-1/2 text-black-500 sm:right-8 md:right-12 lg:right-16 xl:right-20"
+                  >
+                    {showPassword ? (
+                      <FaEyeSlash className="text-black" />
+                    ) : (
+                      <FaEye className="text-black" />
+                    )}
+                  </button>
+                </div>
                 {errors.contraseña && (
                   <div className="absolute left-1/2 transform -translate-y-1/2 mt-1 bg-white text-red-500 border border-red-500 p-2 rounded-lg shadow-md">
                     <span role="alert" className="text-sm font-semibold">
@@ -256,6 +275,7 @@ function RegistroDocentes() {
                   </div>
                 )}
               </div>
+
               {errors.api && (
                 <div className="text-red-500 text-sm">{errors.api}</div>
               )}
