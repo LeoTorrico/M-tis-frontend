@@ -244,7 +244,7 @@ function RegistroDocentes() {
                 <label htmlFor="contraseña" className="block font-bold mb-2">
                   Contraseña*
                 </label>
-                <div className="relative">
+                <div className="relative w-full md:w-[90%]">
                   <input
                     id="contraseña"
                     type={showPassword ? "text" : "password"}
@@ -252,12 +252,12 @@ function RegistroDocentes() {
                     onChange={handleChange}
                     placeholder="Ingrese su contraseña"
                     required
-                    className="w-full md:w-[90%] py-2 px-3 border-none rounded-full text-base text-black bg-white shadow-md"
+                    className="w-full py-2 px-3 pr-10 border-none rounded-full text-base text-black bg-white shadow-md"
                   />
                   <button
                     type="button"
                     onClick={togglePasswordVisibility}
-                    className="absolute right-4 top-1/2 transform -translate-y-1/2 text-blanc-500 sm:right-8 md:right-12 lg:right-16 xl:right-20"
+                    className="absolute right-4 top-1/2 transform -translate-y-1/2 text-gray-500"
                   >
                     {showPassword ? (
                       <FaEyeSlash className="text-black" />
@@ -266,6 +266,7 @@ function RegistroDocentes() {
                     )}
                   </button>
                 </div>
+
                 {errors.contraseña && (
                   <div className="absolute left-1/2 transform -translate-y-1/2 mt-1 bg-white text-red-500 border border-red-500 p-2 rounded-lg shadow-md">
                     <span role="alert" className="text-sm font-semibold">
@@ -347,7 +348,7 @@ function RegistroDocentes() {
           <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
             <div className="bg-[#fdfdfd] p-0 rounded-lg shadow-lg w-11/12 md:w-1/2 lg:w-1/3">
               {/* Color de fondo del modal */}
-               <div className="bg-[#3684DB] p-4 rounded-t-lg">
+              <div className="bg-[#3684DB] p-4 rounded-t-lg">
                 {/* Encabezado del modal */}
                 <h3 className="text-base md:text-lg font-bold text-white text-center">
                   Confirmar Cancelación
