@@ -274,26 +274,28 @@ function RegistroEstudiante() {
                 <label htmlFor="contraseña" className="block font-bold mb-2">
                   Contraseña*
                 </label>
-                <input
-                  id="contraseña"
-                  type={showPassword ? "text" : "password"}
-                  value={formData.contraseña}
-                  onChange={handleChange}
-                  placeholder="Ingrese su contraseña"
-                  required
-                  className="w-full md:w-[90%] py-2 px-3 border-none rounded-full text-base text-black bg-white shadow-md"
-                />
-                <button
-                  type="button"
-                  onClick={togglePasswordVisibility}
-                  className="absolute right-4 sm:right-20 top-11 text-gray-500"
-                >
-                  {showPassword ? (
-                    <FaEyeSlash className="text-black" />
-                  ) : (
-                    <FaEye className="text-black" />
-                  )}
-                </button>
+                <div className="relative w-full md:w-[90%]">
+                  <input
+                    id="contraseña"
+                    type={showPassword ? "text" : "password"}
+                    value={formData.contraseña}
+                    onChange={handleChange}
+                    placeholder="Ingrese su contraseña"
+                    required
+                    className="w-full py-2 px-3 pr-10 border-none rounded-full text-base text-black bg-white shadow-md"
+                  />
+                  <button
+                    type="button"
+                    onClick={togglePasswordVisibility}
+                    className="absolute right-4 top-1/2 transform -translate-y-1/2 text-gray-500"
+                  >
+                    {showPassword ? (
+                      <FaEyeSlash className="text-black" />
+                    ) : (
+                      <FaEye className="text-black" />
+                    )}
+                  </button>
+                </div>
                 {errors.contraseña && (
                   <div className="absolute left-1/2 transform -translate-x-1/2 mt-1 bg-white text-red-500 border border-red-500 p-2 rounded-lg shadow-md">
                     <span role="alert" className="text-sm font-semibold">
