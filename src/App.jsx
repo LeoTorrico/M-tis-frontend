@@ -3,7 +3,7 @@ import Sidebar from "./Components/Sidebar";
 import Navbar from "./Components/Navbar";
 import "./App.css";
 import Inicio from "./Pages/Inicio";
-import LoginEstudiantes from "./pages/LoginEstudiantes";
+import LoginEstudiantes from "./Pages/LoginEstudiantes";
 import PlanificacionDocente from "./Pages/PlanificacionDocente";
 import VistaCurso from "./Pages/VistaCurso";
 import Modal from "react-modal";
@@ -30,7 +30,7 @@ function App() {
               path="/planificacion-docente"
               element={<PlanificacionDocente />}
             />
-            <Route path="/Vista-Curso" element={<VistaCurso />} />
+            <Route path="/Vista-Curso/:cod_clase" element={<VistaCurso />} />
             <Route path="/RegistroDocentes" element={<RegistroDocentes />} />
             <Route
               path="/RegistroEstudiante"
@@ -63,7 +63,7 @@ function Layout({ children }) {
   const isSidebarPage =
     location.pathname === "/Inicio" ||
     location.pathname === "/planificacion-docente" ||
-    location.pathname === "/Vista-Curso" ||
+    location.pathname.match(/^\/Vista-Curso\/.+$/) ||
     location.pathname === "/ClasesPrueba";
 
   return (
