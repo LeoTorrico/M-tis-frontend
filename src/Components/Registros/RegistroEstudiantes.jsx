@@ -261,7 +261,7 @@ function RegistroEstudiante() {
                   className="w-full md:w-[90%] py-2 px-3 border-none rounded-full text-base text-black bg-white shadow-md"
                 />
                 {errors.correo && (
-                  <div className="absolute left-1/2 transform -translate-x-1/2 mt-1 bg-white text-red-500 border border-red-500 p-2 rounded-lg shadow-md">
+                  <div className="absolute left-1/2 transform -translate-y-1/2 mt-1 bg-white text-red-500 border border-red-500 p-2 rounded-lg shadow-md">
                     <span role="alert" className="text-sm font-semibold">
                       {errors.correo}
                     </span>
@@ -297,7 +297,7 @@ function RegistroEstudiante() {
                   </button>
                 </div>
                 {errors.contraseña && (
-                  <div className="absolute left-1/2 transform -translate-x-1/2 mt-1 bg-white text-red-500 border border-red-500 p-2 rounded-lg shadow-md">
+                  <div className="absolute left-1/2 transform -translate-y-1/2 mt-1 bg-white text-red-500 border border-red-500 p-2 rounded-lg shadow-md">
                     <span role="alert" className="text-sm font-semibold">
                       {errors.contraseña}
                     </span>
