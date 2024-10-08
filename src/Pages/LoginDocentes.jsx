@@ -70,7 +70,7 @@ function LoginDocentes() {
 
       console.log("Autenticación exitosa:", response.data);
       localStorage.setItem("token", response.data.docente.token);
-      navigate("/Inicio");
+      navigate("/");
     } catch (error) {
       console.error("Error al iniciar sesión", error);
       setCredentialError("Credenciales incorrectas.");
@@ -92,7 +92,11 @@ function LoginDocentes() {
       <div className="flex-1 bg-white flex flex-col justify-center items-center p-6 md:p-12 mt-6 md:mt-0">
         <div className="flex flex-col w-full md:w-2/3">
           <h1 className="text-5xl font-bold mb-2 text-center">Bienvenidos a</h1>
-          <img src="/LogoColor.svg" alt="Logo Color" className="w-full h-auto" />
+          <img
+            src="/LogoColor.svg"
+            alt="Logo Color"
+            className="w-full h-auto"
+          />
           <p className="text-xl mb-2 text-center">
             MTIS es la plataforma de gestión de proyectos para organizar,
             colaborar y seguir el progreso en tiempo real. Inicia sesión y

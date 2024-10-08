@@ -2,14 +2,11 @@ import { Route, Routes, useLocation } from "react-router-dom";
 import Sidebar from "./Components/Sidebar";
 import Navbar from "./Components/Navbar";
 import "./App.css";
-import Inicio from "./Pages/Inicio";
 import LoginEstudiantes from "./Pages/LoginEstudiantes";
-import PlanificacionDocente from "./Pages/PlanificacionDocente";
 import VistaCurso from "./Pages/VistaCurso";
 import Modal from "react-modal";
 import ClasesPrueba from "./Pages/ClasesPrueba";
 import RegistroDocentes from "./Components/RegistroD/RegistroDocentes";
-import Home from "./Pages/Home";
 import RegistroEstudiante from "./Components/Registros/RegistroEstudiantes";
 import EnviarSolicitud from "./Pages/EnviarSolicitud";
 import RestablecerContrasenia from "./Pages/RestablecerContrasenia";
@@ -23,21 +20,13 @@ function App() {
       <Layout>
         <AnimatePresence>
           <Routes>
-            <Route path="/Inicio" element={<Inicio />} />{" "}
-            {/* Cambiado a Inicio */}
-            <Route path="/login" element={<LoginEstudiantes />} />
-            <Route
-              path="/planificacion-docente"
-              element={<PlanificacionDocente />}
-            />
+            <Route path="/" element={<ClasesPrueba />} />{" "}
             <Route path="/Vista-Curso/:cod_clase" element={<VistaCurso />} />
             <Route path="/RegistroDocentes" element={<RegistroDocentes />} />
             <Route
               path="/RegistroEstudiante"
               element={<RegistroEstudiante />}
             />
-            <Route path="/" element={<Home />} />
-            <Route path="/ClasesPrueba" element={<ClasesPrueba />} />{" "}
             <Route path="/EnviarSolicitud" element={<EnviarSolicitud />} />
             <Route
               path="/reset-password/:token"
@@ -61,10 +50,7 @@ function Layout({ children }) {
     location.pathname === "/RegistroEstudiante";
 
   const isSidebarPage =
-    location.pathname === "/Inicio" ||
-    location.pathname === "/planificacion-docente" ||
-    location.pathname.match(/^\/Vista-Curso\/.+$/) ||
-    location.pathname === "/ClasesPrueba";
+    location.pathname === "/" || location.pathname.match(/^\/Vista-Curso\/.+$/);
 
   return (
     <div className="flex flex-grow">
