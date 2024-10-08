@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import HeaderCurso from "../Components/HeaderCurso";
 import GruposEmpresas from "../Components/GruposEmpresas";
 import Tablon from "../Components/Tablon";
@@ -6,11 +6,9 @@ import Alumnos from "../Components/Alumnos";
 import ModalRegistroGrupo from "../Components/ModalRegistroGrupo";
 import axios from "axios";
 import Swal from "sweetalert2";
+import { useParams } from "react-router-dom";
+import getDetailsFromToken from "./Utils";
 
-const curso = {
-  nombre: "Taller de Ingeniería de Software",
-  gestion: "II-2024",
-};
 const grupos = [
   { id: 1, nombre: "CodeCraft" },
   { id: 2, nombre: "ActionSoft" },
@@ -21,6 +19,11 @@ const grupos = [
 ];
 
 const VistaCurso = () => {
+  const { cod_clase } = useParams();
+  const [curso, setCurso] = useState({ nombre: "", gestion: "" });
+  const [cargando, setCargando] = useState(true);
+  const token = localStorage.getItem("token");
+  const { codigoSis, rol } = getDetailsFromToken(token);
   const [activeTab, setActiveTab] = useState("GruposEmpresas");
   const [loading, setLoading] = useState(false);
   const [modalIsOpen, setModalIsOpen] = useState(false);
@@ -45,7 +48,34 @@ const VistaCurso = () => {
     "Gestión de calidad",
     "Documentación",
   ];
-
+  useEffect(() => {
+    const fetchClase = async () => {
+      try {
+        const token = localStorage.getItem("token");
+        const response = await axios.get(
+          "http://localhost:3000/clases-estudiante/obtener-clases",
+          {
+            params: { codigoSis: codigoSis },
+            headers: { Authorization: `Bearer ${token}` },
+          }
+        );
+        const clase = response.data.clases.find(
+          (c) => c.cod_clase === cod_clase
+        ); // Buscar la clase correspondiente
+        if (clase) {
+          setCurso({
+            nombre: clase.nombre_clase,
+            gestion: clase.gestion,
+          });
+        }
+      } catch (error) {
+        console.error("Error fetching clase:", error);
+      } finally {
+        setCargando(false);
+      }
+    };
+    fetchClase();
+  }, [cod_clase]);
   const openModal = () => setModalIsOpen(true);
   const closeModal = () => setModalIsOpen(false);
 
