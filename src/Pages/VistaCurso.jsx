@@ -20,7 +20,12 @@ const grupos = [
 
 const VistaCurso = () => {
   const { cod_clase } = useParams();
-  const [curso, setCurso] = useState({ nombre: "", gestion: "" });
+  const [curso, setCurso] = useState({
+    nombre: "",
+    gestion: "",
+    cod_docente: "",
+    cod_gestion: "",
+  });
   const [cargando, setCargando] = useState(true);
   const token = localStorage.getItem("token");
   const { codigoSis, rol } = getDetailsFromToken(token);
@@ -66,6 +71,8 @@ const VistaCurso = () => {
           setCurso({
             nombre: clase.nombre_clase,
             gestion: clase.gestion,
+            cod_docente: clase.cod_docente,
+            cod_gestion: clase.cod_gestion,
           });
         }
       } catch (error) {
@@ -130,9 +137,10 @@ const VistaCurso = () => {
       logo: groupData.logo,
       nombreLargo: groupData.nombreLargo,
       nombreCorto: groupData.nombreCorto,
-      cod_clase: "123", // Cambia esto por el valor correcto
-      cod_docente: "1", // Cambia esto por el valor correcto
+      cod_clase: cod_clase, // Cambia esto por el valor correcto
+      cod_docente: curso.cod_docente, // Cambia esto por el valor correcto
       integrantes: groupData.integrantes,
+      cod_gestion: curso.cod_gestion,
     };
     console.log("Datos enviados al backend:", groupDataToSend);
     try {
