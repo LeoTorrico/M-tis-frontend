@@ -45,7 +45,7 @@ const ModalRegistroGrupo = ({
             <IoMdClose className="w-6 h-6" />
           </button>
         </div>
-        {loading ? ( // Mostrar spinner si loading es true
+        {loading ? (
           <div className="flex justify-center items-center flex-1">
             <RingLoader color={"#ffffff"} size={150} />
           </div>
@@ -86,7 +86,7 @@ const ModalRegistroGrupo = ({
               </button>
             </div>
 
-            <div className="w-1/2 bg-white p-6">
+            <div className="w-1/2 bg-white p-6 flex flex-col justify-between">
               <div className="space-y-4">
                 <div>
                   <label className="block font-semibold mb-2">
@@ -116,7 +116,7 @@ const ModalRegistroGrupo = ({
                 </div>
 
                 {/* Scrollable area for integrantes */}
-                <div className="max-h-[300px] overflow-y-auto">
+                <div className="max-h-[200px] overflow-y-auto border p-2 rounded-lg">
                   {groupData.integrantes.map((integrante, index) => (
                     <div
                       key={index}
