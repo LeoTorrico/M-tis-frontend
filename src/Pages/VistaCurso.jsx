@@ -128,6 +128,11 @@ const VistaCurso = () => {
       integrantes: [...groupData.integrantes, { codigo_sis: "", rol: "" }],
     });
   };
+  const handleRemoveIntegrante = (index) => {
+    const nuevosIntegrantes = [...groupData.integrantes];
+    nuevosIntegrantes.splice(index, 1); // Elimina el integrante por su índice
+    setGroupData({ ...groupData, integrantes: nuevosIntegrantes });
+  };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -231,6 +236,7 @@ const VistaCurso = () => {
         loading={loading} //
         integrantesPosibles={estudiantes}
         rolesPosibles={rolesPosibles}
+        handleRemoveIntegrante={handleRemoveIntegrante}
       />
     </div>
   );

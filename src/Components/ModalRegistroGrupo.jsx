@@ -1,7 +1,8 @@
 import React from "react";
 import Modal from "react-modal";
-import { IoMdClose } from "react-icons/io";
+import { IoMdClose } from "react-icons/io"; // Ícono de cerrar
 import { RingLoader } from "react-spinners";
+
 const ModalRegistroGrupo = ({
   modalIsOpen,
   closeModal,
@@ -15,8 +16,9 @@ const ModalRegistroGrupo = ({
   handleIntegranteChange,
   handleRolChange,
   handleAddIntegrante,
+  handleRemoveIntegrante, // Nueva función para eliminar integrantes
 }) => {
-  // Limit the number of integrantes to 6
+  // Limitar los integrantes a un máximo de 6
   const addIntegrante = () => {
     if (groupData.integrantes.length < 6) {
       handleAddIntegrante();
@@ -115,7 +117,7 @@ const ModalRegistroGrupo = ({
                   />
                 </div>
 
-                {/* Scrollable area for integrantes */}
+                {/* Área desplazable para los integrantes */}
                 <div className="max-h-[200px] overflow-y-auto border p-2 rounded-lg">
                   {groupData.integrantes.map((integrante, index) => (
                     <div
@@ -157,6 +159,14 @@ const ModalRegistroGrupo = ({
                           </option>
                         ))}
                       </select>
+                      {/* Botón para eliminar integrante */}
+                      <button
+                        type="button"
+                        onClick={() => handleRemoveIntegrante(index)} // Nueva función
+                        className="text-red-500 hover:text-red-700"
+                      >
+                        <IoMdClose className="w-6 h-6" />
+                      </button>
                     </div>
                   ))}
                 </div>
