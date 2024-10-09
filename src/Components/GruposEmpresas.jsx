@@ -7,7 +7,7 @@ const GruposEmpresas = () => {
   // Función para obtener los datos desde la API
   const fetchGrupos = async () => {
     try {
-      const response = await fetch("http://localhost:3000/api/grupos"); // Ajusta la URL según tu backend
+      const response = await fetch("http://localhost:3000/api/grupos/ABCDE"); // Ajusta la URL según tu backend
       const data = await response.json();
       setGrupos(data);
     } catch (error) {

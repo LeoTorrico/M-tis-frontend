@@ -9,15 +9,6 @@ import Swal from "sweetalert2";
 import { useParams } from "react-router-dom";
 import getDetailsFromToken from "./Utils";
 
-const grupos = [
-  { id: 1, nombre: "CodeCraft" },
-  { id: 2, nombre: "ActionSoft" },
-  { id: 3, nombre: "Agile Action" },
-  { id: 4, nombre: "AiraSoft" },
-  { id: 5, nombre: "Compusoft" },
-  { id: 6, nombre: "DevSociety" },
-];
-
 const VistaCurso = () => {
   const { cod_clase } = useParams();
   const [curso, setCurso] = useState({
@@ -37,14 +28,9 @@ const VistaCurso = () => {
     nombreLargo: "",
     nombreCorto: "",
     integrantes: [],
+    cod_horario: "",
   });
-
-  const estudiantes = [
-    { codigo_sis: "20211036", nombre: "Michelle Barriga" },
-    { codigo_sis: "20211037", nombre: "Omar Mamani" },
-    { codigo_sis: "20111037", nombre: "Mauricio Vallejos" },
-  ];
-
+  const [estudiantes, setEstudiantes] = useState([]);
   const rolesPosibles = [
     "Scrum master",
     "Backend",
@@ -53,10 +39,10 @@ const VistaCurso = () => {
     "Gestión de calidad",
     "Documentación",
   ];
+
   useEffect(() => {
     const fetchClase = async () => {
       try {
-        const token = localStorage.getItem("token");
         const response = await axios.get(
           "http://localhost:3000/clases-estudiante/obtener-clases",
           {
@@ -81,8 +67,21 @@ const VistaCurso = () => {
         setCargando(false);
       }
     };
+
+    const fetchEstudiantes = async () => {
+      try {
+        const response = await axios.get(
+          `http://localhost:3000/api/grupos/${cod_clase}/estudiantes-sin-grupo`
+        );
+        setEstudiantes(response.data);
+      } catch (error) {
+        console.error("Error fetching estudiantes:", error);
+      }
+    };
     fetchClase();
-  }, [cod_clase]);
+    fetchEstudiantes();
+  }, [cod_clase, codigoSis, token]);
+
   const openModal = () => setModalIsOpen(true);
   const closeModal = () => setModalIsOpen(false);
 
@@ -133,7 +132,9 @@ const VistaCurso = () => {
     nuevosIntegrantes.splice(index, 1); // Elimina el integrante por su índice
     setGroupData({ ...groupData, integrantes: nuevosIntegrantes });
   };
-
+  const handleHorarioChange = (cod_horario) => {
+    setGroupData({ ...groupData, cod_horario });
+  };
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
@@ -146,6 +147,7 @@ const VistaCurso = () => {
       cod_docente: curso.cod_docente, // Cambia esto por el valor correcto
       integrantes: groupData.integrantes,
       cod_gestion: curso.cod_gestion,
+      cod_horario: groupData.cod_horario,
     };
     console.log("Datos enviados al backend:", groupDataToSend);
     try {
@@ -166,6 +168,7 @@ const VistaCurso = () => {
           nombreLargo: "",
           nombreCorto: "",
           integrantes: [],
+          cod_horario: "",
         });
         closeModal();
         await Swal.fire({
@@ -197,9 +200,9 @@ const VistaCurso = () => {
       case "Tablon":
         return <Tablon />;
       case "GruposEmpresas":
-        return <GruposEmpresas grupos={grupos} />;
+        return <GruposEmpresas curso={curso} />;
       case "Alumnos":
-        return <Alumnos />;
+        return <Alumnos curso={curso} />;
       default:
         return null;
     }
@@ -237,6 +240,8 @@ const VistaCurso = () => {
         integrantesPosibles={estudiantes}
         rolesPosibles={rolesPosibles}
         handleRemoveIntegrante={handleRemoveIntegrante}
+        handleHorarioChange={handleHorarioChange}
+        cod_clase={cod_clase}
       />
     </div>
   );

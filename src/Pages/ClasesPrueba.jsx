@@ -157,6 +157,7 @@ const ClasesPrueba = () => {
       setCodigoClase("");
       setError(""); // Limpiar mensaje de error al unirse correctamente
       handleCerrarModal();
+      window.location.reload();
     } catch (error) {
       console.error("Error joining class:", error);
     }

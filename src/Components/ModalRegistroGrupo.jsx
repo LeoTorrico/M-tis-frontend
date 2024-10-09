@@ -1,7 +1,8 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import Modal from "react-modal";
 import { IoMdClose } from "react-icons/io"; // Ícono de cerrar
 import { RingLoader } from "react-spinners";
+import axios from "axios";
 
 const ModalRegistroGrupo = ({
   modalIsOpen,
@@ -16,8 +17,30 @@ const ModalRegistroGrupo = ({
   handleIntegranteChange,
   handleRolChange,
   handleAddIntegrante,
-  handleRemoveIntegrante, // Nueva función para eliminar integrantes
+  handleRemoveIntegrante,
+  handleHorarioChange,
+  cod_clase, // Asegúrate de que este prop sea pasado correctamente
 }) => {
+  const [horarios, setHorarios] = useState([]); // Estado para almacenar los horarios
+  const [loadingHorarios, setLoadingHorarios] = useState(true); // Estado para gestionar la carga de horarios
+
+  useEffect(() => {
+    const fetchHorarios = async () => {
+      try {
+        const response = await axios.get(
+          `http://localhost:3000/clases/${cod_clase}/obtener-horarios`
+        );
+        setHorarios(response.data.horarios); // Extrae el arreglo de horarios
+      } catch (error) {
+        console.error("Error fetching horarios:", error);
+      } finally {
+        setLoadingHorarios(false); // Finaliza la carga
+      }
+    };
+
+    fetchHorarios();
+  }, [cod_clase]); // Dependencia para volver a ejecutar cuando cambie cod_clase
+
   // Limitar los integrantes a un máximo de 6
   const addIntegrante = () => {
     if (groupData.integrantes.length < 6) {
@@ -47,7 +70,7 @@ const ModalRegistroGrupo = ({
             <IoMdClose className="w-6 h-6" />
           </button>
         </div>
-        {loading ? (
+        {loadingHorarios || loading ? ( // Comprueba si los horarios se están cargando
           <div className="flex justify-center items-center flex-1">
             <RingLoader color={"#ffffff"} size={150} />
           </div>
@@ -117,6 +140,29 @@ const ModalRegistroGrupo = ({
                   />
                 </div>
 
+                {/* Select para seleccionar el horario */}
+                <div>
+                  <label className="block font-semibold mb-2">Horario*</label>
+                  <select
+                    value={groupData.cod_horario || ""}
+                    onChange={(e) => handleHorarioChange(e.target.value)}
+                    className="border rounded-lg w-full p-2"
+                    required
+                  >
+                    <option value="" disabled>
+                      Seleccionar horario
+                    </option>
+                    {horarios.map((horario) => (
+                      <option
+                        key={horario.cod_horario}
+                        value={horario.cod_horario}
+                      >
+                        {`${horario.dia_horario} ${horario.hora_inicio} - ${horario.hora_fin}`}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+
                 {/* Área desplazable para los integrantes */}
                 <div className="max-h-[200px] overflow-y-auto border p-2 rounded-lg">
                   {groupData.integrantes.map((integrante, index) => (
@@ -140,7 +186,9 @@ const ModalRegistroGrupo = ({
                             key={estudiante.codigo_sis}
                             value={estudiante.codigo_sis}
                           >
-                            {estudiante.nombre}
+                            {estudiante.nombre_estudiante +
+                              " " +
+                              estudiante.apellido_estudiante}
                           </option>
                         ))}
                       </select>
@@ -162,7 +210,7 @@ const ModalRegistroGrupo = ({
                       {/* Botón para eliminar integrante */}
                       <button
                         type="button"
-                        onClick={() => handleRemoveIntegrante(index)} // Nueva función
+                        onClick={() => handleRemoveIntegrante(index)}
                         className="text-red-500 hover:text-red-700"
                       >
                         <IoMdClose className="w-6 h-6" />
