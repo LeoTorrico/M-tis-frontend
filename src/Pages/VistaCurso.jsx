@@ -75,7 +75,12 @@ const VistaCurso = () => {
         );
         setEstudiantes(response.data);
       } catch (error) {
-        console.error("Error fetching estudiantes:", error);
+        if (error.response && error.response.status === 404) {
+          // Si recibes un 404, muestra un mensaje en lugar del error
+          setEstudiantes([]); // O cualquier lógica para cuando no haya estudiantes
+        } else {
+          console.error("Error fetching estudiantes:", error);
+        }
       }
     };
     fetchClase();

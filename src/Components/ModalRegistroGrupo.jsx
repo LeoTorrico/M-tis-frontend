@@ -177,9 +177,12 @@ const ModalRegistroGrupo = ({
                         }
                         className="border rounded-lg w-1/2 p-2"
                         required
+                        disabled={integrantesPosibles.length === 0} // Deshabilitar si no hay estudiantes
                       >
                         <option value="" disabled>
-                          Seleccionar integrante
+                          {integrantesPosibles.length === 0
+                            ? "No hay estudiantes disponibles"
+                            : "Seleccionar integrante"}
                         </option>
                         {integrantesPosibles.map((estudiante) => (
                           <option
