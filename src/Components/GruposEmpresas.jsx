@@ -1,13 +1,18 @@
 import React, { useEffect, useState } from "react";
 import { MdGroups } from "react-icons/md";
+import { useNavigate, useParams } from "react-router-dom"; // Importar useNavigate y useParams
 
 const GruposEmpresas = () => {
   const [grupos, setGrupos] = useState([]);
+  const navigate = useNavigate(); // Hook para navegar
+  const { cod_clase } = useParams(); // Obtener el código del curso de la URL
 
   // Función para obtener los datos desde la API
   const fetchGrupos = async () => {
     try {
-      const response = await fetch("http://localhost:3000/api/grupos/ABCDE"); // Ajusta la URL según tu backend
+      const response = await fetch(
+        `http://localhost:3000/api/grupos/${cod_clase}`
+      ); // Ajusta la URL según tu backend
       const data = await response.json();
       setGrupos(data);
     } catch (error) {
@@ -15,20 +20,23 @@ const GruposEmpresas = () => {
     }
   };
 
-  // useEffect para llamar a la función fetchGrupos cuando el componente se monta
   useEffect(() => {
     fetchGrupos();
-  }, []);
+  }, [cod_clase]);
+
+  // Función para manejar la navegación al hacer clic en "Ver Grupo"
+  const handleVerGrupo = (cod_grupoempresa) => {
+    navigate(`/Vista-Curso/${cod_clase}/grupo/${cod_grupoempresa}`); // Redirigir a la página del grupo con el código del curso y el grupo
+  };
 
   return (
     <div className="p-2">
       {grupos.map((grupo) => (
         <div
-          key={grupo.cod_grupoempresa} // Usa un identificador único como nombreCorto o nombreLargo
+          key={grupo.cod_grupoempresa} // Usa un identificador único
           className="bg-light-blue rounded-lg p-4 flex justify-between items-center mb-4"
         >
           <div className="flex items-center">
-            {/* Mostrar el logotipo si existe, de lo contrario un ícono predeterminado */}
             {grupo.logotipo ? (
               <img
                 src={`data:image/png;base64,${grupo.logotipo}`} // Decodifica el logo de base64
@@ -42,7 +50,10 @@ const GruposEmpresas = () => {
             )}
             <span className="text-lg font-medium">{grupo.nombre_largo}</span>
           </div>
-          <button className="bg-semi-blue text-white px-4 py-2 rounded-lg">
+          <button
+            onClick={() => handleVerGrupo(grupo.cod_grupoempresa)} // Navega a la ruta del grupo
+            className="bg-semi-blue text-white px-4 py-2 rounded-lg"
+          >
             Ver Grupo
           </button>
         </div>

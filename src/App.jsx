@@ -12,6 +12,7 @@ import EnviarSolicitud from "./Pages/EnviarSolicitud";
 import RestablecerContrasenia from "./Pages/RestablecerContrasenia";
 import LoginDocentes from "./Pages/LoginDocentes";
 import { AnimatePresence } from "framer-motion";
+import GrupoDetalles from "./Pages/GrupoDetalles";
 Modal.setAppElement("#root");
 
 function App() {
@@ -22,6 +23,10 @@ function App() {
           <Routes>
             <Route path="/" element={<ClasesPrueba />} />{" "}
             <Route path="/Vista-Curso/:cod_clase" element={<VistaCurso />} />
+            <Route
+              path="/Vista-Curso/:cod_clase/grupo/:cod_grupoempresa"
+              element={<GrupoDetalles />}
+            />
             <Route path="/RegistroDocentes" element={<RegistroDocentes />} />
             <Route
               path="/RegistroEstudiante"
