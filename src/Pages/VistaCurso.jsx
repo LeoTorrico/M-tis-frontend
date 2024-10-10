@@ -108,7 +108,7 @@ const VistaCurso = () => {
     fetchClase();
 
     // Solo llamar a fetchEstudiantes si el rol es "ESTUDIANTE"
-    if (rol === "ESTUDIANTE") {
+    if (rol === "estudiante") {
       fetchEstudiantes();
     }
   }, [cod_clase, codigoSis, token, rol]);
