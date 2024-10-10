@@ -43,23 +43,45 @@ const VistaCurso = () => {
   useEffect(() => {
     const fetchClase = async () => {
       try {
-        const response = await axios.get(
-          "http://localhost:3000/clases-estudiante/obtener-clases",
-          {
-            params: { codigoSis: codigoSis },
-            headers: { Authorization: `Bearer ${token}` },
+        if (rol === "estudiante") {
+          const response = await axios.get(
+            "http://localhost:3000/clases-estudiante/obtener-clases",
+            {
+              params: { codigoSis: codigoSis },
+              headers: { Authorization: `Bearer ${token}` },
+            }
+          );
+          const clase = response.data.clases.find(
+            (c) => c.cod_clase === cod_clase
+          ); // Buscar la clase correspondiente
+          if (clase) {
+            setCurso({
+              nombre: clase.nombre_clase,
+              gestion: clase.gestion,
+              cod_docente: clase.cod_docente,
+              cod_gestion: clase.cod_gestion,
+            });
           }
-        );
-        const clase = response.data.clases.find(
-          (c) => c.cod_clase === cod_clase
-        ); // Buscar la clase correspondiente
-        if (clase) {
-          setCurso({
-            nombre: clase.nombre_clase,
-            gestion: clase.gestion,
-            cod_docente: clase.cod_docente,
-            cod_gestion: clase.cod_gestion,
-          });
+        } else if (rol === "docente") {
+          const response = await axios.get(
+            "http://localhost:3000/clases/obtener",
+            {
+              headers: {
+                Authorization: `Bearer ${token}`,
+              },
+            }
+          );
+          const clase = response.data.clases.find(
+            (c) => c.cod_clase === cod_clase
+          );
+          if (clase) {
+            setCurso({
+              nombre: clase.nombre_clase,
+              gestion: clase.gestion,
+              cod_docente: clase.cod_docente,
+              cod_gestion: clase.cod_gestion,
+            });
+          }
         }
       } catch (error) {
         console.error("Error fetching clase:", error);
@@ -76,16 +98,20 @@ const VistaCurso = () => {
         setEstudiantes(response.data);
       } catch (error) {
         if (error.response && error.response.status === 404) {
-          // Si recibes un 404, muestra un mensaje en lugar del error
-          setEstudiantes([]); // O cualquier lógica para cuando no haya estudiantes
+          setEstudiantes([]);
         } else {
           console.error("Error fetching estudiantes:", error);
         }
       }
     };
+
     fetchClase();
-    fetchEstudiantes();
-  }, [cod_clase, codigoSis, token]);
+
+    // Solo llamar a fetchEstudiantes si el rol es "ESTUDIANTE"
+    if (rol === "ESTUDIANTE") {
+      fetchEstudiantes();
+    }
+  }, [cod_clase, codigoSis, token, rol]);
 
   const openModal = () => setModalIsOpen(true);
   const closeModal = () => setModalIsOpen(false);
@@ -219,7 +245,7 @@ const VistaCurso = () => {
       <div className="bg-semi-blue text-white p-6 rounded-lg m-4">
         <h1 className="text-3xl font-bold">{curso.nombre}</h1>
         <p className="text-xl">{curso.gestion}</p>
-        {activeTab === "GruposEmpresas" && (
+        {activeTab === "GruposEmpresas" && rol === "estudiante" && (
           <div className="flex justify-end">
             <button
               className="bg-white text-dark-blue px-4 py-2 rounded-lg border border-blue-800 flex items-center mt-6"
