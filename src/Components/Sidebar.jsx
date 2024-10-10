@@ -1,5 +1,5 @@
 import React, { useContext } from "react";
-import Avatar from "react-avatar";
+import { useNavigate } from "react-router-dom";
 import {
   FaHome,
   FaBuilding,
@@ -12,8 +12,12 @@ import { Link } from "react-router-dom";
 import { UserContext } from "../context/UserContext"; // Ajusta la ruta según tu estructura de carpetas
 
 const Sidebar = () => {
-  const { user } = useContext(UserContext);
-  console.log(user);
+  const { user, logout } = useContext(UserContext);
+  const navigate = useNavigate();
+  const handleLogout = () => {
+    logout();
+    navigate("/LoginEstudiantes");
+  };
   if (!user) {
     return <p>Cargando...</p>; // Muestra algo mientras los datos se cargan
   }
@@ -72,13 +76,13 @@ const Sidebar = () => {
           <FaBell className="mr-3" />
           Notificaciones
         </a>
-        <a
-          href="#cerrar-sesion"
-          className="flex items-center px-4 py-2 hover:bg-light-blue transition-colors"
+        <button
+          onClick={handleLogout}
+          className="flex items-center w-full px-4 py-2 hover:bg-light-blue transition-colors"
         >
           <FaSignOutAlt className="mr-3" />
           Cerrar sesión
-        </a>
+        </button>
       </nav>
     </div>
   );

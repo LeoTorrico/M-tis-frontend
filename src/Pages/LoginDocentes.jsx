@@ -68,9 +68,9 @@ function LoginDocentes() {
         correo: formState.email,
       });
 
-      console.log("Autenticación exitosa:", response.data);
       localStorage.setItem("token", response.data.docente.token);
       navigate("/");
+      window.location.reload();
     } catch (error) {
       console.error("Error al iniciar sesión", error);
       setCredentialError("Credenciales incorrectas.");
