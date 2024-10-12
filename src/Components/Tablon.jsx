@@ -76,7 +76,7 @@ const Tablon = () => {
                     </span>
                     <div>
                       <span className="text-lg font-medium">
-                        {e.descripcion_evaluacion} {/* Mostrar nombre de la evaluación */}
+                        {e.evaluacion} {/* Mostrar nombre de la evaluación */}
                       </span>
                       <div className="text-sm text-gray-600">{e.descripcion_evaluacion}</div> {/* Mostrar descripción de la evaluación */}
                     </div>
