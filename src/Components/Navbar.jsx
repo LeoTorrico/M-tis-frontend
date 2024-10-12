@@ -28,7 +28,7 @@ const Navbar = () => {
             isEstudiantesRoute ? "bg-white text-black" : "hover:bg-light-gray"
           }`}
         >
-          ESTUDIANTES
+          Estudiantes
         </Link>
 
         <Link
@@ -37,7 +37,7 @@ const Navbar = () => {
             isDocentesRoute ? "bg-white text-black" : "hover:bg-light-gray"
           }`}
         >
-          DOCENTES
+          Docentes
         </Link>
       </nav>
 
