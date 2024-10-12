@@ -57,13 +57,12 @@ const Tablon = () => {
 
   return (
     <div className="p-2">
-      <h2 className="text-xl text-center font-bold mb-4">Tablón de Evaluaciones</h2>
       {noEvaluaciones ? (
         <div className="text-center text-gray-600">No existen evaluaciones aún.</div>
       ) : (
         Object.entries(temasAgrupados).map(([nombreTema, evaluaciones]) => (
           <div key={nombreTema} className="mb-6">
-            <h3 className="text-lg font-semibold mb-2">{nombreTema}</h3>
+            <h3 className="text-2xl font-semibold font-Montserrat mb-2">{nombreTema}</h3>
             {evaluaciones.length > 0 ? (
               evaluaciones.map((e) => (
                 <div
@@ -71,23 +70,23 @@ const Tablon = () => {
                   className="bg-light-blue rounded-lg p-4 flex justify-between items-center mb-4 shadow-md"
                 >
                   <div className="flex items-center">
-                    <span className="bg-white p-2 rounded-full text-semi-blue mr-4">
+                    <span className="bg-white p-2 rounded-full text-black mr-4">
                       <MdLibraryBooks size={32} /> 
                     </span>
                     <div>
-                      <span className="text-lg font-medium">
-                        {e.evaluacion} {/* Mostrar nombre de la evaluación */}
+                      <span className="text-lg font-semibold font-Montserrat">
+                        {e.evaluacion} 
                       </span>
                       <div className="text-sm text-gray-600">{e.descripcion_evaluacion}</div> {/* Mostrar descripción de la evaluación */}
                     </div>
                   </div>
                   {/* Botón para editar o realizar acción */}
                   {user.rol === "docente" ? (
-                    <button className="bg-semi-blue text-white px-4 py-2 rounded-lg">
-                      Ver Evaluacion
+                    <button className="bg-semi-blue text-white font-Montserrat px-4 py-2 rounded-lg">
+                      Ver Evaluación
                     </button>
                   ) : (
-                    <button className="bg-semi-blue text-white px-4 py-2 rounded-lg">
+                    <button className="bg-semi-blue text-white font-Montserrat px-4 py-2 rounded-lg">
                       Ver Evaluación
                     </button>
                   )}
