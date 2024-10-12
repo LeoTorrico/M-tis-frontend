@@ -103,7 +103,7 @@ function LoginEstudiantes() {
     >
       <div className="flex-1 bg-white flex flex-col justify-center items-center p-6 md:p-12 mt-6 md:mt-0">
         <div className="flex flex-col w-full md:w-2/3">
-          <h1 className="text-5xl font-bold mb-2 text-center">Bienvenidos a</h1>
+          <h1 className="text-5xl text-dark-blue font-bold mb-2 text-center">Bienvenidos a</h1>
           <img
             src="/LogoColor.svg"
             alt="Logo Color"
