@@ -62,7 +62,7 @@ const Tablon = () => {
       ) : (
         Object.entries(temasAgrupados).map(([nombreTema, evaluaciones]) => (
           <div key={nombreTema} className="mb-6">
-            <h3 className="text-2xl font-semibold font-Montserrat mb-2">{nombreTema}</h3>
+            <h3 className="text-xl font-semibold font-Montserrat mb-2">{nombreTema}</h3>
             {evaluaciones.length > 0 ? (
               evaluaciones.map((e) => (
                 <div
