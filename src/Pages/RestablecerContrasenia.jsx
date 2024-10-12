@@ -11,23 +11,39 @@ function RestablecerContraseniaEstudiante() {
   const [error, setError] = useState('');
   const [showNewPassword, setShowNewPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
-  const navigate = useNavigate(); // Asegúrate de tener useNavigate
+  const navigate = useNavigate(); 
 
+  const errorMessages = {
+    contrasena: "Contraseña debe tener entre 12 y 30 caracteres, y contener mayúsculas y minúsculas.",
+  };
+
+  // Función para manejar el envío del formulario
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setError(''); 
 
-    if (newPassword !== confirmarContrasena) {
-      setError('Las contraseñas no coinciden.');
+    const isNewPasswordValid = newPassword.length >= 12 && newPassword.length <= 30 && /[A-Z]/.test(newPassword) && /[a-z]/.test(newPassword);
+    const isConfirmPasswordValid = confirmarContrasena.length >= 12 && confirmarContrasena.length <= 30 && /[A-Z]/.test(confirmarContrasena) && /[a-z]/.test(confirmarContrasena);
+
+
+    if (!isNewPasswordValid || !isConfirmPasswordValid) {
+      setError(errorMessages.contrasena);
       return;
     }
 
-    try {
-      const response = await axios.post('http://localhost:3000/password/reset-password', {
-        token,
-        newPassword,
-      });
+    if (newPassword !== confirmarContrasena) {
+      setError('Las contraseñas no coinciden.'); 
+      return;
+    }
 
-      setError('');
+    const datos = {
+      token,
+      newPassword,
+    };
+
+    try {
+      const response = await axios.post('http://localhost:3000/password/reset-password', datos);
+      setError(''); 
       navigate('/LoginEstudiantes'); 
     } catch (err) {
       setError('Error al restablecer la contraseña. Por favor, intenta nuevamente.');
@@ -56,7 +72,7 @@ function RestablecerContraseniaEstudiante() {
                 id="nuevaContrasena"
                 value={newPassword}
                 onChange={(e) => setNuevaContrasena(e.target.value)}
-                required
+                maxLength={30} 
                 className="border-2 rounded-lg w-full py-2 px-3 text-gray-700"
               />
               <button
@@ -67,37 +83,40 @@ function RestablecerContraseniaEstudiante() {
                 {showNewPassword ? <FaEyeSlash className="text-black" /> : <FaEye className="text-black" />}
               </button>
             </div>
-          </div>
 
-          <div className="mb-4">
-            <label htmlFor="confirmarContrasena" className="block text-gray-700 font-Montserrat font-bold text-sm">
-              Confirmar Nueva Contraseña
-            </label>
-            <div className="relative">
-              <input
-                type={showConfirmPassword ? 'text' : 'password'}
-                id="confirmarContrasena"
-                value={confirmarContrasena}
-                onChange={(e) => setConfirmarContrasena(e.target.value)}
-                required
-                className="border-2 rounded-lg w-full py-2 px-3 text-gray-700"
-              />
-              <button
-                type="button"
-                className="absolute inset-y-0 right-0 flex items-center pr-3"
-                onClick={() => setShowConfirmPassword(!showConfirmPassword)}
-              >
-                {showConfirmPassword ? <FaEyeSlash className="text-black" /> : <FaEye className="text-black" />}
+            <div className="mb-4">
+              <label htmlFor="confirmarContrasena" className="block text-gray-700 font-Montserrat font-bold text-sm">
+                Confirmar Nueva Contraseña
+              </label>
+              <div className="relative">
+                <input
+                  type={showConfirmPassword ? 'text' : 'password'}
+                  id="confirmarContrasena"
+                  value={confirmarContrasena}
+                  onChange={(e) => setConfirmarContrasena(e.target.value)}
+                  maxLength={30} 
+                  className="border-2 rounded-lg w-full py-2 px-3 text-gray-700"
+                />
+                <button
+                  type="button"
+                  className="absolute inset-y-0 right-0 flex items-center pr-3"
+                  onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+                >
+                  {showConfirmPassword ? <FaEyeSlash className="text-black" /> : <FaEye className="text-black" />}
+                </button>
+              </div>
+            </div>
+
+            <div className="flex justify-center mt-10">
+              <button type="submit" className="bg-sky-blue text-white py-2 px-4 font-Montserrat font-bold text-sm rounded">
+                Restablecer Contraseña
               </button>
             </div>
-          </div>
 
-          <div className="flex justify-center mt-10">
-            <button type="submit" className="bg-sky-blue text-white py-2 px-4 font-Montserrat font-bold text-sm rounded">
-              Restablecer Contraseña
-            </button>
+            <div className="text-red-500 mt-4 text-center">
+              {error && <p>{error}</p>} 
+            </div>
           </div>
-          {error && <p className="text-red-500 mt-4 text-center">{error}</p>}
         </form>
       </div>
     </div>
