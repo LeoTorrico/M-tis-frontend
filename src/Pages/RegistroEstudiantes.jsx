@@ -313,7 +313,7 @@ function RegistroEstudiante() {
               <div className="flex flex-col items-center">
                 <button
                   type="submit"
-                  className="p-3 bg-[#00204A] text-white rounded-lg text-base w-full sm:w-1/3 mt-4 transition-transform duration-200"
+                  className="p-3 bg-[#031930] text-white rounded-lg text-base w-full sm:w-1/3 mt-4 transition-transform duration-200"
                 >
                   Registrarse
                 </button>

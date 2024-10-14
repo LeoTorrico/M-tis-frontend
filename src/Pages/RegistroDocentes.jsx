@@ -284,7 +284,7 @@ function RegistroDocentes() {
               <div className="flex flex-col items-center">
                 <button
                   type="submit"
-                  className="p-2 md:p-3 bg-[#00204A] text-white rounded-lg text-sm md:text-base w-2/3 md:w-1/3 mt-4 md:mt-6 transition-transform duration-200 hover:bg-[#001737]"
+                  className="p-2 md:p-3 bg-[#031930] text-white rounded-lg text-sm md:text-base w-2/3 md:w-1/3 mt-4 md:mt-6 transition-transform duration-200 hover:bg-[#001737]"
                 >
                   Registrarse
                 </button>
