@@ -1,17 +1,7 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
-import {
-  Button,
-  TextField,
-  Modal,
-  Box,
-  MenuItem,
-  Typography,
-  IconButton,
-} from "@mui/material";
-import CloseIcon from "@mui/icons-material/Close"; // Importar el icono de cerrar
-import getDetailsFromToken from "./Utils";
 import { useNavigate } from "react-router-dom";
+import getDetailsFromToken from "./Utils";
 
 const ClasesPrueba = () => {
   const token = localStorage.getItem("token");
@@ -41,16 +31,17 @@ const ClasesPrueba = () => {
         console.error("Error fetching clases:", error);
       }
     };
+
     const fetchClasesEstudiante = async () => {
       try {
         const response = await axios.get(
           "http://localhost:3000/clases-estudiante/obtener-clases",
           {
             params: {
-              codigoSis: codigoSis, // Pasar el codigoSis en los query parameters
+              codigoSis: codigoSis,
             },
             headers: {
-              Authorization: `Bearer ${token}`, // Pasar el token en los headers
+              Authorization: `Bearer ${token}`,
             },
           }
         );
@@ -80,324 +71,240 @@ const ClasesPrueba = () => {
     }
 
     fetchGestiones();
-  }, [token]);
+  }, [token, codigoSis, rol]);
 
   const handleAbrirModal = () => setMostrarModal(true);
   const handleCerrarModal = () => {
     setMostrarModal(false);
+    setNombreClase("");
+    setCodigoClase("");
+    setGestion("");
+
     setError(""); // Limpiar el mensaje de error al cerrar el modal
   };
 
   const handleCrearClase = async () => {
-    if (!nombreClase && !gestion) {
-      setError(
-        "Por favor, ingresa el nombre de la clase y selecciona una gestión."
-      ); // Mostrar mensaje de error si ambos están vacíos
-      return;
+    const nameClase = nombreClase.trim();
+    if (!nameClase && !gestion) {
+        setError("Por favor, ingresa el nombre de la clase y selecciona una gestión.");
+        setNombreClase("");
+        return;
     }
-    if (!nombreClase) {
-      setError("Por favor, ingresa el nombre de la clase."); // Mostrar mensaje de error si nombre de clase está vacío
-      return;
+    if (!nameClase) {
+        setError("Por favor ingrese un nombre válido.");
+        setNombreClase("");
+        return;
     }
     if (!gestion) {
-      setError("Por favor, selecciona una gestión."); // Mostrar mensaje de error si gestión está vacía
-      return;
+        setError("Por favor, selecciona una gestión.");
+        return;
     }
-
+    console.log(nameClase);
     try {
       const requestBody = {
-        codGestion: Number(gestion),
-        nombreClase,
+          codGestion: Number(gestion),
+          nombreClase: nameClase,
       };
-      await axios.post("http://localhost:3000/clases/crear", requestBody, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
+      const response = await axios.post("http://localhost:3000/clases/crear", requestBody, {
+          headers: {
+              Authorization: `Bearer ${token}`,
+          },
       });
-      const nameGestion = gestiones.find(
-        (gest) => gest.cod_gestion === gestion
-      );
+      // Busca la gestión correspondiente en la lista de gestiones
+      const nameGestion = gestiones.find((gest) => gest.cod_gestion === Number(gestion));
+      // Actualiza el estado para incluir la nueva clase y su gestión
+      const nuevaClase = { 
+          nombre_clase: nameClase, 
+          gestion: nameGestion ? nameGestion.gestion : "Gestión no especificada", 
+          cod_clase: response.data.clase.cod_clase 
+      };
+  
       setClases([
-        ...clases,
-        { nombre_clase: nombreClase, gestion: nameGestion.gestion },
+          ...clases,
+          nuevaClase,
       ]);
+      
+      // Resetea los valores del formulario
       setNombreClase("");
       setGestion("");
       handleCerrarModal();
-    } catch (error) {
-      console.error("Error creating class:", error);
-    }
-  };
+      // Redirigir a la vista del curso
+      navigate(`/Vista-Curso/${nuevaClase.cod_clase}`); // Redirige a la vista del curso usando el código de clase creado
+  } catch (error) {
+      if (error.response && error.response.data) {
+          console.error("Error details:", error.response.data);
+          const backendError = error.response.data.detalle?.[0]?.message || "Error desconocido";
+          setError(backendError);
+      } else {
+          console.error("Unexpected error:", error);
+      }
+  }
+};
 
-  const handleUnirseClase = async () => {
-    if (codigoClase.trim() === "") {
-      setError("Por favor, ingresa el código de la clase"); // Mostrar mensaje de error si está vacío
+const handleUnirseClase = async () => {
+  if (codigoClase.trim() === "") {
+      setError("Por favor, ingresa el código de la clase.");
+      setCodigoClase("");
       return;
-    }
+  }
+  if(codigoClase.length > 6){
+    setError("El codigo es invalido.");
+    return;
+  }
+  setError(""); // Limpiar cualquier mensaje de error anterior
 
-    try {
+  try {
       const requestBody = {
-        token: token,
-        codigoClase: codigoClase,
+          token: token,
+          codigoClase: codigoClase,
       };
       const response = await axios.post(
-        `http://localhost:3000/clases-estudiante/unirse-clase`,
-        requestBody,
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
+          "http://localhost:3000/clases-estudiante/unirse-clase",
+          requestBody,
+          {
+              headers: {
+                  Authorization: `Bearer ${token}`,
+              },
+          }
       );
+
+      // Verificamos si la respuesta indica que se pudo unir a la clase
       const clase = response.data.clase;
       setClases([
         ...clases,
         { nombre_clase: clase.nombre_clase, gestion: clase.gestion },
       ]);
       setCodigoClase("");
-      setError(""); // Limpiar mensaje de error al unirse correctamente
+      setError(""); // Limpiar el error si la unión fue exitosa
       handleCerrarModal();
-      window.location.reload();
-    } catch (error) {
+      //window.location.reload(); Para que es esto
+  } catch (error) {
       console.error("Error joining class:", error);
-    }
-  };
+      const errorMessage = error.response.data.error;
+      setError(errorMessage);
+  }
+};
 
   const handleViewClass = (cod_clase) => {
     navigate(`/Vista-Curso/${cod_clase}`);
   };
 
   return (
-    <Box sx={{ height: "100vh", bgcolor: "gray.50", p: 3 }}>
-      <Box
-        sx={{
-          display: "flex",
-          justifyContent: "space-between",
-          alignItems: "center",
-          mb: 3,
-        }}
-      >
-        <Typography variant="h4" fontWeight="bold">
-          Clases
-        </Typography>
-        <Button variant="contained" color="primary" onClick={handleAbrirModal}>
+    <div className="h-screen bg-gray-50 p-3">
+      <div className="flex justify-between items-center mb-3">
+        <h1 className="font-title text-2xl font-bold">Clases</h1>
+        <button
+          className="bg-[#3684DB] text-white font-semibold py-2 px-4 rounded"
+          onClick={handleAbrirModal}
+        >
           {rol === "docente" ? "Crear clase" : "Unirse a clase"}
-        </Button>
-      </Box>
+        </button>
+      </div>
 
-      <Box
-        sx={{
-          display: "grid",
-          gridTemplateColumns: {
-            xs: "1fr",
-            md: "1fr 1fr",
-            lg: "repeat(3, 1fr)",
-          },
-          gap: 2,
-        }}
-      >
-        {clases.map((clase, index) => (
-          <Box
+      <div className="flex flex-col-reverse md:grid md:grid-cols-2 lg:grid-cols-3 gap-2">
+        {clases.slice(0).reverse().map((clase, index) => (
+          <div
             key={index}
-            sx={{
-              bgcolor: "#031930",
-              color: "white",
-              p: 3,
-              borderRadius: 2,
-              boxShadow: 2,
-            }}
+            className="bg-[#031930] text-white p-3 rounded-lg shadow-lg"
           >
-            <Typography variant="h6" fontWeight="bold" gutterBottom>
+            <h2 className="font-title text-lg font-bold">
               {clase.nombre_clase || "Clase no especificada"}
-            </Typography>
-            <Typography variant="body2" gutterBottom>
+            </h2>
+            <p className="font-title text-sm">
               {clase.gestion || "Gestión no especificada"}
-            </Typography>
-            {/* Barra del medio con el color de los headers */}
-            <Box
-              sx={{
-                bgcolor: "primary.main",
-                borderRadius: 2,
-                height: 10,
-                mb: 2,
-              }}
-            />
-            <Button
-              variant="contained"
-              color="primary"
-              sx={{ bgcolor: "primary.main", color: "white", borderRadius: 2 }}
-              // Botón "Ver clase" con bordes redondeados
+            </p>
+            <div className="bg-blue-500 rounded-lg h-2 mb-2" />
+            <button
+              className="bg-[#3684DB] text-white py-2 px-4 rounded"
               onClick={() => handleViewClass(clase.cod_clase)}
             >
               Ver clase
-            </Button>
-          </Box>
+            </button>
+          </div>
         ))}
-      </Box>
+      </div>
 
-      <Modal open={mostrarModal} onClose={handleCerrarModal}>
-        <Box
-          sx={{
-            position: "absolute",
-            top: "50%",
-            left: "50%",
-            transform: "translate(-50%, -50%)",
-            width: 400,
-            bgcolor: "background.paper",
-            boxShadow: 24,
-            borderRadius: 2,
-            overflow: "hidden", // Para evitar que el contenido sobresalga
-          }}
-        >
-          {/* Header superior con el color del botón primary y alineado a la izquierda */}
-          <Box
-            sx={{
-              bgcolor: "primary.main",
-              color: "white",
-              p: 2,
-              position: "relative",
-            }}
-          >
-            <IconButton
-              onClick={handleCerrarModal}
-              sx={{
-                position: "absolute",
-                right: 8,
-                top: 8,
-                color: "white", // Color de la X
-              }}
-            >
-              <CloseIcon />
-            </IconButton>
-            <Typography variant="h6" fontWeight="bold" align="left">
-              {rol === "docente" ? "Crear clase" : "Unirse a clase"}
-            </Typography>
-          </Box>
+      {mostrarModal && (
+        <div className="fixed inset-0 flex items-center justify-center z-50">
+          <div className="bg-white rounded-lg shadow-lg w-96">
+            <div className="bg-[#3684DB] text-white p-2 relative">
+              <button
+                className="absolute right-2 top-2"
+                onClick={handleCerrarModal}
+              >
+                X
+              </button>
+              <h2 className="font-title text-lg font-bold text-left">
+                {rol === "docente" ? "Crear clase" : "Unirse a clase"}
+              </h2>
+            </div>
 
-          {/* Contenido del modal */}
-          <Box sx={{ p: 4 }}>
-            {rol === "docente" ? (
-              <>
-                <TextField
-                  fullWidth
-                  label="Nombre de la clase"
-                  margin="normal"
-                  value={nombreClase}
-                  onChange={(e) => setNombreClase(e.target.value)}
-                  sx={{
-                    bgcolor: "#B3D6F9", // Color de fondo para el campo de nombre de clase
-                    borderRadius: 2, // Bordes redondeados
-                  }}
-                  InputProps={{
-                    sx: {
-                      borderRadius: 2, // Bordes redondeados para el input
-                    },
-                  }}
-                />
-                <TextField
-                  select
-                  fullWidth
-                  label="Gestión"
-                  margin="normal"
-                  value={gestion}
-                  onChange={(e) => setGestion(e.target.value)}
-                  sx={{
-                    bgcolor: "#B3D6F9", // Color de fondo para el campo de gestión
-                    borderRadius: 2, // Bordes redondeados
-                  }}
-                  InputProps={{
-                    sx: {
-                      borderRadius: 2, // Bordes redondeados para el input
-                    },
-                  }}
+            <div className="p-4">
+              {rol === "docente" ? (
+                <>
+                  <input
+                    type="text"
+                    placeholder="Nombre de la clase"
+                    className="border rounded-lg w-full p-2 mb-2 bg-[#B3D6F9]"
+                    value={nombreClase}
+                    onChange={(e) => setNombreClase(e.target.value)}
+                  />
+                  <select
+                    className="border rounded-lg w-full p-2 mb-2 bg-[#B3D6F9]"
+                    value={gestion}
+                    onChange={(e) => setGestion(e.target.value)}
+                  >
+                    <option value="">Seleccione gestión</option>
+                    {gestiones.map((gestion, index) => (
+                      <option key={index} value={gestion.cod_gestion}>
+                        {gestion.gestion}
+                      </option>
+                    ))}
+                  </select>
+                  {error && (
+                    <div className="text-red-600 text-sm text-center mt-2 border border-red-500">
+                      {error}
+                    </div>
+                  )}
+                </>
+              ) : (
+                <>
+                  <input
+                    type="text"
+                    placeholder="Código de la clase"
+                    className="border rounded-lg w-full p-2 mb-2 bg-[#B3D6F9]"
+                    value={codigoClase}
+                    onChange={(e) => setCodigoClase(e.target.value)}
+                  />
+                  {error && (
+                    <div className="text-red-600 text-sm text-center mt-2 border border-red-500">
+                      {error}
+                    </div>
+                  )}
+                </>
+              )}
+            </div>
+            {/* Header en la parte inferior */}
+            <div className="bg-[#3684DB] text-white p-2">
+              <div className="flex justify-between">
+                <button
+                  className="border rounded-lg bg-white text-[#3684DB] font-semibold py-2 px-4"
+                  onClick={handleCerrarModal}
                 >
-                  {gestiones.map((gestion, index) => (
-                    <MenuItem key={index} value={gestion.cod_gestion}>
-                      {gestion.gestion}
-                    </MenuItem>
-                  ))}
-                </TextField>
-              </>
-            ) : (
-              <>
-                <TextField
-                  fullWidth
-                  label="Código de clase"
-                  margin="normal"
-                  value={codigoClase}
-                  onChange={(e) => setCodigoClase(e.target.value)}
-                  sx={{
-                    bgcolor: "#B3D6F9", // Color de fondo para el campo de código de clase
-                    borderRadius: 2, // Bordes redondeados
-                  }}
-                  InputProps={{
-                    sx: {
-                      borderRadius: 2, // Bordes redondeados para el input
-                    },
-                  }}
-                />
-              </>
-            )}
-
-            {error && (
-              <Typography color="error" variant="body2" sx={{ mt: 1 }}>
-                {error}
-              </Typography>
-            )}
-          </Box>
-
-          {/* Footer con los botones */}
-          <Box
-            sx={{
-              display: "flex",
-              justifyContent: "space-between",
-              p: 2,
-              bgcolor: "primary.main",
-            }}
-          >
-            {rol === "docente" ? (
-              <Button
-                variant="contained"
-                sx={{
-                  bgcolor: "white",
-                  color: "primary.main",
-                  width: "45%",
-                  borderRadius: 2, // Bordes redondeados
-                }}
-                onClick={handleCrearClase}
-              >
-                Crear clase
-              </Button>
-            ) : (
-              <Button
-                variant="contained"
-                sx={{
-                  bgcolor: "white",
-                  color: "primary.main",
-                  width: "45%",
-                  borderRadius: 2, // Bordes redondeados
-                }}
-                onClick={handleUnirseClase}
-              >
-                Unirse a clase
-              </Button>
-            )}
-            <Button
-              variant="contained"
-              sx={{
-                bgcolor: "white",
-                color: "primary.main",
-                width: "45%",
-                borderRadius: 2, // Bordes redondeados
-              }}
-              onClick={handleCerrarModal}
-            >
-              Cancelar
-            </Button>
-          </Box>
-        </Box>
-      </Modal>
-    </Box>
+                  Cancelar
+                </button>
+                <button
+                  className="bg-white text-[#3684DB] font-semibold py-2 px-4 rounded"
+                  onClick={rol === "docente" ? handleCrearClase : handleUnirseClase}
+                >
+                  {rol === "docente" ? "Crear" : "Unirse"}
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+    </div>
   );
 };
 
