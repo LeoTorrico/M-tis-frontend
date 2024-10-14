@@ -80,7 +80,7 @@ function RegistroDocentes() {
       !formData.nombre ||
       formData.nombre.length < 3 ||
       formData.nombre.length > 60 ||
-      /[^a-zA-Z\s']/.test(formData.nombre)
+      /[^a-zA-ZáéíóúÁÉÍÓÚñÑ\s']/.test(formData.nombre)
     ) {
       newErrors.nombre = errorMessages.nombre;
     }
@@ -88,7 +88,7 @@ function RegistroDocentes() {
       !formData.apellido ||
       formData.apellido.length < 3 ||
       formData.apellido.length > 80 ||
-      /[^a-zA-Z\s']/.test(formData.apellido)
+      /[^a-zA-ZáéíóúÁÉÍÓÚñÑ\s']/.test(formData.apellido)
     ) {
       newErrors.apellido = errorMessages.apellido;
     }

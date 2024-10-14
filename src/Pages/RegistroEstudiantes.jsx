@@ -72,7 +72,7 @@ function RegistroEstudiante() {
       !formData.nombres ||
       formData.nombres.length < 3 ||
       formData.nombres.length > 60 ||
-      /[^a-zA-Z\s']/.test(formData.nombres)
+      /[^a-zA-ZáéíóúÁÉÍÓÚñÑ\s']/.test(formData.nombres)
     ) {
       newErrors.nombres =
         "Nombre debe tener entre 3 y 60 caracteres y solo contener letras, espacios y apóstrofes.";
@@ -81,7 +81,7 @@ function RegistroEstudiante() {
       !formData.apellidos ||
       formData.apellidos.length < 3 ||
       formData.apellidos.length > 80 ||
-      /[^a-zA-Z\s']/.test(formData.apellidos)
+      /[^a-zA-ZáéíóúÁÉÍÓÚñÑ\s']/.test(formData.apellidos)
     ) {
       newErrors.apellidos =
         "Apellidos debe tener entre 3 y 80 caracteres y solo contener letras, espacios y apóstrofes.";
