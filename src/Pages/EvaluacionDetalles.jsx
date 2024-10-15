@@ -76,12 +76,12 @@ const EvaluacionDetalles = () => {
                 : "text-dark-blue"
             } px-4 py-2 rounded-lg font-medium`}
           >
-            Trabajo en Grupo
+            Trabajo de los Grupos
           </button>
         </div>
       </div>
 
-      <div className="p-6">
+      <div>
         {activeTab === "instrucciones" && <Instrucciones evaluacion={evaluacion} user={user} />}
         {activeTab === "trabajoGrupo" && <TrabajoGrupo evaluacion={evaluacion} />}
       </div>
