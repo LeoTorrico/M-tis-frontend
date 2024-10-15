@@ -72,7 +72,7 @@ const Tablon = () => {
               evaluaciones.map((e) => (
                 <div
                   key={e.cod_evaluacion} 
-                  className="bg-light-blue rounded-lg p-4 flex justify-between items-center mb-4 shadow-md"
+                  className="bg-blue-gray rounded-lg p-4 flex justify-between items-center mb-4 shadow-md"
                 >
                   <div className="flex items-center">
                     <span className="bg-white p-2 rounded-full text-black mr-4">
@@ -89,13 +89,13 @@ const Tablon = () => {
                   {user.rol === "docente" ? (
                     <button 
                     onClick={() => handleVerEvaluacion(e.cod_evaluacion)}
-                    className="bg-semi-blue text-white font-Montserrat px-4 py-2 rounded-lg">
+                    className="bg-dark-blue text-white font-Montserrat px-4 py-2 rounded-lg">
                       Ver Evaluación
                     </button>
                   ) : (
                     <button 
                     onClick={() => handleVerEvaluacion(e.cod_evaluacion)}
-                    className="bg-semi-blue text-white font-Montserrat px-4 py-2 rounded-lg">
+                    className="bg-dark-blue text-white font-Montserrat px-4 py-2 rounded-lg">
                       Ver Evaluación
                     </button>
                   )}
