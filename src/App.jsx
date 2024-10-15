@@ -13,6 +13,8 @@ import RestablecerContrasenia from "./Pages/RestablecerContrasenia";
 import LoginDocentes from "./Pages/LoginDocentes";
 import { AnimatePresence } from "framer-motion";
 import GrupoDetalles from "./Pages/GrupoDetalles";
+import EvaluacionSemanal from "./Pages/EvaluacionSemanal";
+import Asistencia from "./Pages/Asistencia";
 Modal.setAppElement("#root");
 
 function App() {
@@ -39,6 +41,8 @@ function App() {
             />
             <Route path="/LoginEstudiantes" element={<LoginEstudiantes />} />
             <Route path="/LoginDocentes" element={<LoginDocentes />} />
+            <Route path="/evaluacionSemanal" element={<EvaluacionSemanal />} />
+            <Route path="/Asistencia" element={<Asistencia />} />
           </Routes>
         </AnimatePresence>
       </Layout>
@@ -48,6 +52,7 @@ function App() {
 
 function Layout({ children }) {
   const location = useLocation();
+
   const isLoginPage =
     location.pathname === "/LoginEstudiantes" ||
     location.pathname === "/LoginDocentes" ||
@@ -55,7 +60,10 @@ function Layout({ children }) {
     location.pathname === "/RegistroEstudiante";
 
   const isSidebarPage =
-    location.pathname === "/" || location.pathname.match(/^\/Vista-Curso\/.+$/);
+    location.pathname === "/" ||
+    location.pathname.match(/^\/Vista-Curso\/.+$/) ||
+    location.pathname === "/evaluacionSemanal" ||
+    location.pathname === "/asistencia";
 
   return (
     <div className="flex flex-grow">
