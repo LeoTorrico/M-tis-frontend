@@ -1,12 +1,17 @@
 import React, { useEffect, useState, useContext } from "react";
-import { useParams } from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom";
 import axios from "axios";
-import { UserContext } from "../context/UserContext"; 
+import { UserContext } from "../context/UserContext";
+import VerEvaluacion from "../Components/EvaluacionDetalles/VerEvaluacion";
+import Instrucciones from "../Components/EvaluacionDetalles/Instrucciones";
+import TrabajoGrupo from "../Components/EvaluacionDetalles/TrabajoGrupo";
 
 const EvaluacionDetalles = () => {
-  const { cod_clase, cod_evaluacion } = useParams(); 
-  const [e, setEvaluacion] = useState(null); 
-  const { user } = useContext(UserContext); 
+  const { cod_clase, cod_evaluacion } = useParams();
+  const [evaluacion, setEvaluacion] = useState(null);
+  const { user } = useContext(UserContext);
+  const [activeTab, setActiveTab] = useState("instrucciones");
+  const navigate = useNavigate();
 
   const fetchEvaluacion = async () => {
     try {
@@ -14,30 +19,72 @@ const EvaluacionDetalles = () => {
         `http://localhost:3000/evaluaciones/detalles/${cod_evaluacion}`, 
         {
           headers: {
-            Authorization: `Bearer ${user.token}`, 
+            Authorization: `Bearer ${user.token}`,
             "Content-Type": "application/json"
           }
         }
       );
-      setEvaluacion(response.data); // Asignar los datos recibidos al estado
+      setEvaluacion(response.data);
     } catch (error) {
-      console.error("Error al obtener los detalles de la evaluacion:", error);
+      console.error("Error al obtener los detalles de la evaluación:", error);
     }
   };
 
   useEffect(() => {
-    fetchEvaluacion(); 
-  }, [cod_clase, cod_evaluacion]); 
+    fetchEvaluacion();
+  }, [cod_clase, cod_evaluacion]);
 
-  if (!e) {
-    return <p>Cargando detalles del grupo...</p>; 
+  if (!evaluacion) {
+    return <p>Cargando detalles de la evaluación...</p>;
+  }
+
+  if (user.rol !== "docente") {
+    return <VerEvaluacion />;
   }
 
   return (
-    <div className="p-4">
-      <h1 className="text-3xl font-bold mb-4">{e.evaluacion}</h1> 
-      <p>Código de la evaluacion: {e.cod_evaluacion}</p> 
-      <p>Descripción: {e.descripcion_evaluacion}</p> 
+    <div className="flex flex-col w-full">
+      {/* Header de navegación con diseño adaptado */}
+      <div className="flex justify-between items-center border-b-2 border-dark-blue px-6 py-2">
+        <div className="w-20"></div>
+        <div className="flex justify-center space-x-8 flex-grow">
+          <button
+            onClick={() => navigate(`/Vista-Curso/${cod_clase}`)} // Navegar a Tablón
+            className={`${
+              activeTab === "tablon"
+                ? "bg-semi-blue text-white"
+                : "text-dark-blue"
+            } px-4 py-2 rounded-lg font-medium`}
+          >
+            Tablón
+          </button>
+          <button
+            onClick={() => setActiveTab("instrucciones")}
+            className={`${
+              activeTab === "instrucciones"
+                ? "bg-semi-blue text-white"
+                : "text-dark-blue"
+            } px-4 py-2 rounded-lg font-medium`}
+          >
+            Instrucciones
+          </button>
+          <button
+            onClick={() => setActiveTab("trabajoGrupo")}
+            className={`${
+              activeTab === "trabajoGrupo"
+                ? "bg-semi-blue text-white"
+                : "text-dark-blue"
+            } px-4 py-2 rounded-lg font-medium`}
+          >
+            Trabajo en Grupo
+          </button>
+        </div>
+      </div>
+
+      <div className="p-6">
+        {activeTab === "instrucciones" && <Instrucciones evaluacion={evaluacion} user={user} />}
+        {activeTab === "trabajoGrupo" && <TrabajoGrupo evaluacion={evaluacion} />}
+      </div>
     </div>
   );
 };

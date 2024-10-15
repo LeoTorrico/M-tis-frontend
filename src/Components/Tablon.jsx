@@ -93,7 +93,9 @@ const Tablon = () => {
                       Ver Evaluación
                     </button>
                   ) : (
-                    <button className="bg-semi-blue text-white font-Montserrat px-4 py-2 rounded-lg">
+                    <button 
+                    onClick={() => handleVerEvaluacion(e.cod_evaluacion)}
+                    className="bg-semi-blue text-white font-Montserrat px-4 py-2 rounded-lg">
                       Ver Evaluación
                     </button>
                   )}
