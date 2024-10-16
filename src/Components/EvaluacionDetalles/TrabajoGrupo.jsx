@@ -1,23 +1,22 @@
 import React, { useState, useEffect, useContext } from "react";
 import { MdGroups } from "react-icons/md";
-import { UserContext } from "../../context/UserContext"; 
+import { UserContext } from "../../context/UserContext";
 
 const TrabajoGrupo = ({ evaluacion }) => {
-
   const [gruposEntregados, setGruposEntregados] = useState([]);
   const [search1, setSearch1] = useState("");
   const [search2, setSearch2] = useState("");
-  const [loading, setLoading] = useState(true); 
-  const { user } = useContext(UserContext); 
+  const [loading, setLoading] = useState(true);
+  const { user } = useContext(UserContext);
 
   useEffect(() => {
     const fetchGrupos = async () => {
       try {
         const response = await fetch(
-          `http://localhost:3000/evaluaciones/${evaluacion.cod_evaluacion}/entregas`, 
+          `http://localhost:3000/evaluaciones/${evaluacion.cod_evaluacion}/entregas`,
           {
             headers: {
-              Authorization: `Bearer ${user.token}`, 
+              Authorization: `Bearer ${user.token}`,
             },
           }
         );
@@ -25,7 +24,8 @@ const TrabajoGrupo = ({ evaluacion }) => {
           throw new Error("Error en la petición");
         }
         const data = await response.json();
-        setGruposEntregados(data); 
+        console.log("Datos recibidos:", data); //Verifica los datos recibidos
+        setGruposEntregados(data);
         setLoading(false);
       } catch (error) {
         console.error("Error al obtener los grupos:", error);
@@ -36,24 +36,24 @@ const TrabajoGrupo = ({ evaluacion }) => {
     if (evaluacion && user.token) {
       fetchGrupos();
     }
-  }, [evaluacion, user.token]); 
+  }, [evaluacion, user.token]);
 
   // Filtrar los grupos que han entregado
-  const filteredGruposEntregados = gruposEntregados.filter((grupo) =>
-    grupo.archivo_grupo && grupo.nombre_largo.toLowerCase().includes(search1.toLowerCase())
+  const filteredGruposEntregados = gruposEntregados.filter(
+    (grupo) => grupo.ha_entregado && grupo.nombre_largo.toLowerCase().includes(search1.toLowerCase())
   );
 
   // Filtrar los grupos que no han entregado
-  const filteredGruposNoEntregados = gruposEntregados.filter((grupo) =>
-    !grupo.archivo_grupo && grupo.nombre_largo.toLowerCase().includes(search2.toLowerCase())
+  const filteredGruposNoEntregados = gruposEntregados.filter(
+    (grupo) => !grupo.ha_entregado && grupo.nombre_largo.toLowerCase().includes(search2.toLowerCase())
   );
 
   if (loading) {
-    return <p>Cargando grupos...</p>; 
+    return <p>Cargando grupos...</p>;
   }
 
   return (
-    <div className="p-6 h-screen flex flex-col" style={{ maxHeight: 'calc(100vh - 60px)' }}>
+    <div className="p-6 h-screen flex flex-col" style={{ maxHeight: "calc(100vh - 60px)" }}>
       <h2 className="text-xl font-bold mb-4">{evaluacion.evaluacion}</h2>
       <p className="mb-4">Aquí están los detalles del trabajo grupal que entregaron para esta evaluación.</p>
 
@@ -67,13 +67,10 @@ const TrabajoGrupo = ({ evaluacion }) => {
             onChange={(e) => setSearch1(e.target.value)}
             className="border rounded p-2 w-full mb-4"
           />
-          <div className="flex-grow overflow-y-auto" style={{ maxHeight: 'calc(100vh - 150px)' }}>
+          <div className="flex-grow overflow-y-auto" style={{ maxHeight: "calc(100vh - 150px)" }}>
             {filteredGruposEntregados.length > 0 ? (
               filteredGruposEntregados.map((grupo, index) => (
-                <div
-                  key={index}
-                  className="bg-blue-gray rounded-lg p-4 flex justify-between items-center mb-4"
-                >
+                <div key={index} className="bg-blue-gray rounded-lg p-4 flex justify-between items-center mb-4">
                   <div className="flex items-center">
                     {grupo.logotipo ? (
                       <img
@@ -88,9 +85,7 @@ const TrabajoGrupo = ({ evaluacion }) => {
                     )}
                     <span className="text-lg font-medium">{grupo.nombre_largo}</span>
                   </div>
-                  <button className="bg-dark-blue text-white px-4 py-2 rounded">
-                    Evaluar
-                  </button>
+                  <button className="bg-dark-blue text-white px-4 py-2 rounded">Evaluar</button>
                 </div>
               ))
             ) : (
@@ -108,13 +103,10 @@ const TrabajoGrupo = ({ evaluacion }) => {
             onChange={(e) => setSearch2(e.target.value)}
             className="border rounded p-2 w-full mb-4"
           />
-          <div className="flex-grow overflow-y-auto" style={{ maxHeight: 'calc(100vh - 150px)' }}>
+          <div className="flex-grow overflow-y-auto" style={{ maxHeight: "calc(100vh - 150px)" }}>
             {filteredGruposNoEntregados.length > 0 ? (
               filteredGruposNoEntregados.map((grupo, index) => (
-                <div
-                  key={index}
-                  className="bg-blue-gray rounded-lg p-4 flex justify-between items-center mb-4"
-                >
+                <div key={index} className="bg-blue-gray rounded-lg p-4 flex justify-between items-center mb-4">
                   <div className="flex items-center">
                     {grupo.logotipo ? (
                       <img
@@ -129,9 +121,7 @@ const TrabajoGrupo = ({ evaluacion }) => {
                     )}
                     <span className="text-lg font-medium">{grupo.nombre_largo}</span>
                   </div>
-                  <button className="bg-dark-blue text-white px-4 py-2 rounded">
-                    Evaluar
-                  </button>
+                  <button className="bg-dark-blue text-white px-4 py-2 rounded">Evaluar</button>
                 </div>
               ))
             ) : (
