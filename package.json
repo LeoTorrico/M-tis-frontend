@@ -28,7 +28,8 @@
     "react-router-dom": "^6.26.2",
     "react-spinners": "^0.14.1",
     "react-tooltip": "^5.28.0",
-    "sweetalert2": "^11.14.1"
+    "sweetalert2": "^11.14.1",
+    "uuid": "^10.0.0"
   },
   "devDependencies": {
     "@eslint/js": "^9.9.0",
