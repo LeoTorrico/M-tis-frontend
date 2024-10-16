@@ -82,7 +82,7 @@ const Tablon = () => {
                       <span className="text-lg font-semibold font-Montserrat">
                         {e.evaluacion} 
                       </span>
-                      <div className="text-sm text-gray-600">{e.descripcion_evaluacion}</div> {/* Mostrar descripción de la evaluación */}
+                      <div className="text-sm text-gray-600">Dia de entrega: {e.fecha_fin}</div> {/* Mostrar descripción de la evaluación */}
                     </div>
                   </div>
                   {/* Botón para editar o realizar acción */}
