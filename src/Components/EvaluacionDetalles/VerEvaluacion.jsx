@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { AiOutlineClose } from "react-icons/ai";
 
-const VerEvaluacion = () => {
+const VerEvaluacion = ({evaluacion}) => {
   const [selectedFile, setSelectedFile] = useState(null);
   const [filePreview, setFilePreview] = useState(null);
 
@@ -96,9 +96,7 @@ const VerEvaluacion = () => {
         {/* Columna de Descripción */}
         <div className="border border-gray-300 p-4 rounded shadow-md">
           <h2 className="text-xl font-semibold mb-2">Descripción de la Evaluación</h2>
-          <p>
-            Aquí puedes agregar la descripción detallada de la evaluación, incluyendo instrucciones y objetivos. Asegúrate de revisar los requisitos antes de entregar tu archivo.
-          </p>
+          <p className="text-xm">{evaluacion.descripcion_evaluacion}</p>
         </div>
 
         {/* Columna de Subir Archivo */}
