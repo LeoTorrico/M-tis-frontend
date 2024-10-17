@@ -39,7 +39,7 @@ const EvaluacionDetalles = () => {
   }
 
   if (user.rol !== "docente") {
-    return <VerEvaluacion />;
+    return <VerEvaluacion evaluacion={evaluacion} />;
   }
 
   return (
