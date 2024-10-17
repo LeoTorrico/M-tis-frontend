@@ -9,7 +9,6 @@ const VerEvaluacion = () => {
     const file = event.target.files[0];
     if (file) {
       setSelectedFile(file);
-      // Crear vista previa solo para tipos de archivo compatibles
       const fileURL = URL.createObjectURL(file);
       setFilePreview(fileURL);
     }
@@ -17,7 +16,7 @@ const VerEvaluacion = () => {
 
   const handleRemoveFile = () => {
     setSelectedFile(null);
-    setFilePreview(null); // Eliminar la vista previa cuando se elimine el archivo
+    setFilePreview(null);
   };
 
   const handleSubmit = (event) => {
@@ -36,43 +35,52 @@ const VerEvaluacion = () => {
     const fileType = selectedFile.type.split("/")[0];
 
     return (
-      <div className="flex items-center border border-gray-300 rounded p-2 shadow-sm relative">
-        {fileType === "image" ? (
-          // Vista previa para imágenes
-          <img src={filePreview} alt="Vista previa" className="w-24 h-24 object-cover rounded" />
-        ) : fileType === "application" ? (
-          selectedFile.type === "application/pdf" ? (
-            // Vista previa para PDF usando un iframe para la primera página
-            <iframe
-              src={filePreview}
-              title="Vista previa de PDF"
-              className="w-24 h-24 border rounded"
-              style={{ overflow: "hidden" }}
-            />
-          ) : (
-            // Vista previa para DOCX/PPTX (usando un iframe para la primera página)
-            <iframe
-              src={`https://docs.google.com/gview?url=${filePreview}&embedded=true`}
-              title="Vista previa de DOCX/PPTX"
-              className="w-24 h-24 border rounded"
-            />
-          )
-        ) : null}
-
-        {/* Nombre del archivo como enlace */}
-        <div className="ml-4">
+      <div className="flex flex-col border border-gray-300 rounded p-2 shadow-sm relative">
+        {/* Nombre del archivo como enlace arriba */}
+        <div className="w-full mb-2">
           <a
             href={filePreview}
             target="_blank"
             rel="noopener noreferrer"
-            className="font-medium text-blue-600 hover:underline"
+            className="font-medium text-blue-600 hover:underline block truncate"
           >
             {selectedFile.name}
           </a>
         </div>
-        {/* Icono de Cruz para eliminar el archivo, centrado a la derecha dentro de la tarjeta */}
+
+        {/* Vista previa del archivo debajo del nombre */}
+        <div className="flex-grow">
+          {fileType === "image" ? (
+            // Vista previa para imágenes
+            <img
+              src={filePreview}
+              alt="Vista previa"
+              className="w-full h-auto max-h-64 object-contain rounded" // Ajustar altura máxima
+            />
+          ) : fileType === "application" ? (
+            selectedFile.type === "application/pdf" ? (
+              // Vista previa para PDF
+              <iframe
+                src={filePreview}
+                title="Vista previa de PDF"
+                className="w-full h-auto max-h-64 rounded"
+                style={{ border: "none" }} // Sin borde
+              />
+            ) : (
+              // Vista previa para DOCX/PPTX
+              <iframe
+                src={`https://docs.google.com/gview?url=${filePreview}&embedded=true`}
+                title="Vista previa de DOCX/PPTX"
+                className="w-full h-auto max-h-64 rounded"
+                style={{ border: "none" }} // Sin borde
+              />
+            )
+          ) : null}
+        </div>
+
+        {/* Icono de Cruz para eliminar el archivo */}
         <AiOutlineClose
-          className="absolute top-1/2 right-2 transform -translate-y-1/2 text-gray-500 cursor-pointer hover:text-gray-700"
+          className="absolute top-2 right-2 text-gray-500 cursor-pointer hover:text-gray-700"
           onClick={handleRemoveFile}
           size={24}
         />
@@ -97,21 +105,20 @@ const VerEvaluacion = () => {
         <div className="border border-gray-300 p-4 rounded shadow-md">
           <h2 className="text-xl font-semibold mb-2">Subir Archivo</h2>
           <form onSubmit={handleSubmit}>
-            {/* Botón "Añadir archivo" estilo blanco con borde plomito */}
             <label className="inline-block w-full">
               <button
                 type="button"
                 className="border border-gray-300 text-blue-500 bg-white py-2 px-4 rounded w-full cursor-pointer hover:bg-gray-100 transition-all"
-                onClick={() => document.getElementById('file-input').click()} // Al hacer clic en el botón, se activa el input
+                onClick={() => document.getElementById('file-input').click()}
               >
                 Añadir archivo
               </button>
               <input
-                id="file-input" // ID para poder referenciar el input
+                id="file-input"
                 type="file"
                 onChange={handleFileChange}
-                className="hidden"  // Ocultar el input real
-                accept="image/*,.pdf,.docx,.pptx" // Especifica los tipos de archivos permitidos
+                className="hidden"
+                accept="image/*,.pdf,.docx,.pptx"
               />
             </label>
 
@@ -126,7 +133,7 @@ const VerEvaluacion = () => {
             {/* Botón Entregar */}
             <button
               type="submit"
-              className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 w-full mt-4"
+              className="bg-dark-blue text-white px-4 py-2 rounded hover:bg-blue-600 w-full mt-4"
             >
               Entregar
             </button>
