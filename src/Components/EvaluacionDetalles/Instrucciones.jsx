@@ -1,10 +1,12 @@
 import React, { useState } from "react";
+import axios from "axios";
 import { AiOutlineClose } from "react-icons/ai";
 import { MdLibraryBooks } from "react-icons/md";
 
 const Instrucciones = ({ evaluacion, user }) => {
   const [selectedFile, setSelectedFile] = useState(null);
   const [filePreview, setFilePreview] = useState(null);
+  const [uploadMessage, setUploadMessage] = useState('');
 
   const handleFileChange = (event) => {
     const file = event.target.files[0];
@@ -20,11 +22,23 @@ const Instrucciones = ({ evaluacion, user }) => {
     setFilePreview(null);
   };
 
-  const handleSubmit = (event) => {
+  const handleSubmit = async (event) => {
     event.preventDefault();
     if (selectedFile) {
-      console.log("Archivo seleccionado:", selectedFile.name);
-      // Lógica para enviar el archivo al servidor
+      const formData = new FormData();
+      formData.append('file', selectedFile);
+
+      try {
+        const response = await axios.post('http://localhost:5000/api/upload', formData, {
+          headers: {
+            'Content-Type': 'multipart/form-data',
+          },
+        });
+        setUploadMessage(response.data.message);
+        console.log("Archivo subido:", response.data);
+      } catch (error) {
+        console.error("Error al subir el archivo:", error);
+      }
     } else {
       alert("Por favor selecciona un archivo antes de entregar.");
     }
@@ -36,8 +50,7 @@ const Instrucciones = ({ evaluacion, user }) => {
     const fileType = selectedFile.type.split("/")[0];
 
     return (
-      <div className="flex flex-col border border-gray-300 rounded p-2 shadow-sm relative">
-        {/* Nombre del archivo como enlace arriba */}
+      <div className="flex flex-col border border-gray-300 rounded p-2 shadow-sm relative h-full">
         <div className="w-full mb-2">
           <a
             href={filePreview}
@@ -49,8 +62,7 @@ const Instrucciones = ({ evaluacion, user }) => {
           </a>
         </div>
 
-        {/* Vista previa del archivo debajo del nombre */}
-        <div className="flex-grow">
+        <div className="flex-grow overflow-auto">
           {fileType === "image" ? (
             <img
               src={filePreview}
@@ -62,15 +74,15 @@ const Instrucciones = ({ evaluacion, user }) => {
               <iframe
                 src={filePreview}
                 title="Vista previa de PDF"
-                className="w-full h-auto max-h-64 rounded"
-                style={{ border: "none" }}
+                className="w-full h-full rounded"
+                style={{ border: "none", minHeight: "200px" }} // Ajuste de altura mínima
               />
             ) : (
               <iframe
                 src={`https://docs.google.com/gview?url=${filePreview}&embedded=true`}
                 title="Vista previa de DOCX/PPTX"
-                className="w-full h-auto max-h-64 rounded"
-                style={{ border: "none" }}
+                className="w-full h-full rounded"
+                style={{ border: "none", minHeight: "200px" }} // Ajuste de altura mínima
               />
             )
           ) : null}
@@ -86,7 +98,7 @@ const Instrucciones = ({ evaluacion, user }) => {
   };
 
   return (
-    <div>
+    <div className="flex flex-col h-screen" style={{ maxHeight: "calc(100vh - 60px)" }}>
       <div className="bg-semi-blue text-white p-6 rounded-lg m-4">
         <div className="flex items-center">
           <span className="bg-white p-2 rounded-full text-black mr-4">
@@ -99,16 +111,14 @@ const Instrucciones = ({ evaluacion, user }) => {
         </div>
       </div>
 
-      {/* Contenedor de dos columnas */}
-      <div className="border p-6 rounded-lg m-4 grid grid-cols-2 gap-4">
+      <div className="border p-6 rounded-lg m-4 flex-grow grid grid-cols-2 gap-4">
         <div className="bg-gray-100 p-4 rounded-lg">
           <p className="text-xm">{evaluacion.descripcion_evaluacion}</p>
         </div>
 
-        {/* Cambiar contenido en función del rol del usuario */}
-        <div className="bg-gray-100 p-4 rounded-lg">
+        <div className="bg-gray-100 p-4 rounded-lg flex flex-col h-full">
           {user.rol === "estudiante" ? (
-            <form onSubmit={handleSubmit}>
+            <form onSubmit={handleSubmit} className="flex flex-col h-full">
               <label className="inline-block w-full">
                 <button
                   type="button"
@@ -127,7 +137,7 @@ const Instrucciones = ({ evaluacion, user }) => {
               </label>
 
               {selectedFile && (
-                <div className="relative mt-4">
+                <div className="relative mt-4 flex-grow">
                   {renderFilePreview()}
                 </div>
               )}
@@ -150,12 +160,11 @@ const Instrucciones = ({ evaluacion, user }) => {
                   Descargar archivo
                 </a>
 
-                {/* Previsualización del archivo en Base64 */}
                 {evaluacion.archivo_evaluacion.startsWith("JVBERi0") ? (
                   <iframe
                     src={`data:application/pdf;base64,${evaluacion.archivo_evaluacion}`}
                     title="Previsualización de PDF"
-                    className="w-full h-auto max-h-64 rounded"
+                    className="flex flex-col h-full"
                     style={{ border: "none" }} 
                   />
                 ) : evaluacion.archivo_evaluacion.startsWith("/9j/") || 
@@ -176,6 +185,8 @@ const Instrucciones = ({ evaluacion, user }) => {
           )}
         </div>
       </div>
+
+      {uploadMessage && <div className="text-green-600 mt-4">{uploadMessage}</div>}
     </div>
   );
 };
