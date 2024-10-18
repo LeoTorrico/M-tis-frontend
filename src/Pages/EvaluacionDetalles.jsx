@@ -67,7 +67,7 @@ const EvaluacionDetalles = () => {
             .filter((tab) => tab.visible) 
             .map((tab) => (
               <button
-                key={tab.name}
+                key={tab.name} // Agregar key aquí para los botones
                 onClick={tab.action || (() => setActiveTab(tab.name.toLowerCase()))}
                 className={`${
                   activeTab === tab.name.toLowerCase()
@@ -85,7 +85,11 @@ const EvaluacionDetalles = () => {
       <div>
         {tabs
           .filter((tab) => tab.visible && activeTab === tab.name.toLowerCase())
-          .map((tab) => tab.component)}
+          .map((tab) => (
+            <div key={tab.name}> {/* Agregar key aquí para los componentes */}
+              {tab.component}
+            </div>
+          ))}
       </div>
     </div>
   );
