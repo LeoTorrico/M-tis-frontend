@@ -2,7 +2,6 @@ import React, { useEffect, useState, useContext } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import axios from "axios";
 import { UserContext } from "../context/UserContext";
-import VerEvaluacion from "../Components/EvaluacionDetalles/VerEvaluacion";
 import Instrucciones from "../Components/EvaluacionDetalles/Instrucciones";
 import TrabajoGrupo from "../Components/EvaluacionDetalles/TrabajoGrupo";
 
@@ -16,12 +15,12 @@ const EvaluacionDetalles = () => {
   const fetchEvaluacion = async () => {
     try {
       const response = await axios.get(
-        `http://localhost:3000/evaluaciones/detalles/${cod_evaluacion}`, 
+        `http://localhost:3000/evaluaciones/detalles/${cod_evaluacion}`,
         {
           headers: {
             Authorization: `Bearer ${user.token}`,
-            "Content-Type": "application/json"
-          }
+            "Content-Type": "application/json",
+          },
         }
       );
       setEvaluacion(response.data);
@@ -38,52 +37,55 @@ const EvaluacionDetalles = () => {
     return <p>Cargando detalles de la evaluación...</p>;
   }
 
-  if (user.rol !== "docente") {
-    return <VerEvaluacion evaluacion={evaluacion} />;
-  }
+  // Definir las pestañas disponibles dependiendo del rol del usuario
+  const tabs = [
+    {
+      name: "Tablón",
+      visible: true,
+      component: null,
+      action: () => navigate(`/Vista-Curso/${cod_clase}`),
+    },
+    {
+      name: "Instrucciones",
+      visible: true,
+      component: <Instrucciones evaluacion={evaluacion} user={user} />,
+    },
+    {
+      name: "Trabajo de los Grupos",
+      visible: user.rol === "docente",
+      component: <TrabajoGrupo evaluacion={evaluacion} />,
+    },
+  ];
 
+  // Renderizar las pestañas de acuerdo al rol del usuario
   return (
     <div className="flex flex-col w-full">
-      {/* Header de navegación con diseño adaptado */}
       <div className="flex justify-between items-center border-b-2 border-dark-blue px-6 py-2">
         <div className="w-20"></div>
         <div className="flex justify-center space-x-8 flex-grow">
-          <button
-            onClick={() => navigate(`/Vista-Curso/${cod_clase}`)} // Navegar a Tablón
-            className={`${
-              activeTab === "tablon"
-                ? "bg-semi-blue text-white"
-                : "text-dark-blue"
-            } px-4 py-2 rounded-lg font-medium`}
-          >
-            Tablón
-          </button>
-          <button
-            onClick={() => setActiveTab("instrucciones")}
-            className={`${
-              activeTab === "instrucciones"
-                ? "bg-semi-blue text-white"
-                : "text-dark-blue"
-            } px-4 py-2 rounded-lg font-medium`}
-          >
-            Instrucciones
-          </button>
-          <button
-            onClick={() => setActiveTab("trabajoGrupo")}
-            className={`${
-              activeTab === "trabajoGrupo"
-                ? "bg-semi-blue text-white"
-                : "text-dark-blue"
-            } px-4 py-2 rounded-lg font-medium`}
-          >
-            Trabajo de los Grupos
-          </button>
+          {tabs
+            .filter((tab) => tab.visible) 
+            .map((tab) => (
+              <button
+                key={tab.name}
+                onClick={tab.action || (() => setActiveTab(tab.name.toLowerCase()))}
+                className={`${
+                  activeTab === tab.name.toLowerCase()
+                    ? "bg-semi-blue text-white"
+                    : "text-dark-blue"
+                } px-4 py-2 rounded-lg font-medium`}
+              >
+                {tab.name}
+              </button>
+            ))}
         </div>
       </div>
 
+      {/* Renderizar el contenido de la pestaña activa */}
       <div>
-        {activeTab === "instrucciones" && <Instrucciones evaluacion={evaluacion} user={user} />}
-        {activeTab === "trabajoGrupo" && <TrabajoGrupo evaluacion={evaluacion} />}
+        {tabs
+          .filter((tab) => tab.visible && activeTab === tab.name.toLowerCase())
+          .map((tab) => tab.component)}
       </div>
     </div>
   );
