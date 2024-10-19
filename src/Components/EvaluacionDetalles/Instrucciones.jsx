@@ -1,12 +1,14 @@
-import React, { useState } from "react";
+import React, { useState, useContext } from "react";
 import axios from "axios";
 import { AiOutlineClose } from "react-icons/ai";
 import { MdLibraryBooks } from "react-icons/md";
+import { UserContext } from "../../context/UserContext";
 
-const Instrucciones = ({ evaluacion, user }) => {
+const Instrucciones = ({ evaluacion }) => {
   const [selectedFile, setSelectedFile] = useState(null);
   const [filePreview, setFilePreview] = useState(null);
   const [uploadMessage, setUploadMessage] = useState('');
+  const { user } = useContext(UserContext);
 
   const handleFileChange = (event) => {
     const file = event.target.files[0];
@@ -22,22 +24,36 @@ const Instrucciones = ({ evaluacion, user }) => {
     setFilePreview(null);
   };
 
+  const handleFileToBase64 = (file) => {
+    return new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.onloadend = () => resolve(reader.result.split(',')[1]); // Obtiene la parte Base64
+      reader.onerror = reject;
+      reader.readAsDataURL(file);
+    });
+  };
+
   const handleSubmit = async (event) => {
     event.preventDefault();
     if (selectedFile) {
-      const formData = new FormData();
-      formData.append('file', selectedFile);
-
       try {
-        const response = await axios.post('http://localhost:5000/api/upload', formData, {
+        const base64File = await handleFileToBase64(selectedFile);
+
+        // Asegúrate de que la URL es correcta
+        const response = await axios.post(`http://localhost:3000/evaluaciones/${evaluacion.cod_evaluacion}/entregables`, {
+          archivo_grupo: base64File, // Cambiar 'file' a 'archivo_grupo'
+        }, {
           headers: {
-            'Content-Type': 'multipart/form-data',
+            'Content-Type': 'application/json', // Asegúrate de que el servidor espera JSON
+            Authorization: `Bearer ${user.token}`,
           },
         });
-        setUploadMessage(response.data.message);
+
+        setUploadMessage(response.data.message || "Archivo subido exitosamente.");
         console.log("Archivo subido:", response.data);
       } catch (error) {
         console.error("Error al subir el archivo:", error);
+        setUploadMessage(error.response?.data?.message || "Error al subir el archivo. Inténtalo de nuevo."); // Manejo de error más amigable
       }
     } else {
       alert("Por favor selecciona un archivo antes de entregar.");
@@ -75,14 +91,14 @@ const Instrucciones = ({ evaluacion, user }) => {
                 src={filePreview}
                 title="Vista previa de PDF"
                 className="w-full h-full rounded"
-                style={{ border: "none", minHeight: "200px" }} // Ajuste de altura mínima
+                style={{ border: "none", minHeight: "200px" }}
               />
             ) : (
               <iframe
                 src={`https://docs.google.com/gview?url=${filePreview}&embedded=true`}
                 title="Vista previa de DOCX/PPTX"
                 className="w-full h-full rounded"
-                style={{ border: "none", minHeight: "200px" }} // Ajuste de altura mínima
+                style={{ border: "none", minHeight: "200px" }}
               />
             )
           ) : null}
