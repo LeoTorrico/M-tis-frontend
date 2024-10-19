@@ -7,7 +7,6 @@ import { UserContext } from "../../context/UserContext";
 const Instrucciones = ({ evaluacion }) => {
   const [selectedFile, setSelectedFile] = useState(null);
   const [filePreview, setFilePreview] = useState(null);
-  const [uploadMessage, setUploadMessage] = useState('');
   const { user } = useContext(UserContext);
 
   const handleFileChange = (event) => {
@@ -199,8 +198,6 @@ const Instrucciones = ({ evaluacion }) => {
           )}
         </div>
       </div>
-
-      {uploadMessage && <div className="text-green-600 mt-4">{uploadMessage}</div>}
     </div>
   );
 };
