@@ -49,11 +49,9 @@ const Instrucciones = ({ evaluacion }) => {
           },
         });
 
-        setUploadMessage(response.data.message || "Archivo subido exitosamente.");
         console.log("Archivo subido:", response.data);
       } catch (error) {
         console.error("Error al subir el archivo:", error);
-        setUploadMessage(error.response?.data?.message || "Error al subir el archivo. Inténtalo de nuevo."); // Manejo de error más amigable
       }
     } else {
       alert("Por favor selecciona un archivo antes de entregar.");
