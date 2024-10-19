@@ -13,6 +13,7 @@ import RestablecerContrasenia from "./Pages/RestablecerContrasenia";
 import LoginDocentes from "./Pages/LoginDocentes";
 import { AnimatePresence } from "framer-motion";
 import GrupoDetalles from "./Pages/GrupoDetalles";
+import EvaluacionDetalles from "./Pages/EvaluacionDetalles";
 Modal.setAppElement("#root");
 
 function App() {
@@ -26,6 +27,10 @@ function App() {
             <Route
               path="/Vista-Curso/:cod_clase/grupo/:cod_grupoempresa"
               element={<GrupoDetalles />}
+            />
+            <Route
+              path="/Vista-Curso/:cod_clase/evaluacion/:cod_evaluacion"
+              element={<EvaluacionDetalles />}
             />
             <Route path="/RegistroDocentes" element={<RegistroDocentes />} />
             <Route
