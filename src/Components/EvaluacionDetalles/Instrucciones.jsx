@@ -1,6 +1,6 @@
 import React, { useState, useContext } from "react";
 import axios from "axios";
-import { AiOutlineClose } from "react-icons/ai";
+import { AiOutlineClose, AiOutlinePlus } from "react-icons/ai"; 
 import { MdLibraryBooks } from "react-icons/md";
 import { UserContext } from "../../context/UserContext";
 
@@ -38,9 +38,8 @@ const Instrucciones = ({ evaluacion }) => {
       try {
         const base64File = await handleFileToBase64(selectedFile);
 
-        // Asegúrate de que la URL es correcta
         const response = await axios.post(`http://localhost:3000/evaluaciones/${evaluacion.cod_evaluacion}/entregables`, {
-          archivo_grupo: base64File, // Cambiar 'file' a 'archivo_grupo'
+          archivo_grupo: base64File, 
         }, {
           headers: {
             'Content-Type': 'application/json', // Asegúrate de que el servidor espera JSON
@@ -63,7 +62,7 @@ const Instrucciones = ({ evaluacion }) => {
     const fileType = selectedFile.type.split("/")[0];
 
     return (
-      <div className="flex flex-col border border-gray-300 rounded p-2 shadow-sm relative h-full">
+      <div className="flex flex-col border border-gray-300 bg-white rounded-lg p-2 shadow-sm relative h-full">
         <div className="w-full mb-2">
           <a
             href={filePreview}
@@ -125,19 +124,20 @@ const Instrucciones = ({ evaluacion }) => {
       </div>
 
       <div className="border p-6 rounded-lg m-4 flex-grow grid grid-cols-2 gap-4">
-        <div className="bg-gray-100 p-4 rounded-lg">
+        <div className="bg-blue-gray p-4 rounded-lg">
           <p className="text-xm">{evaluacion.descripcion_evaluacion}</p>
         </div>
 
-        <div className="bg-gray-100 p-4 rounded-lg flex flex-col h-full">
+        <div className="bg-blue-gray p-4 rounded-lg flex flex-col h-full">
           {user.rol === "estudiante" ? (
             <form onSubmit={handleSubmit} className="flex flex-col h-full">
               <label className="inline-block w-full">
                 <button
                   type="button"
-                  className="border border-gray-300 text-blue-500 bg-white py-2 px-4 rounded w-full cursor-pointer hover:bg-gray-100 transition-all"
+                  className="border border-gray-300 text-blue-500 bg-white py-2 px-4 rounded-lg w-full cursor-pointer flex items-center justify-center" 
                   onClick={() => document.getElementById('file-input').click()}
                 >
+                  <AiOutlinePlus className="mr-2" /> 
                   Añadir archivo
                 </button>
                 <input
@@ -157,7 +157,7 @@ const Instrucciones = ({ evaluacion }) => {
 
               <button
                 type="submit"
-                className="bg-dark-blue text-white px-4 py-2 rounded hover:bg-blue-600 w-full mt-4"
+                className="bg-semi-blue text-white px-4 py-2 rounded-lg w-full mt-4"
               >
                 Entregar
               </button>
