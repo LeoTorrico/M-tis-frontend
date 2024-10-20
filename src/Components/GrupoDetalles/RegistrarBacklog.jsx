@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
 import Swal from "sweetalert2";
 import Modal from "react-modal";
-import { IoMdClose } from "react-icons/io"; // Asegúrate de tener instalada esta librería
+import { IoMdClose } from "react-icons/io";
 
 const MostrarRequerimientos = () => {
   const [tasks, setTasks] = useState([]);
@@ -14,9 +14,23 @@ const MostrarRequerimientos = () => {
     prioridad: "",
     estimacion: "",
   });
-
+  const [error, setError] = useState("");
+  const [error2, setError2] = useState("");
   const { cod_grupoempresa } = useParams();
-
+  const getPriorityLabel = (priority) => {
+    switch (priority) {
+      case 1:
+        return "Must";
+      case 2:
+        return "Should";
+      case 3:
+        return "Could";
+      case 4:
+        return "Would";
+      default:
+        return "No definido";
+    }
+  };
   useEffect(() => {
     const fetchTasks = async () => {
       setLoading(true);
@@ -51,8 +65,44 @@ const MostrarRequerimientos = () => {
     setNewRequirement({ ...newRequirement, [name]: value });
   };
 
+  // Función para validar el campo de requerimiento
+  const validateRequirement = () => {
+    const { requerimiento } = newRequirement;
+    const regex = /^[a-zA-Z0-9-' ]+$/; // Permite letras, números, guiones y apóstrofes
+
+    if (requerimiento.length < 3) {
+      setError("El requerimiento debe tener al menos 3 caracteres.");
+      return false;
+    }
+
+    if (!regex.test(requerimiento)) {
+      setError(
+        "El requerimiento solo puede contener letras, números, espacios, guiones y apóstrofes."
+      );
+      return false;
+    }
+
+    setError(""); // Si pasa todas las validaciones, no hay error
+    return true;
+  };
+  const validateDescription = (description) => {
+    if (description.length < 20 || description.length > 300) {
+      setError2("La descripción debe tener entre 20 y 300 caracteres.");
+      return false;
+    }
+    setError2("");
+    return true;
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
+    const isRequirementValid = validateRequirement(
+      newRequirement.requerimiento
+    );
+    const isDescriptionValid = validateDescription(newRequirement.descripcion);
+
+    if (!isRequirementValid || !isDescriptionValid) return;
+
     try {
       const response = await fetch(
         "http://localhost:3000/planificacion/requerimientos",
@@ -108,7 +158,29 @@ const MostrarRequerimientos = () => {
   };
 
   const closeModal = () => {
-    setModalIsOpen(false);
+    Swal.fire({
+      title: "¿Estás seguro de que deseas salir del registro?",
+      text: "Perderás los cambios no guardados",
+      icon: "warning",
+      iconColor: "#3684DB",
+      showCancelButton: true,
+      confirmButtonColor: "#d33",
+      cancelButtonColor: "#3085d6",
+      confirmButtonText: "Sí",
+      cancelButtonText: "No",
+    }).then((result) => {
+      if (result.isConfirmed) {
+        setModalIsOpen(false);
+        setNewRequirement({
+          requerimiento: "",
+          descripcion: "",
+          prioridad: "",
+          estimacion: "",
+        });
+      }
+    });
+    setError("");
+    setError2("");
   };
 
   return (
@@ -152,9 +224,12 @@ const MostrarRequerimientos = () => {
                     name="requerimiento"
                     value={newRequirement.requerimiento}
                     onChange={handleInputChange}
+                    maxLength="50" // Limita a 50 caracteres
                     className="border rounded-lg w-full p-2"
                     required
                   />
+                  {error && <p className="text-red-500 mt-2">{error}</p>}{" "}
+                  {/* Muestra el mensaje de error */}
                 </div>
                 <div className="mb-4">
                   <label className="block font-semibold mb-2">
@@ -167,20 +242,26 @@ const MostrarRequerimientos = () => {
                     className="border rounded-lg w-full p-2"
                     required
                   />
+                  {error2 && <p className="text-red-500 mt-2">{error2}</p>}
                 </div>
                 <div className="mb-4 flex justify-between">
                   <div className="w-1/2 pr-2">
                     <label className="block font-semibold mb-2">
                       Prioridad*
                     </label>
-                    <input
-                      type="number"
+                    <select
                       name="prioridad"
                       value={newRequirement.prioridad}
                       onChange={handleInputChange}
                       className="border rounded-lg w-full p-2"
                       required
-                    />
+                    >
+                      <option value="">Selecciona una prioridad</option>
+                      <option value="1">Must</option>
+                      <option value="2">Should</option>
+                      <option value="3">Could</option>
+                      <option value="4">Would</option>
+                    </select>
                   </div>
                   <div className="w-1/2 pl-2">
                     <label className="block font-semibold mb-2">
@@ -192,6 +273,8 @@ const MostrarRequerimientos = () => {
                       value={newRequirement.estimacion}
                       onChange={handleInputChange}
                       className="border rounded-lg w-full p-2"
+                      min="0" // Valor mínimo permitido
+                      max="100" // Valor máximo permitido
                       required
                     />
                   </div>
@@ -221,38 +304,46 @@ const MostrarRequerimientos = () => {
         <div className="overflow-x-auto mt-4">
           <table className="min-w-full table-auto bg-white rounded-lg shadow-md">
             <thead>
-              <tr className="text-left text-dark-blue font-medium bg-light-blue">
-                <th className="p-4">Tarea</th>
-                <th className="p-4">Descripción</th>
-                <th className="p-4">Prioridad</th>
-                <th className="p-4">Estimacion</th>
-                <th className="p-4">Estado</th>
+              <tr>
+                <th className="px-4 py-2 border">Requerimiento</th>
+                <th className="px-4 py-2 border">Descripción</th>
+                <th className="px-4 py-2 border">Prioridad</th>
+                <th className="px-4 py-2 border">Estimación</th>
+                <th className="px-4 py-2 border">Estado</th>
               </tr>
             </thead>
             <tbody>
               {loading ? (
                 <tr>
-                  <td colSpan="5" className="text-center p-4">
+                  <td colSpan="5" className="text-center py-4">
                     Cargando...
                   </td>
                 </tr>
-              ) : (
+              ) : tasks.length > 0 ? (
                 tasks.map((task) => (
-                  <tr key={task.id} className="border-b">
-                    <td className="p-4">{task.name}</td>
-                    <td className="p-4">{task.description}</td>
-                    <td className="p-4">{task.priority}</td>
-                    <td className="p-4 text-center">{task.points}</td>
-                    <td className="p-4">{task.status}</td>
+                  <tr key={task.id}>
+                    <td className="px-4 py-2 border">{task.name}</td>
+                    <td className="px-4 py-2 border">{task.description}</td>
+                    <td className="px-4 py-2 border">
+                      {getPriorityLabel(task.priority)}
+                    </td>
+                    <td className="px-4 py-2 border">{task.points}</td>
+                    <td className="px-4 py-2 border">{task.status}</td>
                   </tr>
                 ))
+              ) : (
+                <tr>
+                  <td colSpan="5" className="text-center py-4">
+                    No hay requerimientos disponibles.
+                  </td>
+                </tr>
               )}
             </tbody>
           </table>
           <div className="flex justify-end ">
             <button
+              className="mt-4 bg-semi-blue text-white p-2 px-4 py-2 rounded-lg"
               onClick={openModal}
-              className="mt-4 bg-semi-blue text-white p-2 px-4 py-2 rounded-lg "
             >
               Agregar Requerimiento +
             </button>
