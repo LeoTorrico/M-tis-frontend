@@ -5,14 +5,13 @@ import { useNavigate, useParams } from "react-router-dom"; // Importar useNaviga
 const GruposEmpresas = () => {
   const [grupos, setGrupos] = useState([]);
   const navigate = useNavigate(); // Hook para navegar
-  const { cod_clase } = useParams(); // Obtener el código del curso de la URL
+  const { cod_clase } = useParams(); // Obtener el código de clase de la URL
 
-  // Función para obtener los datos desde la API
   const fetchGrupos = async () => {
     try {
       const response = await fetch(
         `http://localhost:3000/api/grupos/${cod_clase}`
-      ); // Ajusta la URL según tu backend
+      );
       const data = await response.json();
       setGrupos(data);
     } catch (error) {
@@ -24,22 +23,24 @@ const GruposEmpresas = () => {
     fetchGrupos();
   }, [cod_clase]);
 
-  // Función para manejar la navegación al hacer clic en "Ver Grupo"
   const handleVerGrupo = (cod_grupoempresa) => {
-    navigate(`/Vista-Curso/${cod_clase}/grupo/${cod_grupoempresa}`); // Redirigir a la página del grupo con el código del curso y el grupo
+    // Redirigir a EvaluacionSemanal con el cod_clase y cod_grupoempresa
+    navigate(
+      `/Vista-Curso/${cod_clase}/evaluacion-semanal/${cod_grupoempresa}`
+    );
   };
 
   return (
     <div className="p-2">
       {grupos.map((grupo) => (
         <div
-          key={grupo.cod_grupoempresa} // Usa un identificador único
+          key={grupo.cod_grupoempresa}
           className="bg-light-blue rounded-lg p-4 flex justify-between items-center mb-4"
         >
           <div className="flex items-center">
             {grupo.logotipo ? (
               <img
-                src={`data:image/png;base64,${grupo.logotipo}`} // Decodifica el logo de base64
+                src={`data:image/png;base64,${grupo.logotipo}`}
                 alt={grupo.nombre_largo}
                 className="w-16 h-16 rounded-full object-cover mr-4"
               />
@@ -51,7 +52,7 @@ const GruposEmpresas = () => {
             <span className="text-lg font-medium">{grupo.nombre_largo}</span>
           </div>
           <button
-            onClick={() => handleVerGrupo(grupo.cod_grupoempresa)} // Navega a la ruta del grupo
+            onClick={() => handleVerGrupo(grupo.cod_grupoempresa)}
             className="bg-semi-blue text-white px-4 py-2 rounded-lg"
           >
             Ver Grupo

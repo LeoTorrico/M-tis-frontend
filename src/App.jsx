@@ -15,6 +15,7 @@ import { AnimatePresence } from "framer-motion";
 import GrupoDetalles from "./Pages/GrupoDetalles";
 import EvaluacionSemanal from "./Pages/EvaluacionSemanal";
 import Asistencia from "./Pages/Asistencia";
+
 Modal.setAppElement("#root");
 
 function App() {
@@ -23,7 +24,7 @@ function App() {
       <Layout>
         <AnimatePresence>
           <Routes>
-            <Route path="/" element={<ClasesPrueba />} />{" "}
+            <Route path="/" element={<ClasesPrueba />} />
             <Route path="/Vista-Curso/:cod_clase" element={<VistaCurso />} />
             <Route
               path="/Vista-Curso/:cod_clase/grupo/:cod_grupoempresa"
@@ -41,7 +42,10 @@ function App() {
             />
             <Route path="/LoginEstudiantes" element={<LoginEstudiantes />} />
             <Route path="/LoginDocentes" element={<LoginDocentes />} />
-            <Route path="/evaluacionSemanal" element={<EvaluacionSemanal />} />
+            <Route
+              path="/Vista-Curso/:cod_clase/evaluacion-semanal/:cod_grupoempresa"
+              element={<EvaluacionSemanal />}
+            />
             <Route path="/Asistencia" element={<Asistencia />} />
           </Routes>
         </AnimatePresence>
@@ -62,8 +66,9 @@ function Layout({ children }) {
   const isSidebarPage =
     location.pathname === "/" ||
     location.pathname.match(/^\/Vista-Curso\/.+$/) ||
-    location.pathname === "/evaluacionSemanal" ||
-    location.pathname === "/asistencia";
+    (location.pathname.startsWith("/Vista-Curso/") &&
+      location.pathname.includes("evaluacion-semanal")) ||
+    location.pathname === "/Asistencia";
 
   return (
     <div className="flex flex-grow">
