@@ -17,16 +17,9 @@ const InformacionGrupo = ({ grupo, user }) => {
             <p className="text-xl">{grupo.nombre_corto}</p>
           </div>
         </div>
-        {user.rol === "estudiante" && (
-          <div className="flex justify-end">
-            <button className="bg-white text-dark-blue px-4 py-2 rounded-lg border border-blue-800 flex items-center ">
-              Ver planificacion
-            </button>
-          </div>
-        )}
       </div>
 
-      <div className="mt-6 p-6">
+      <div className="mt-2 p-6">
         <table className="min-w-full table-auto">
           <thead>
             <tr>

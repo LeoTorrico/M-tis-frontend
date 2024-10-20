@@ -3,13 +3,16 @@ import { UserContext } from "../context/UserContext";
 import { useParams } from "react-router-dom";
 import InformacionGrupo from "../Components/GrupoDetalles/InformacionGrupo";
 import RegistrarBacklog from "../Components/GrupoDetalles/RegistrarBacklog";
+import SprintBacklog from "../Components/GrupoDetalles/SprintBacklog";
+import { useNavigate } from "react-router-dom";
+import { TbArrowBackUp } from "react-icons/tb";
 
 const GrupoDetalles = () => {
   const [grupo, setGrupo] = useState(null);
   const [activeTab, setActiveTab] = useState("informacion");
   const { user } = useContext(UserContext);
-  const { cod_grupoempresa } = useParams();
-
+  const { cod_grupoempresa, cod_clase } = useParams();
+  const navigate = useNavigate();
   const fetchGrupo = async () => {
     try {
       const response = await fetch(
@@ -29,14 +32,21 @@ const GrupoDetalles = () => {
   if (!grupo) {
     return <p>Cargando detalles del grupo...</p>;
   }
-
+  const handleBackToBoard = () => {
+    navigate(`/Vista-Curso/${cod_clase}`, { state: { activeTab: "Tablon" } });
+  };
   return (
     <div className="flex flex-col w-full">
       {/* Header de navegación con diseño adaptado */}
       <div className="flex justify-between items-center border-b-2 border-dark-blue px-6 py-2">
         {/* Contenedor vacío para mantener el ícono de usuario en la derecha (en caso de necesitar espacio adicional) */}
         <div className="w-20"></div>
-
+        <button
+          onClick={handleBackToBoard}
+          className="absolute  text-black px-2 py-2 hover:text-semi-blue"
+        >
+          <TbArrowBackUp className="w-6 h-6" />
+        </button>
         {/* Pestañas centradas */}
         <div className="flex justify-center space-x-8 flex-grow">
           <button
@@ -59,15 +69,24 @@ const GrupoDetalles = () => {
           >
             Product Backlog
           </button>
+          <button
+            onClick={() => setActiveTab("sprint")}
+            className={`${
+              activeTab === "sprint"
+                ? "bg-semi-blue text-white"
+                : "text-dark-blue"
+            } px-4 py-2 rounded-lg font-medium`}
+          >
+            Sprint Backlog
+          </button>
         </div>
       </div>
 
-      {/* Contenido dinámico basado en la pestaña seleccionada */}
-      {activeTab === "informacion" ? (
+      {activeTab === "informacion" && (
         <InformacionGrupo grupo={grupo} user={user} />
-      ) : (
-        <RegistrarBacklog />
       )}
+      {activeTab === "backlog" && <RegistrarBacklog />}
+      {activeTab === "sprint" && <SprintBacklog />}
     </div>
   );
 };

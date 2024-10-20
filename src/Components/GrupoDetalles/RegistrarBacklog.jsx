@@ -62,7 +62,7 @@ const MostrarRequerimientos = () => {
             "Content-Type": "application/json",
           },
           body: JSON.stringify({
-            codigoProduct: 5,
+            codigoGrupo: cod_grupoempresa,
             requerimientos: [
               {
                 requerimiento: newRequirement.requerimiento,
@@ -152,7 +152,7 @@ const MostrarRequerimientos = () => {
                     name="requerimiento"
                     value={newRequirement.requerimiento}
                     onChange={handleInputChange}
-                    className="mt-1 block w-full border-dark-blue border rounded shadow-sm"
+                    className="border rounded-lg w-full p-2"
                     required
                   />
                 </div>
@@ -164,7 +164,7 @@ const MostrarRequerimientos = () => {
                     name="descripcion"
                     value={newRequirement.descripcion}
                     onChange={handleInputChange}
-                    className="mt-1 block w-full border-dark-blue border rounded shadow-sm"
+                    className="border rounded-lg w-full p-2"
                     required
                   />
                 </div>
@@ -178,7 +178,7 @@ const MostrarRequerimientos = () => {
                       name="prioridad"
                       value={newRequirement.prioridad}
                       onChange={handleInputChange}
-                      className="mt-1 block w-full border-dark-blue border rounded shadow-sm"
+                      className="border rounded-lg w-full p-2"
                       required
                     />
                   </div>
@@ -191,7 +191,7 @@ const MostrarRequerimientos = () => {
                       name="estimacion"
                       value={newRequirement.estimacion}
                       onChange={handleInputChange}
-                      className="mt-1 block w-full border-dark-blue border rounded shadow-sm"
+                      className="border rounded-lg w-full p-2"
                       required
                     />
                   </div>

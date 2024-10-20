@@ -244,7 +244,12 @@ const VistaCurso = () => {
       <HeaderCurso activeTab={activeTab} setActiveTab={setActiveTab} />
       <div className="bg-semi-blue text-white p-6 rounded-lg m-4">
         <h1 className="text-3xl font-bold">{curso.nombre}</h1>
-        <p className="text-xl">{curso.gestion}</p>
+        <div className="flex justify-between">
+          <p className="text-xl">{curso.gestion}</p>
+          {rol === "docente" && (
+            <p className="text-xl">Codigo de clase: {cod_clase}</p>
+          )}
+        </div>
         {activeTab === "GruposEmpresas" && rol === "estudiante" && (
           <div className="flex justify-end">
             <button
