@@ -9,10 +9,13 @@ import { TbArrowBackUp } from "react-icons/tb";
 
 const GrupoDetalles = () => {
   const [grupo, setGrupo] = useState(null);
-  const [activeTab, setActiveTab] = useState("informacion");
+  const [activeTab, setActiveTab] = useState(
+    localStorage.getItem("activeTab") || "informacion"
+  );
   const { user } = useContext(UserContext);
   const { cod_grupoempresa, cod_clase } = useParams();
   const navigate = useNavigate();
+
   const fetchGrupo = async () => {
     try {
       const response = await fetch(
@@ -29,12 +32,18 @@ const GrupoDetalles = () => {
     fetchGrupo();
   }, [cod_grupoempresa]);
 
+  useEffect(() => {
+    localStorage.setItem("activeTab", activeTab);
+  }, [activeTab]);
+
   if (!grupo) {
     return <p>Cargando detalles del grupo...</p>;
   }
+
   const handleBackToBoard = () => {
     navigate(`/Vista-Curso/${cod_clase}`, { state: { activeTab: "Tablon" } });
   };
+
   return (
     <div className="flex flex-col w-full">
       {/* Header de navegación con diseño adaptado */}
