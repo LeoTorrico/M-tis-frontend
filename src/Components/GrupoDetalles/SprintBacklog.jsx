@@ -114,8 +114,13 @@ const SprintBacklog = () => {
   const handleRequerimientosSubmit = async (e) => {
     e.preventDefault();
 
+    // Verificar si 'e.target.requerimientos' es un array o un único elemento
+    const checkboxes = e.target.requerimientos.length
+      ? Array.from(e.target.requerimientos)
+      : [e.target.requerimientos];
+
     // Obtener los requerimientos seleccionados
-    const selectedRequerimientos = Array.from(e.target.requerimientos)
+    const selectedRequerimientos = checkboxes
       .filter((input) => input.checked)
       .map((input) => ({
         codRequerimiento: Number(input.value), // Convertir a número
@@ -126,6 +131,8 @@ const SprintBacklog = () => {
       requerimientos: selectedRequerimientos,
     };
 
+    console.log(dataToSend); // Asegúrate de que los datos se están construyendo correctamente
+
     try {
       // Realizar la solicitud POST con la estructura correcta
       await axios.put(
@@ -135,7 +142,7 @@ const SprintBacklog = () => {
 
       closeRequerimientosModal();
       await Swal.fire({
-        title: "Éxito!",
+        title: "¡Éxito!",
         text: "Requerimiento agregado correctamente.",
         icon: "success",
         iconColor: "#3684DB",

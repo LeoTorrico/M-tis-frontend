@@ -42,13 +42,8 @@ const RequerimientosModal = ({ isOpen, onClose, requerimientos, onSubmit }) => {
                   value={req.cod_requerimiento}
                   className="mr-2"
                 />
-                <label
-                  htmlFor={`requerimiento-${req.cod_requerimiento}`}
-                  className="flex-grow"
-                >
-                  <span>{req.requerimiento}</span>
-                  <span className="ml-4">Prioridad: {req.prioridad_hu}</span>
-                  <span className="ml-4">Estimación: {req.estimacion_hu}</span>
+                <label htmlFor={`requerimiento-${req.cod_requerimiento}`}>
+                  {req.requerimiento} - {req.descripcion_hu}
                 </label>
               </div>
             ))
