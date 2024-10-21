@@ -6,6 +6,8 @@ import axios from "axios";
 const EvaluacionSemanal = () => {
   const navigate = useNavigate();
   const { cod_grupoempresa, cod_clase } = useParams();
+
+  // Estado para la información del curso
   const [curso, setCurso] = useState({
     nombre: "",
     gestion: "",
@@ -17,20 +19,14 @@ const EvaluacionSemanal = () => {
   const [fecha, setFecha] = useState("");
   const [retroalimentacion, setRetroalimentacion] = useState("");
   const [rubricScores, setRubricScores] = useState({});
+  const [rubricas, setRubricas] = useState([]); // Para las rúbricas obtenidas del backend
   const [selectedStudentIndex, setSelectedStudentIndex] = useState(null);
-  const rubricas = [
-    "Claridad",
-    "Dominio del tema",
-    "Trabajo en equipo",
-    "Puntualidad",
-    "Responsabilidad",
-  ];
 
   useEffect(() => {
+    // Obtener datos de la clase
     const fetchClaseData = async () => {
       try {
         const token = localStorage.getItem("token");
-
         const response = await axios.get(
           "http://localhost:3000/clases/obtener",
           {
@@ -61,6 +57,7 @@ const EvaluacionSemanal = () => {
   }, [cod_clase]);
 
   useEffect(() => {
+    // Obtener estudiantes del grupo
     const fetchGrupoData = async () => {
       if (!cod_grupoempresa) {
         console.error("El cod_grupo no está definido");
@@ -69,7 +66,6 @@ const EvaluacionSemanal = () => {
 
       try {
         const token = localStorage.getItem("token");
-
         const response = await axios.get(
           `http://localhost:3000/api/grupos/${cod_grupoempresa}/estudiantes`,
           {
@@ -88,6 +84,34 @@ const EvaluacionSemanal = () => {
     fetchGrupoData();
   }, [cod_grupoempresa]);
 
+ useEffect(() => {
+   // Obtener rúbricas desde el backend
+   const fetchRubricas = async () => {
+     try {
+       const token = localStorage.getItem("token"); // Obtener el token de localStorage
+       if (!token) {
+         console.error("No se obtuvo el token");
+         return;
+       }
+
+       const response = await axios.get(
+         `http://localhost:3000/api/grupos/evaluaciones/4/rubricas`,
+         {
+           headers: {
+             Authorization: `Bearer ${token}`, // Enviar el token en las cabeceras
+           },
+         }
+       );
+       setRubricas(response.data); // Actualiza el estado con las rúbricas reales
+     } catch (error) {
+       console.error("Error al obtener las rúbricas:", error);
+     }
+   };
+
+   fetchRubricas();
+ }, []);
+
+
   const handleRetroalimentacionChange = (e) => {
     setRetroalimentacion(e.target.value);
     if (e.target.value) {
@@ -105,7 +129,7 @@ const EvaluacionSemanal = () => {
   const handleRubricChange = (rubricIndex, value) => {
     const updatedScores = { ...rubricScores };
     if (!updatedScores[selectedStudentIndex]) {
-      updatedScores[selectedStudentIndex] = Array(5).fill(0);
+      updatedScores[selectedStudentIndex] = Array(rubricas.length).fill(0);
     }
     updatedScores[selectedStudentIndex][rubricIndex] = Number(value);
     setRubricScores(updatedScores);
@@ -116,11 +140,33 @@ const EvaluacionSemanal = () => {
       (sum, score) => sum + score,
       0
     );
+
     const updatedIntegrantes = [...integrantes];
     updatedIntegrantes[selectedStudentIndex].score = totalScore;
+
+    if (totalScore === 0) {
+      updatedIntegrantes[selectedStudentIndex].asistencia =
+        "ausente_sin_justificacion";
+    } else if (totalScore >= 1) {
+      updatedIntegrantes[selectedStudentIndex].asistencia = "presente";
+    }
+
     setIntegrantes(updatedIntegrantes);
-    setSelectedStudentIndex(null); // Cerrar modal después de guardar
+    setSelectedStudentIndex(null);
   };
+  function verificarToken() {
+    const token = localStorage.getItem("token"); // Suponiendo que el token está almacenado con la clave 'token'
+
+    if (token) {
+      console.log("Token obtenido:", token);
+      // Aquí puedes agregar cualquier otra lógica si es necesario
+    } else {
+      console.log("No se obtuvo el token");
+    }
+  }
+
+  // Llamar a la función para verificar el token
+  verificarToken();
 
   return (
     <div className="flex flex-col w-full p-6 bg-white">
@@ -164,7 +210,7 @@ const EvaluacionSemanal = () => {
                   <div
                     key={index}
                     className="relative"
-                    onClick={() => openRubricModal(index)} // Abrir modal al hacer clic
+                    onClick={() => openRubricModal(index)}
                   >
                     <input
                       type="text"
@@ -184,9 +230,10 @@ const EvaluacionSemanal = () => {
             <h2 className="font-bold text-md mb-2 text-center">Asistencia</h2>
             <div className="flex flex-col space-y-2">
               {integrantes.length > 0 ? (
-                integrantes.map((_, index) => (
+                integrantes.map((integrante, index) => (
                   <select
                     key={index}
+                    value={integrante.asistencia || "presente"}
                     className="bg-[#D1DDED] border border-gray-300 rounded-lg p-1 w-full h-10 text-center"
                   >
                     <option value="presente">Presente</option>
@@ -218,58 +265,74 @@ const EvaluacionSemanal = () => {
             <tbody>
               <tr>
                 <td className="border px-4 py-2">
-                  {fecha ? fecha : "Fecha no registrada"}
+                  <input
+                    type="text"
+                    value={fecha || "00/00/00"}
+                    readOnly
+                    className="w-full bg-[#D1DDED] p-2"
+                  />
                 </td>
                 <td className="border px-4 py-2">
-                  <textarea
+                  <input
+                    type="text"
                     value={retroalimentacion}
                     onChange={handleRetroalimentacionChange}
-                    placeholder="Ingrese retroalimentación..."
-                    className="w-full p-2 border border-gray-300 rounded-lg"
+                    className="w-full bg-[#D1DDED] p-2"
                   />
                 </td>
               </tr>
             </tbody>
           </table>
         </div>
-
-        <div className="flex justify-start mt-6 space-x-4">
-          <button className="bg-[#223A59] text-white px-4 py-2 rounded-lg">
-            Ver archivo
-          </button>
-        </div>
       </div>
 
-      {/* Modal para calificar las rúbricas, único para cada integrante */}
       {selectedStudentIndex !== null && (
-        <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
-          <div className="bg-white p-6 rounded-lg w-1/3">
-            <h2 className="text-xl font-bold mb-4">
-              Rúbricas: {integrantes[selectedStudentIndex]?.nombre_estudiante}
+        <div className="fixed inset-0 flex items-center justify-center z-50">
+          <div className="bg-white p-4 rounded-lg shadow-lg">
+            <h2 className="text-lg font-bold mb-4">
+              Evaluar a {integrantes[selectedStudentIndex]?.nombre_estudiante}
             </h2>
-            {rubricas.map((rubrica, idx) => (
-              <div key={idx} className="mb-2">
-                <label className="block text-sm font-bold">{rubrica}</label>
-                <input
-                  type="number"
-                  min="0"
-                  max="100"
-                  value={
-                    rubricScores[selectedStudentIndex]
-                      ? rubricScores[selectedStudentIndex][idx] || 0
-                      : 0
-                  }
-                  onChange={(e) => handleRubricChange(idx, e.target.value)}
-                  className="border border-gray-300 rounded-lg p-2 w-full"
-                />
-              </div>
-            ))}
-            <button
-              className="bg-blue-500 text-white px-4 py-2 rounded mt-4"
-              onClick={saveRubricScores}
-            >
-              Guardar
-            </button>
+
+            {rubricas.length > 0 ? (
+              rubricas.map((rubrica, rubricIndex) => (
+                <div key={rubricIndex} className="mb-4">
+                  <label className="font-bold mb-2">
+                    {rubrica.nombre_rubrica}
+                  </label>
+                  <p className="mb-2 text-sm">{rubrica.descripcion_rubrica}</p>
+                  <input
+                    type="number"
+                    min="0"
+                    max={rubrica.peso}
+                    value={
+                      rubricScores[selectedStudentIndex]?.[rubricIndex] || ""
+                    }
+                    onChange={(e) =>
+                      handleRubricChange(rubricIndex, e.target.value)
+                    }
+                    className="border border-gray-300 p-2 w-full"
+                    placeholder={`Peso máximo: ${rubrica.peso}`}
+                  />
+                </div>
+              ))
+            ) : (
+              <p>No hay rúbricas disponibles</p>
+            )}
+
+            <div className="flex justify-end">
+              <button
+                className="bg-red-500 text-white py-2 px-4 rounded-lg mr-2"
+                onClick={() => setSelectedStudentIndex(null)}
+              >
+                Cancelar
+              </button>
+              <button
+                className="bg-green-500 text-white py-2 px-4 rounded-lg"
+                onClick={saveRubricScores}
+              >
+                Guardar
+              </button>
+            </div>
           </div>
         </div>
       )}
@@ -278,4 +341,4 @@ const EvaluacionSemanal = () => {
 };
 
 export default EvaluacionSemanal;
-////////////////
+////////
