@@ -19,7 +19,6 @@ const SprintBacklog = () => {
   });
   const { cod_grupoempresa } = useParams();
   const [error, setError] = useState("");
-
   // Obtener el product backlog
   useEffect(() => {
     const fetchTasks = async () => {
@@ -59,25 +58,21 @@ const SprintBacklog = () => {
     const { name, value } = e.target;
     setSprintData({ ...sprintData, [name]: value });
   };
-  const validateRequirement = () => {
-    const { requerimiento } = newRequirement;
-    const regex = /^[a-zA-Z0-9-' ]+$/; // Permite letras, números, guiones y apóstrofes
 
-    if (requerimiento.length < 3) {
-      setError("El requerimiento debe tener al menos 3 caracteres.");
+  const validateObjetivo = (Objetivo) => {
+    if (Objetivo.length < 20 || Objetivo.length > 150) {
+      setError("El objetivo debe tener entre 20 y 150 caracteres.");
       return false;
     }
-
-    if (!regex.test(requerimiento)) {
-      setError(
-        "El requerimiento solo puede contener letras, números, espacios, guiones y apóstrofes."
-      );
-      return false;
-    }
+    setError("");
+    return true;
   };
-  // Función para manejar el registro de sprint
+
   const handleSubmit = async (e) => {
     e.preventDefault();
+    const isValidateObjetivo = validateObjetivo(sprintData.objetivo);
+    if (!isValidateObjetivo) return;
+
     const sprintPayload = {
       cod_grupoempresa, // Lo pasamos desde las props
       sprint: sprintData.numero,
@@ -300,8 +295,8 @@ const SprintBacklog = () => {
                     value={sprintData.numero}
                     onChange={handleInputChange}
                     className="border rounded-lg w-full p-2"
-                    min="0" // Valor mínimo permitido
-                    max="100" // Valor máximo permitido
+                    min="0"
+                    max="100"
                     required
                   />
                 </div>
@@ -316,6 +311,8 @@ const SprintBacklog = () => {
                     onChange={handleInputChange}
                     className="border rounded-lg w-full p-2"
                     required
+                    min="2024-01-01"
+                    max="2050-12-31"
                   />
                 </div>
                 <div>
@@ -329,6 +326,8 @@ const SprintBacklog = () => {
                     onChange={handleInputChange}
                     className="border rounded-lg w-full p-2"
                     required
+                    min="2024-01-01"
+                    max="2050-12-31"
                   />
                 </div>
               </div>
@@ -345,6 +344,7 @@ const SprintBacklog = () => {
                   className="mt-1 block w-full h-full border rounded shadow-sm"
                   required
                 />
+                {error && <p className="text-red-500 mt-2">{error}</p>}{" "}
               </div>
             </form>
 

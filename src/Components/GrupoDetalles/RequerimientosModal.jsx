@@ -43,7 +43,7 @@ const RequerimientosModal = ({ isOpen, onClose, requerimientos, onSubmit }) => {
                   className="mr-2"
                 />
                 <label htmlFor={`requerimiento-${req.cod_requerimiento}`}>
-                  {req.requerimiento} - {req.descripcion_hu}
+                  {req.requerimiento} - {req.decripcion_hu}
                 </label>
               </div>
             ))
