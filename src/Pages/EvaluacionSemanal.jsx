@@ -84,33 +84,32 @@ const EvaluacionSemanal = () => {
     fetchGrupoData();
   }, [cod_grupoempresa]);
 
- useEffect(() => {
-   // Obtener rúbricas desde el backend
-   const fetchRubricas = async () => {
-     try {
-       const token = localStorage.getItem("token"); // Obtener el token de localStorage
-       if (!token) {
-         console.error("No se obtuvo el token");
-         return;
-       }
+  useEffect(() => {
+    // Obtener rúbricas desde el backend
+    const fetchRubricas = async () => {
+      try {
+        const token = localStorage.getItem("token"); // Obtener el token de localStorage
+        if (!token) {
+          console.error("No se obtuvo el token");
+          return;
+        }
 
-       const response = await axios.get(
-         `http://localhost:3000/api/grupos/evaluaciones/4/rubricas`,
-         {
-           headers: {
-             Authorization: `Bearer ${token}`, // Enviar el token en las cabeceras
-           },
-         }
-       );
-       setRubricas(response.data); // Actualiza el estado con las rúbricas reales
-     } catch (error) {
-       console.error("Error al obtener las rúbricas:", error);
-     }
-   };
+        const response = await axios.get(
+          `http://localhost:3000/api/grupos/evaluaciones/4/rubricas`,
+          {
+            headers: {
+              Authorization: `Bearer ${token}`, // Enviar el token en las cabeceras
+            },
+          }
+        );
+        setRubricas(response.data); // Actualiza el estado con las rúbricas reales
+      } catch (error) {
+        console.error("Error al obtener las rúbricas:", error);
+      }
+    };
 
-   fetchRubricas();
- }, []);
-
+    fetchRubricas();
+  }, []);
 
   const handleRetroalimentacionChange = (e) => {
     setRetroalimentacion(e.target.value);
@@ -234,6 +233,11 @@ const EvaluacionSemanal = () => {
                   <select
                     key={index}
                     value={integrante.asistencia || "presente"}
+                    onChange={(e) => {
+                      const updatedIntegrantes = [...integrantes];
+                      updatedIntegrantes[index].asistencia = e.target.value; // Actualiza el estado del estudiante
+                      setIntegrantes(updatedIntegrantes); // Actualiza el estado
+                    }}
                     className="bg-[#D1DDED] border border-gray-300 rounded-lg p-1 w-full h-10 text-center"
                   >
                     <option value="presente">Presente</option>
@@ -265,19 +269,14 @@ const EvaluacionSemanal = () => {
             <tbody>
               <tr>
                 <td className="border px-4 py-2">
-                  <input
-                    type="text"
-                    value={fecha || "00/00/00"}
-                    readOnly
-                    className="w-full bg-[#D1DDED] p-2"
-                  />
+                  <input type="text" value={fecha || "00/00/00"} readOnly />
                 </td>
                 <td className="border px-4 py-2">
-                  <input
-                    type="text"
+                  <textarea
                     value={retroalimentacion}
                     onChange={handleRetroalimentacionChange}
-                    className="w-full bg-[#D1DDED] p-2"
+                    placeholder="Ingrese retroalimentación..."
+                    className="w-full p-2 border border-gray-300 rounded-lg"
                   />
                 </td>
               </tr>
@@ -289,48 +288,54 @@ const EvaluacionSemanal = () => {
       {selectedStudentIndex !== null && (
         <div className="fixed inset-0 flex items-center justify-center z-50">
           <div className="bg-white p-4 rounded-lg shadow-lg">
-            <h2 className="text-lg font-bold mb-4">
+            <h2 className="bg-[#3684DB] p-4 rounded-t-lg text-white w-full text-center">
               Evaluar a {integrantes[selectedStudentIndex]?.nombre_estudiante}
             </h2>
 
-            {rubricas.length > 0 ? (
-              rubricas.map((rubrica, rubricIndex) => (
-                <div key={rubricIndex} className="mb-4">
-                  <label className="font-bold mb-2">
-                    {rubrica.nombre_rubrica}
-                  </label>
-                  <p className="mb-2 text-sm">{rubrica.descripcion_rubrica}</p>
-                  <input
-                    type="number"
-                    min="0"
-                    max={rubrica.peso}
-                    value={
-                      rubricScores[selectedStudentIndex]?.[rubricIndex] || ""
-                    }
-                    onChange={(e) =>
-                      handleRubricChange(rubricIndex, e.target.value)
-                    }
-                    className="border border-gray-300 p-2 w-full"
-                    placeholder={`Peso máximo: ${rubrica.peso}`}
-                  />
-                </div>
-              ))
-            ) : (
-              <p>No hay rúbricas disponibles</p>
-            )}
+            <div className="max-h-60 overflow-y-auto mb-4">
+              {" "}
+              {/* Aquí se añade el contenedor con scrollbar */}
+              {rubricas.length > 0 ? (
+                rubricas.map((rubrica, rubricIndex) => (
+                  <div key={rubricIndex} className="mb-4">
+                    <label className="font-bold mb-2">
+                      {rubrica.nombre_rubrica}
+                    </label>
+                    <p className="mb-2 text-sm">
+                      {rubrica.descripcion_rubrica}
+                    </p>
+                    <input
+                      type="number"
+                      min="0"
+                      max={rubrica.peso}
+                      value={
+                        rubricScores[selectedStudentIndex]?.[rubricIndex] || ""
+                      }
+                      onChange={(e) =>
+                        handleRubricChange(rubricIndex, e.target.value)
+                      }
+                      className="border border-gray-300 p-2 w-full"
+                      placeholder={`Peso máximo: ${rubrica.peso}`}
+                    />
+                  </div>
+                ))
+              ) : (
+                <p>No hay rúbricas disponibles</p>
+              )}
+            </div>
 
             <div className="flex justify-end">
               <button
-                className="bg-red-500 text-white py-2 px-4 rounded-lg mr-2"
+                className="bg-[#3684DB] text-white py-2 px-4 rounded-lg mr-2"
                 onClick={() => setSelectedStudentIndex(null)}
               >
                 Cancelar
               </button>
               <button
-                className="bg-green-500 text-white py-2 px-4 rounded-lg"
+                className="bg-[#3684DB] text-white py-2 px-4 rounded-lg"
                 onClick={saveRubricScores}
               >
-                Guardar
+                Calificar
               </button>
             </div>
           </div>
