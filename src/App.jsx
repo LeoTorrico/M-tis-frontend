@@ -17,6 +17,7 @@ import EvaluacionSemanal from "./Pages/EvaluacionSemanal";
 import Asistencia from "./Pages/Asistencia";
 import Rubrica from "./Pages/Rubrica";
 import EvaluacionDetalles from "./Pages/EvaluacionDetalles";
+import Evaluacion from "./Pages/Evaluacion";
 Modal.setAppElement("#root");
 
 function App() {
@@ -36,6 +37,7 @@ function App() {
               element={<EvaluacionDetalles />}
             />
             <Route path="/RegistroDocentes" element={<RegistroDocentes />} />
+            <Route path="/Evaluacion/:cod_clase" element={<Evaluacion />} />
             <Route
               path="/RegistroEstudiante"
               element={<RegistroEstudiante />}
@@ -77,6 +79,8 @@ function Layout({ children }) {
     location.pathname === "/Asistencia";
     location.pathname === "/Rubrica";
 
+    location.pathname === "/" || location.pathname.match(/^\/Vista-Curso\/.+$/) ||
+    location.pathname.match(/^\/Evaluacion\/.+$/);
   return (
     <div className="flex flex-grow">
       {isSidebarPage && <Sidebar />}
