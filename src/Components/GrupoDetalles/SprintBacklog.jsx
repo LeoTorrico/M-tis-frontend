@@ -18,6 +18,7 @@ const SprintBacklog = () => {
     objetivo: "",
   });
   const { cod_grupoempresa } = useParams();
+  const [error, setError] = useState("");
 
   // Obtener el product backlog
   useEffect(() => {
@@ -58,7 +59,22 @@ const SprintBacklog = () => {
     const { name, value } = e.target;
     setSprintData({ ...sprintData, [name]: value });
   };
+  const validateRequirement = () => {
+    const { requerimiento } = newRequirement;
+    const regex = /^[a-zA-Z0-9-' ]+$/; // Permite letras, números, guiones y apóstrofes
 
+    if (requerimiento.length < 3) {
+      setError("El requerimiento debe tener al menos 3 caracteres.");
+      return false;
+    }
+
+    if (!regex.test(requerimiento)) {
+      setError(
+        "El requerimiento solo puede contener letras, números, espacios, guiones y apóstrofes."
+      );
+      return false;
+    }
+  };
   // Función para manejar el registro de sprint
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -284,6 +300,8 @@ const SprintBacklog = () => {
                     value={sprintData.numero}
                     onChange={handleInputChange}
                     className="border rounded-lg w-full p-2"
+                    min="0" // Valor mínimo permitido
+                    max="100" // Valor máximo permitido
                     required
                   />
                 </div>
