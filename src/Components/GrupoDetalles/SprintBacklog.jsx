@@ -99,7 +99,27 @@ const SprintBacklog = () => {
   };
 
   const closeModal = () => {
-    setModalIsOpen(false);
+    Swal.fire({
+      title: "¿Estás seguro de que deseas salir del registro?",
+      text: "Perderás los cambios no guardados",
+      icon: "warning",
+      iconColor: "#3684DB",
+      showCancelButton: true,
+      confirmButtonColor: "#d33",
+      cancelButtonColor: "#3085d6",
+      confirmButtonText: "Sí",
+      cancelButtonText: "No",
+    }).then((result) => {
+      if (result.isConfirmed) {
+        setModalIsOpen(false);
+        setSprintData({
+          numero: "",
+          fechaInicio: "",
+          fechaFin: "",
+          objetivo: "",
+        });
+      }
+    });
   };
 
   const openRequerimientosModal = (sprint) => {
