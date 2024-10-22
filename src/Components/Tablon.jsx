@@ -1,5 +1,5 @@
 import React, { useContext, useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { UserContext } from "../context/UserContext"; 
 import { MdLibraryBooks } from "react-icons/md";
 import axios from "axios"; 
@@ -10,6 +10,7 @@ const Tablon = () => {
   const [cargando, setCargando] = useState(true); 
   const [error, setError] = useState(null); 
   const { user } = useContext(UserContext); 
+  const navigate = useNavigate();
 
   useEffect(() => {
     const fetchTareas = async () => {
@@ -55,6 +56,10 @@ const Tablon = () => {
   // Verificar si no hay evaluaciones en absoluto
   const noEvaluaciones = tareas.length === 0;
 
+  const handleVerEvaluacion = (cod_evaluacion) => {
+    navigate(`/Vista-Curso/${cod_clase}/evaluacion/${cod_evaluacion}`); // Redirigir a la página de la evaluacion
+  };
+
   return (
     <div className="p-2">
       {noEvaluaciones ? (
@@ -67,7 +72,7 @@ const Tablon = () => {
               evaluaciones.map((e) => (
                 <div
                   key={e.cod_evaluacion} 
-                  className="bg-light-blue rounded-lg p-4 flex justify-between items-center mb-4 shadow-md"
+                  className="bg-blue-gray rounded-lg p-4 flex justify-between items-center mb-4 shadow-md"
                 >
                   <div className="flex items-center">
                     <span className="bg-white p-2 rounded-full text-black mr-4">
@@ -77,16 +82,20 @@ const Tablon = () => {
                       <span className="text-lg font-semibold font-Montserrat">
                         {e.evaluacion} 
                       </span>
-                      <div className="text-sm text-gray-600">{e.descripcion_evaluacion}</div> {/* Mostrar descripción de la evaluación */}
+                      <div className="text-sm text-gray-600">Dia de entrega: {e.fecha_fin}</div> {/* Mostrar descripción de la evaluación */}
                     </div>
                   </div>
                   {/* Botón para editar o realizar acción */}
                   {user.rol === "docente" ? (
-                    <button className="bg-semi-blue text-white font-Montserrat px-4 py-2 rounded-lg">
+                    <button 
+                    onClick={() => handleVerEvaluacion(e.cod_evaluacion)}
+                    className="bg-dark-blue text-white font-Montserrat px-4 py-2 rounded-lg">
                       Ver Evaluación
                     </button>
                   ) : (
-                    <button className="bg-semi-blue text-white font-Montserrat px-4 py-2 rounded-lg">
+                    <button 
+                    onClick={() => handleVerEvaluacion(e.cod_evaluacion)}
+                    className="bg-dark-blue text-white font-Montserrat px-4 py-2 rounded-lg">
                       Ver Evaluación
                     </button>
                   )}

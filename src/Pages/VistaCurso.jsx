@@ -20,7 +20,7 @@ const VistaCurso = () => {
   const [cargando, setCargando] = useState(true);
   const token = localStorage.getItem("token");
   const { codigoSis, rol } = getDetailsFromToken(token);
-  const [activeTab, setActiveTab] = useState("GruposEmpresas");
+  const [activeTab, setActiveTab] = useState("Tablon");
   const [loading, setLoading] = useState(false);
   const [modalIsOpen, setModalIsOpen] = useState(false);
   const [groupData, setGroupData] = useState({

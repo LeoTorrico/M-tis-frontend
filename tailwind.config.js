@@ -11,6 +11,7 @@ export default {
         'semi-blue': '#223A59',
         'sky-blue': '#3684DB',
         "blue-modal": "#3684DB",
+        'blue-gray': "#D1DDED",
 
       },
       fontFamily: {
