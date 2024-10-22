@@ -5,7 +5,7 @@ import axios from "axios";
 
 const EvaluacionSemanal = () => {
   const navigate = useNavigate();
-  const { cod_grupoempresa, cod_clase, codEvaluacion } = useParams();
+  const { cod_grupoempresa, cod_clase } = useParams();
 
   // Estado para la información del curso
   const [curso, setCurso] = useState({
@@ -19,10 +19,11 @@ const EvaluacionSemanal = () => {
   const [fecha, setFecha] = useState("");
   const [retroalimentacion, setRetroalimentacion] = useState("");
   const [rubricScores, setRubricScores] = useState({});
-  const [rubricas, setRubricas] = useState([]);
+  const [rubricas, setRubricas] = useState([]); // Para las rúbricas obtenidas del backend
   const [selectedStudentIndex, setSelectedStudentIndex] = useState(null);
 
   useEffect(() => {
+    // Obtener datos de la clase
     const fetchClaseData = async () => {
       try {
         const token = localStorage.getItem("token");
@@ -56,6 +57,7 @@ const EvaluacionSemanal = () => {
   }, [cod_clase]);
 
   useEffect(() => {
+    // Obtener estudiantes del grupo
     const fetchGrupoData = async () => {
       if (!cod_grupoempresa) {
         console.error("El cod_grupo no está definido");
@@ -83,24 +85,20 @@ const EvaluacionSemanal = () => {
   }, [cod_grupoempresa]);
 
   useEffect(() => {
-    // Obtener rúbricas desde el backend usando el nuevo endpoint
+    // Obtener rúbricas desde el backend
     const fetchRubricas = async () => {
       try {
-        const token = localStorage.getItem("token");
+        const token = localStorage.getItem("token"); // Obtener el token de localStorage
         if (!token) {
           console.error("No se obtuvo el token");
           return;
         }
 
-        // Cambiar el endpoint para usar el nuevo URL
-        const response = await axios.get(
-          `http://localhost:3000/rubricas/${codEvaluacion}`, // Cambiado a la nueva URL
-          {
-            headers: {
-              Authorization: `Bearer ${token}`,
-            },
-          }
-        );
+        const response = await axios.get(`http://localhost:3000/rubricas/3`, {
+          headers: {
+            Authorization: `Bearer ${token}`, // Enviar el token en las cabeceras
+          },
+        });
         setRubricas(response.data); // Actualiza el estado con las rúbricas reales
       } catch (error) {
         console.error("Error al obtener las rúbricas:", error);
@@ -108,7 +106,7 @@ const EvaluacionSemanal = () => {
     };
 
     fetchRubricas();
-  }, [codEvaluacion]);
+  }, []);
 
   const handleRetroalimentacionChange = (e) => {
     setRetroalimentacion(e.target.value);
@@ -152,17 +150,18 @@ const EvaluacionSemanal = () => {
     setIntegrantes(updatedIntegrantes);
     setSelectedStudentIndex(null);
   };
-
   function verificarToken() {
-    const token = localStorage.getItem("token");
+    const token = localStorage.getItem("token"); // Suponiendo que el token está almacenado con la clave 'token'
 
     if (token) {
       console.log("Token obtenido:", token);
+      // Aquí puedes agregar cualquier otra lógica si es necesario
     } else {
       console.log("No se obtuvo el token");
     }
   }
 
+  // Llamar a la función para verificar el token
   verificarToken();
 
   return (
@@ -180,6 +179,7 @@ const EvaluacionSemanal = () => {
           </h1>
         </div>
         <hr className="border-black my-2" />
+
         <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
           <div className="col-span-2">
             <h2 className="font-bold text-md mb-2">Integrantes</h2>
@@ -232,8 +232,8 @@ const EvaluacionSemanal = () => {
                     value={integrante.asistencia || "presente"}
                     onChange={(e) => {
                       const updatedIntegrantes = [...integrantes];
-                      updatedIntegrantes[index].asistencia = e.target.value;
-                      setIntegrantes(updatedIntegrantes);
+                      updatedIntegrantes[index].asistencia = e.target.value; // Actualiza el estado del estudiante
+                      setIntegrantes(updatedIntegrantes); // Actualiza el estado
                     }}
                     className="bg-[#D1DDED] border border-gray-300 rounded-lg p-1 w-full h-10 text-center"
                   >
@@ -253,6 +253,7 @@ const EvaluacionSemanal = () => {
             </div>
           </div>
         </div>
+
         <div className="mt-6">
           <h2 className="font-bold text-md mb-2">Retroalimentación</h2>
           <table className="table-auto w-full mb-6 border-collapse">
@@ -278,7 +279,7 @@ const EvaluacionSemanal = () => {
               </tr>
             </tbody>
           </table>
-        </div>{" "}
+        </div>
       </div>
 
       {selectedStudentIndex !== null && (
