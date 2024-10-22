@@ -28,16 +28,28 @@ const Instrucciones = ({ evaluacion }) => {
 
           if (response.data && response.data.archivo) {
             const archivoBase64 = response.data.archivo;
-            const fileName = "archivo_entregado.pdf";
+
+            // Determinar el tipo de archivo
+            const fileType = archivoBase64.startsWith("JVBERi0") ? "application/pdf" :
+              archivoBase64.startsWith("/9j/") || archivoBase64.startsWith("iVBORw0KGgo") ? "image/jpeg" :
+                "unknown";
+
+            const fileName = fileType === "application/pdf" ? "archivo_entregado.pdf" : "archivo_entregado.jpg";
 
             setSubmitted(true);
             setRetrievedFile({
               name: fileName,
               base64: archivoBase64,
+              type: fileType,
             });
 
             // Crear Blob y URL
-            const blob = new Blob([new Uint8Array(atob(archivoBase64).split("").map(c => c.charCodeAt(0)))], { type: "application/pdf" });
+            const byteCharacters = atob(archivoBase64);
+            const byteNumbers = new Uint8Array(byteCharacters.length);
+            for (let i = 0; i < byteCharacters.length; i++) {
+              byteNumbers[i] = byteCharacters.charCodeAt(i);
+            }
+            const blob = new Blob([byteNumbers], { type: fileType });
             setFilePreview(URL.createObjectURL(blob));
           } else {
             console.error("No se encontró el archivo entregado.");
@@ -175,7 +187,12 @@ const Instrucciones = ({ evaluacion }) => {
     if (!retrievedFile || !retrievedFile.base64) return null;
 
     // Crear Blob y URL para el archivo recuperado
-    const blob = new Blob([new Uint8Array(atob(retrievedFile.base64).split("").map(c => c.charCodeAt(0)))], { type: "application/pdf" });
+    const byteCharacters = atob(retrievedFile.base64);
+    const byteNumbers = new Uint8Array(byteCharacters.length);
+    for (let i = 0; i < byteCharacters.length; i++) {
+      byteNumbers[i] = byteCharacters.charCodeAt(i);
+    }
+    const blob = new Blob([byteNumbers], { type: retrievedFile.type });
     const fileURL = URL.createObjectURL(blob);
 
     return (
@@ -189,12 +206,20 @@ const Instrucciones = ({ evaluacion }) => {
         >
           {retrievedFile.name}
         </a>
-        <iframe
-          src={fileURL}
-          title="Vista previa de PDF"
-          className="w-full h-full rounded"
-          style={{ border: "none", minHeight: "200px" }}
-        />
+        {retrievedFile.type === "application/pdf" ? (
+          <iframe
+            src={fileURL}
+            title="Vista previa de PDF"
+            className="w-full h-full rounded"
+            style={{ border: "none", minHeight: "200px" }}
+          />
+        ) : (
+          <img
+            src={fileURL}
+            alt="Vista previa"
+            className="w-full h-auto max-h-64 object-contain rounded"
+          />
+        )}
       </div>
     );
   };
@@ -215,7 +240,7 @@ const Instrucciones = ({ evaluacion }) => {
 
       <div className="border p-6 rounded-lg m-4 flex-grow grid grid-cols-2 gap-4">
         <div className="bg-blue-gray p-4 rounded-lg">
-          <p className="text-xm font-bold font-Montserrat">Descripcion de la evaluacion:</p>
+          <p className="text-xm font-bold font-Montserrat">Descripción de la evaluación:</p>
           <p className="text-xm font-Montserrat">{evaluacion.descripcion_evaluacion}</p>
         </div>
 
@@ -292,8 +317,7 @@ const Instrucciones = ({ evaluacion }) => {
               </>
             ) : (
               <p>No hay archivo adjunto.</p>
-            )
-          )}
+            ))}
         </div>
       </div>
     </div>
