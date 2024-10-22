@@ -1,5 +1,6 @@
 import React, { useState, useContext } from "react";
 import axios from "axios";
+import Swal from "sweetalert2";
 import { AiOutlineClose, AiOutlinePlus } from "react-icons/ai"; 
 import { MdLibraryBooks } from "react-icons/md";
 import { UserContext } from "../../context/UserContext";
@@ -38,21 +39,50 @@ const Instrucciones = ({ evaluacion }) => {
       try {
         const base64File = await handleFileToBase64(selectedFile);
 
-        const response = await axios.post(`http://localhost:3000/evaluaciones/${evaluacion.cod_evaluacion}/entregables`, {
-          archivo_grupo: base64File, 
-        }, {
-          headers: {
-            'Content-Type': 'application/json', // Asegúrate de que el servidor espera JSON
-            Authorization: `Bearer ${user.token}`,
+        const response = await axios.post(
+          `http://localhost:3000/evaluaciones/${evaluacion.cod_evaluacion}/entregables`,
+          {
+            archivo_grupo: base64File,
           },
-        });
+          {
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: `Bearer ${user.token}`,
+            },
+          }
+        );
+        const backendMessage = response.data.message;
 
-        console.log("Archivo subido:", response.data);
+        if (backendMessage === "Este entregable ya ha sido subido anteriormente") {
+          Swal.fire({
+            icon: "error",  
+            title: "Archivo Duplicado",
+            text: "Este entregable ya ha sido subido anteriormente.",
+          });
+        } else if (backendMessage === "Entregable subido exitosamente") {
+          Swal.fire({
+            icon: "success", 
+            title: "Éxito",
+            text: "Archivo subido con éxito.",
+          });
+          console.log("Archivo subido:", response.data);
+          setSelectedFile(null);  // Limpiar el archivo después de subirlo
+          setFilePreview(null);
+        }
       } catch (error) {
         console.error("Error al subir el archivo:", error);
+        Swal.fire({
+          icon: "error",
+          title: "Error",
+          text: "Hubo un problema al subir el archivo. Inténtalo de nuevo.",
+        });
       }
     } else {
-      alert("Por favor selecciona un archivo antes de entregar.");
+      Swal.fire({
+        icon: "warning",
+        title: "Advertencia",
+        text: "Por favor selecciona un archivo antes de entregar.",
+      });
     }
   };
 
@@ -134,10 +164,10 @@ const Instrucciones = ({ evaluacion }) => {
               <label className="inline-block w-full">
                 <button
                   type="button"
-                  className="border border-gray-300 text-blue-500 bg-white py-2 px-4 rounded-lg w-full cursor-pointer flex items-center justify-center" 
+                  className="border border-gray-300 text-blue-500 bg-white py-2 px-4 rounded-lg w-full cursor-pointer flex items-center justify-center"
                   onClick={() => document.getElementById('file-input').click()}
                 >
-                  <AiOutlinePlus className="mr-2" /> 
+                  <AiOutlinePlus className="mr-2" />
                   Añadir archivo
                 </button>
                 <input
@@ -178,7 +208,7 @@ const Instrucciones = ({ evaluacion }) => {
                     src={`data:application/pdf;base64,${evaluacion.archivo_evaluacion}`}
                     title="Previsualización de PDF"
                     className="flex flex-col h-full"
-                    style={{ border: "none" }} 
+                    style={{ border: "none" }}
                   />
                 ) : evaluacion.archivo_evaluacion.startsWith("/9j/") || 
                   evaluacion.archivo_evaluacion.startsWith("iVBORw0KGgo") ? (
