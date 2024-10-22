@@ -51,13 +51,13 @@ const Sidebar = () => {
           <FaClipboardList className="mr-3" />
           Planificación
         </Link>
-        <a
-          href="#evaluaciones"
+        <Link
+          to="/Rubrica"
           className="flex items-center px-4 py-2 hover:bg-light-blue transition-colors"
         >
           <FaClipboardList className="mr-3" />
           Evaluaciones
-        </a>
+        </Link>
       </nav>
       <div className="flex flex-col items-center justify-center flex-grow mt-4">
         <img

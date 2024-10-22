@@ -49,7 +49,16 @@ const ModalRegistroGrupo = ({
       alert("Se ha alcanzado el límite máximo de 6 integrantes.");
     }
   };
-
+  const handleFileValidation = (e) => {
+    const file = e.target.files[0];
+    const allowedExtensions = /(\.jpg|\.jpeg|\.png)$/i;
+    if (!allowedExtensions.exec(file.name)) {
+      alert("Solo se permiten archivos .png o .jpg.");
+      e.target.value = ""; // Limpiar el campo de archivo
+      return;
+    }
+    handleFileChange(e); // Llamar al manejador de archivos original
+  };
   return (
     <Modal
       isOpen={modalIsOpen}
@@ -57,7 +66,7 @@ const ModalRegistroGrupo = ({
       className="fixed inset-0 flex items-center justify-center"
       overlayClassName="fixed inset-0 bg-black bg-opacity-50"
     >
-      <div className="bg-blue-modal w-[1050px] h-[650px] rounded-xl flex flex-col font-title">
+      <div className="bg-blue-modal w-[1050px] h-[600px] rounded-xl flex flex-col font-title">
         <div className="relative">
           <h2 className="text-2xl font-semibold text-center text-white p-4">
             Registrar Grupo empresa
@@ -98,7 +107,7 @@ const ModalRegistroGrupo = ({
               <input
                 type="file"
                 name="logo"
-                onChange={handleFileChange}
+                onChange={handleFileValidation}
                 className="hidden"
                 id="fileInput"
               />
