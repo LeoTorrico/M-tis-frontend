@@ -5,7 +5,8 @@ import axios from "axios";
 
 const EvaluacionSemanal = () => {
   const navigate = useNavigate();
-  const { cod_grupoempresa, cod_clase } = useParams();
+  const { cod_grupoempresa, cod_clase, cod_evaluacion } = useParams();
+ 
 
   // Estado para la información del curso
   const [curso, setCurso] = useState({
@@ -88,18 +89,21 @@ const EvaluacionSemanal = () => {
     // Obtener rúbricas desde el backend
     const fetchRubricas = async () => {
       try {
-        const token = localStorage.getItem("token"); // Obtener el token de localStorage
+        const token = localStorage.getItem("token");
         if (!token) {
           console.error("No se obtuvo el token");
           return;
         }
 
-        const response = await axios.get(`http://localhost:3000/rubricas/3`, {
-          headers: {
-            Authorization: `Bearer ${token}`, // Enviar el token en las cabeceras
-          },
-        });
-        setRubricas(response.data); // Actualiza el estado con las rúbricas reales
+        const response = await axios.get(
+          `http://localhost:3000/rubricas/${cod_evaluacion}`,
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        );
+        setRubricas(response.data);
       } catch (error) {
         console.error("Error al obtener las rúbricas:", error);
       }

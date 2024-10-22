@@ -24,10 +24,8 @@ const GruposEmpresas = () => {
   }, [cod_clase]);
 
   const handleVerGrupo = (cod_grupoempresa) => {
-    // Redirigir a EvaluacionSemanal con el cod_clase y cod_grupoempresa
-    navigate(
-      `/Vista-Curso/${cod_clase}/evaluacion-semanal/${cod_grupoempresa}`
-    );
+    // Redirigir a GrupoDetalles con el cod_clase y cod_grupoempresa
+    navigate(`/Vista-Curso/${cod_clase}/grupo/${cod_grupoempresa}`);
   };
 
   return (

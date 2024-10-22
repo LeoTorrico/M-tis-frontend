@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useContext } from "react";
 import { MdGroups } from "react-icons/md";
 import { UserContext } from "../../context/UserContext";
+import { useNavigate, useParams } from "react-router-dom"; // Importar useParams
 
 const TrabajoGrupo = ({ evaluacion }) => {
   const [gruposEntregados, setGruposEntregados] = useState([]);
@@ -8,6 +9,8 @@ const TrabajoGrupo = ({ evaluacion }) => {
   const [search2, setSearch2] = useState("");
   const [loading, setLoading] = useState(true);
   const { user } = useContext(UserContext);
+  const navigate = useNavigate();
+  const { cod_clase } = useParams(); // Obtener el cod_clase desde la URL
 
   useEffect(() => {
     const fetchGrupos = async () => {
@@ -24,7 +27,7 @@ const TrabajoGrupo = ({ evaluacion }) => {
           throw new Error("Error en la petición");
         }
         const data = await response.json();
-        console.log("Datos recibidos:", data); //Verifica los datos recibidos
+        console.log("Datos recibidos:", data); // Verificar los datos recibidos
         setGruposEntregados(data);
         setLoading(false);
       } catch (error) {
@@ -40,12 +43,16 @@ const TrabajoGrupo = ({ evaluacion }) => {
 
   // Filtrar los grupos que han entregado
   const filteredGruposEntregados = gruposEntregados.filter(
-    (grupo) => grupo.ha_entregado && grupo.nombre_largo.toLowerCase().includes(search1.toLowerCase())
+    (grupo) =>
+      grupo.ha_entregado &&
+      grupo.nombre_largo.toLowerCase().includes(search1.toLowerCase())
   );
 
   // Filtrar los grupos que no han entregado
   const filteredGruposNoEntregados = gruposEntregados.filter(
-    (grupo) => !grupo.ha_entregado && grupo.nombre_largo.toLowerCase().includes(search2.toLowerCase())
+    (grupo) =>
+      !grupo.ha_entregado &&
+      grupo.nombre_largo.toLowerCase().includes(search2.toLowerCase())
   );
 
   if (loading) {
@@ -53,9 +60,15 @@ const TrabajoGrupo = ({ evaluacion }) => {
   }
 
   return (
-    <div className="p-6 h-screen flex flex-col" style={{ maxHeight: "calc(100vh - 60px)" }}>
+    <div
+      className="p-6 h-screen flex flex-col"
+      style={{ maxHeight: "calc(100vh - 60px)" }}
+    >
       <h2 className="text-xl font-bold mb-4">{evaluacion.evaluacion}</h2>
-      <p className="mb-4">Aquí están los detalles del trabajo grupal que entregaron para esta evaluación.</p>
+      <p className="mb-4">
+        Aquí están los detalles del trabajo grupal que entregaron para esta
+        evaluación.
+      </p>
 
       <div className="flex-grow flex overflow-hidden">
         <div className="border p-4 rounded-lg shadow flex flex-col w-full mr-2">
@@ -67,10 +80,16 @@ const TrabajoGrupo = ({ evaluacion }) => {
             onChange={(e) => setSearch1(e.target.value)}
             className="border rounded p-2 w-full mb-4"
           />
-          <div className="flex-grow overflow-y-auto" style={{ maxHeight: "calc(100vh - 150px)" }}>
+          <div
+            className="flex-grow overflow-y-auto"
+            style={{ maxHeight: "calc(100vh - 150px)" }}
+          >
             {filteredGruposEntregados.length > 0 ? (
               filteredGruposEntregados.map((grupo, index) => (
-                <div key={index} className="bg-blue-gray rounded-lg p-4 flex justify-between items-center mb-4">
+                <div
+                  key={index}
+                  className="bg-blue-gray rounded-lg p-4 flex justify-between items-center mb-4"
+                >
                   <div className="flex items-center">
                     {grupo.logotipo ? (
                       <img
@@ -83,9 +102,20 @@ const TrabajoGrupo = ({ evaluacion }) => {
                         <MdGroups size={32} />
                       </span>
                     )}
-                    <span className="text-lg font-medium">{grupo.nombre_largo}</span>
+                    <span className="text-lg font-medium">
+                      {grupo.nombre_largo}
+                    </span>
                   </div>
-                  <button className="bg-dark-blue text-white px-4 py-2 rounded">Evaluar</button>
+                  <button
+                    className="bg-dark-blue text-white px-4 py-2 rounded"
+                    onClick={() =>
+                      navigate(
+                        `/Vista-Curso/${cod_clase}/evaluacion-semanal/${grupo.cod_grupoempresa}`
+                      )
+                    }
+                  >
+                    Evaluar
+                  </button>
                 </div>
               ))
             ) : (
@@ -103,10 +133,16 @@ const TrabajoGrupo = ({ evaluacion }) => {
             onChange={(e) => setSearch2(e.target.value)}
             className="border rounded p-2 w-full mb-4"
           />
-          <div className="flex-grow overflow-y-auto" style={{ maxHeight: "calc(100vh - 150px)" }}>
+          <div
+            className="flex-grow overflow-y-auto"
+            style={{ maxHeight: "calc(100vh - 150px)" }}
+          >
             {filteredGruposNoEntregados.length > 0 ? (
               filteredGruposNoEntregados.map((grupo, index) => (
-                <div key={index} className="bg-blue-gray rounded-lg p-4 flex justify-between items-center mb-4">
+                <div
+                  key={index}
+                  className="bg-blue-gray rounded-lg p-4 flex justify-between items-center mb-4"
+                >
                   <div className="flex items-center">
                     {grupo.logotipo ? (
                       <img
@@ -119,9 +155,20 @@ const TrabajoGrupo = ({ evaluacion }) => {
                         <MdGroups size={32} />
                       </span>
                     )}
-                    <span className="text-lg font-medium">{grupo.nombre_largo}</span>
+                    <span className="text-lg font-medium">
+                      {grupo.nombre_largo}
+                    </span>
                   </div>
-                  <button className="bg-dark-blue text-white px-4 py-2 rounded">Evaluar</button>
+                  <button
+                    className="bg-dark-blue text-white px-4 py-2 rounded"
+                    onClick={() =>
+                      navigate(
+                        `/Vista-Curso/${cod_clase}/evaluacion-semanal/${grupo.cod_grupoempresa}`
+                      )
+                    }
+                  >
+                    Evaluar
+                  </button>
                 </div>
               ))
             ) : (
