@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useContext } from "react";
 import axios from "axios";
 import Swal from "sweetalert2";
-import { AiOutlineClose, AiOutlinePlus } from "react-icons/ai"; 
+import { AiOutlineClose, AiOutlinePlus } from "react-icons/ai";
 import { MdLibraryBooks } from "react-icons/md";
 import { UserContext } from "../../context/UserContext";
 
@@ -180,7 +180,7 @@ const Instrucciones = ({ evaluacion }) => {
 
     return (
       <div className="flex flex-col border border-gray-300 bg-white rounded-lg p-2 shadow-sm relative h-full">
-        <h3 className="font-bold">Archivo Entregado:</h3>
+        <h3 className="font-bold font-Montserrat">Archivo Entregado:</h3>
         <a
           href={fileURL}
           target="_blank"
@@ -207,15 +207,16 @@ const Instrucciones = ({ evaluacion }) => {
             <MdLibraryBooks size={32} />
           </span>
           <div>
-            <h1 className="text-3xl font-bold">{evaluacion.evaluacion}</h1>
-            <p className="text-xl">{evaluacion.tipo_evaluacion}</p>
+            <h1 className="text-3xl font-bold font-Montserrat">{evaluacion.evaluacion}</h1>
+            <p className="text-xl font-Montserrat">{evaluacion.tipo_evaluacion}</p>
           </div>
         </div>
       </div>
 
       <div className="border p-6 rounded-lg m-4 flex-grow grid grid-cols-2 gap-4">
         <div className="bg-blue-gray p-4 rounded-lg">
-          <p className="text-xm">{evaluacion.descripcion_evaluacion}</p>
+          <p className="text-xm font-bold font-Montserrat">Descripcion de la evaluacion:</p>
+          <p className="text-xm font-Montserrat">{evaluacion.descripcion_evaluacion}</p>
         </div>
 
         <div className="bg-blue-gray p-4 rounded-lg flex flex-col h-full">
@@ -232,7 +233,7 @@ const Instrucciones = ({ evaluacion }) => {
                     className="border border-gray-300 text-blue-500 bg-white py-2 px-4 rounded-lg w-full cursor-pointer flex items-center justify-center"
                     onClick={() => document.getElementById('file-input').click()}
                   >
-                    <AiOutlinePlus className="mr-2" />
+                    <AiOutlinePlus className="mr-2 font-Montserrat" />
                     Añadir archivo
                   </button>
                   <input
@@ -277,7 +278,7 @@ const Instrucciones = ({ evaluacion }) => {
                     className="flex flex-col h-full"
                     style={{ border: "none" }}
                   />
-                ) : evaluacion.archivo_evaluacion.startsWith("/9j/") || 
+                ) : evaluacion.archivo_evaluacion.startsWith("/9j/") ||
                   evaluacion.archivo_evaluacion.startsWith("iVBORw0KGgo") ? (
                   <img
                     src={`data:image/jpeg;base64,${evaluacion.archivo_evaluacion}`}
