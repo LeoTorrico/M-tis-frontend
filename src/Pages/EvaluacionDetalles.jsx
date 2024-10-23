@@ -10,9 +10,17 @@ const EvaluacionDetalles = () => {
   const [evaluacion, setEvaluacion] = useState(null);
   const { user } = useContext(UserContext);
   const [activeTab, setActiveTab] = useState("instrucciones");
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
   const navigate = useNavigate();
 
   const fetchEvaluacion = async () => {
+    if (!user || !user.token) {
+      setError("Token de usuario no disponible.");
+      setLoading(false);
+      return;
+    }
+
     try {
       const response = await axios.get(
         `http://localhost:3000/evaluaciones/detalles/${cod_evaluacion}`,
@@ -26,18 +34,24 @@ const EvaluacionDetalles = () => {
       setEvaluacion(response.data);
     } catch (error) {
       console.error("Error al obtener los detalles de la evaluación:", error);
+      setError(error.response ? error.response.data.message : "Error de conexión");
+    } finally {
+      setLoading(false);
     }
   };
 
   useEffect(() => {
     fetchEvaluacion();
-  }, [cod_clase, cod_evaluacion]);
+  }, [cod_clase, cod_evaluacion, user]); // Asegúrate de incluir `user` aquí
 
-  if (!evaluacion) {
+  if (loading) {
     return <p>Cargando detalles de la evaluación...</p>;
   }
 
-  // Definir las pestañas disponibles dependiendo del rol del usuario
+  if (error) {
+    return <p className="text-red-500">{error}</p>;
+  }
+
   const tabs = [
     {
       name: "Tablón",
@@ -57,17 +71,16 @@ const EvaluacionDetalles = () => {
     },
   ];
 
-  // Renderizar las pestañas de acuerdo al rol del usuario
   return (
     <div className="flex flex-col w-full">
       <div className="flex justify-between items-center border-b-2 border-dark-blue px-6 py-2">
         <div className="w-20"></div>
         <div className="flex justify-center space-x-8 flex-grow">
           {tabs
-            .filter((tab) => tab.visible) 
+            .filter((tab) => tab.visible)
             .map((tab) => (
               <button
-                key={tab.name} // Agregar key aquí para los botones
+                key={tab.name}
                 onClick={tab.action || (() => setActiveTab(tab.name.toLowerCase()))}
                 className={`${
                   activeTab === tab.name.toLowerCase()
@@ -81,12 +94,11 @@ const EvaluacionDetalles = () => {
         </div>
       </div>
 
-      {/* Renderizar el contenido de la pestaña activa */}
       <div>
         {tabs
           .filter((tab) => tab.visible && activeTab === tab.name.toLowerCase())
           .map((tab) => (
-            <div key={tab.name}> {/* Agregar key aquí para los componentes */}
+            <div key={tab.name}>
               {tab.component}
             </div>
           ))}
