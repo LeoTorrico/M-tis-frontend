@@ -11,8 +11,6 @@ const EvaluacionSemanal = () => {
     console.log("Parámetros:", { cod_grupoempresa, cod_clase, cod_evaluacion });
   }, [cod_grupoempresa, cod_clase, cod_evaluacion]);
 
-
-  
   // Estado para la información del curso
   const [curso, setCurso] = useState({
     nombre: "",
@@ -27,6 +25,8 @@ const EvaluacionSemanal = () => {
   const [rubricScores, setRubricScores] = useState({});
   const [rubricas, setRubricas] = useState([]); // Para las rúbricas obtenidas del backend
   const [selectedStudentIndex, setSelectedStudentIndex] = useState(null);
+  const [comentario, setComentario] = useState(""); // Estado para el comentario
+  const [errorComentario, setErrorComentario] = useState(""); // Para mostrar errores
 
   useEffect(() => {
     // Obtener datos de la clase
@@ -100,7 +100,7 @@ const EvaluacionSemanal = () => {
         }
 
         const response = await axios.get(
-          `http://localhost:3000/rubricas/${cod_evaluacion}`,
+          `http://localhost:3000/rubricas/${cod_evaluacion}/grupos/${cod_grupoempresa}/rubricas`,
           {
             headers: {
               Authorization: `Bearer ${token}`,
@@ -135,6 +135,8 @@ const EvaluacionSemanal = () => {
 
   const openRubricModal = (index) => {
     setSelectedStudentIndex(index);
+    setComentario(""); // Reiniciar el comentario al abrir el modal
+    setErrorComentario(""); // Reiniciar los errores al abrir el modal
   };
 
   const handleRubricChange = (rubricIndex, value) => {
@@ -146,6 +148,21 @@ const EvaluacionSemanal = () => {
     setRubricScores(updatedScores);
   };
 
+  const handleComentarioChange = (e) => {
+    const newComentario = e.target.value;
+    const wordCount = newComentario.trim().split(/\s+/).length;
+
+    if (wordCount < 3) {
+      setErrorComentario("El comentario debe tener al menos 3 palabras.");
+    } else if (wordCount > 100) {
+      setErrorComentario("El comentario no debe exceder las 100 palabras.");
+    } else {
+      setErrorComentario(""); // No hay errores
+    }
+
+    setComentario(newComentario);
+  };
+
   const saveRubricScores = () => {
     const totalScore = rubricScores[selectedStudentIndex]?.reduce(
       (sum, score) => sum + score,
@@ -154,6 +171,7 @@ const EvaluacionSemanal = () => {
 
     const updatedIntegrantes = [...integrantes];
     updatedIntegrantes[selectedStudentIndex].score = totalScore;
+    updatedIntegrantes[selectedStudentIndex].comentario = comentario; // Agregar el comentario al estudiante
 
     if (totalScore === 0) {
       updatedIntegrantes[selectedStudentIndex].asistencia =
@@ -167,7 +185,7 @@ const EvaluacionSemanal = () => {
   };
 
   function verificarToken() {
-    const token = localStorage.getItem("token"); // Suponiendo que el token está almacenado con la clave 'token'
+    const token = localStorage.getItem("token");
 
     if (token) {
       console.log("Token obtenido:", token);
@@ -176,7 +194,6 @@ const EvaluacionSemanal = () => {
     }
   }
 
-  // Llamar a la función para verificar el token
   verificarToken();
 
   return (
@@ -194,7 +211,6 @@ const EvaluacionSemanal = () => {
           </h1>
         </div>
         <hr className="border-black my-2" />
-
         <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
           <div className="col-span-2">
             <h2 className="font-bold text-md mb-2">Integrantes</h2>
@@ -247,14 +263,13 @@ const EvaluacionSemanal = () => {
                     value={integrante.asistencia || "presente"}
                     onChange={(e) => {
                       const updatedIntegrantes = [...integrantes];
-                      updatedIntegrantes[index].asistencia = e.target.value; // Actualiza el estado del estudiante
-                      setIntegrantes(updatedIntegrantes); // Actualiza el estado
+                      updatedIntegrantes[index].asistencia = e.target.value;
+                      setIntegrantes(updatedIntegrantes);
                     }}
                     className="bg-[#D1DDED] border border-gray-300 rounded-lg p-1 w-full h-10 text-center"
                   >
                     <option value="presente">Presente</option>
-                    <option value="retraso">Retraso</option>
-                    <option value="ausente_justificado">
+                    <option value="ausente_con_justificacion">
                       Ausente con justificación
                     </option>
                     <option value="ausente_sin_justificacion">
@@ -293,10 +308,10 @@ const EvaluacionSemanal = () => {
               </tr>
             </tbody>
           </table>
-        </div>
+        </div>{" "}
       </div>
 
-      {selectedStudentIndex !== null && (
+      {selectedStudentIndex !== null && integrantes[selectedStudentIndex] && (
         <div className="fixed inset-0 flex items-center justify-center z-50 bg-black bg-opacity-50">
           <div className="bg-white p-4 rounded-lg shadow-lg max-w-4xl w-full mx-4 lg:mx-auto max-h-[90vh] overflow-y-auto">
             <h2 className="bg-[#3684DB] p-4 rounded-t-lg text-white font-bold w-full text-center">
@@ -311,12 +326,33 @@ const EvaluacionSemanal = () => {
                     key={`${rubrica.nombre_rubrica}-${rubricIndex}`}
                     className="mb-4"
                   >
-                    <label className="font-bold mb-2">
-                      {rubrica.nombre_rubrica}
-                    </label>
+                    <div className="flex justify-between items-center">
+                      <label className="font-bold mb-2">
+                        {rubrica.nombre_rubrica}
+                      </label>
+                      <span className="text-sm">{rubrica.peso} Punto/s</span>{" "}
+                      {/* Peso de la rúbrica */}
+                    </div>
                     <p className="mb-2 text-sm">
                       {rubrica.descripcion_rubrica}
                     </p>
+
+                    {/* Aquí se añaden los detalles de detalle_rubrica */}
+                    {rubrica.detalles.length > 0 ? (
+                      rubrica.detalles.map((detalle, detalleIndex) => (
+                        <div key={detalle.cod_detalle} className="mb-2">
+                          <p className="text-xs">
+                            Clasificación: {detalle.clasificacion_rubrica}
+                          </p>
+                          <p className="text-xs">
+                            Peso Rúbrica: {detalle.peso_rubrica}
+                          </p>
+                        </div>
+                      ))
+                    ) : (
+                      <p className="text-xs">No hay detalles disponibles</p>
+                    )}
+
                     <input
                       type="number"
                       min="0"
@@ -335,6 +371,20 @@ const EvaluacionSemanal = () => {
               ) : (
                 <p>No hay rúbricas disponibles</p>
               )}
+
+              {/* Campo de comentarios */}
+              <div className="mb-4">
+                <label className="font-bold mb-2">Comentarios</label>
+                <textarea
+                  value={comentario}
+                  onChange={handleComentarioChange}
+                  placeholder="Ingrese un comentario (mínimo 3 palabras, máximo 100)..."
+                  className="border border-gray-300 p-2 w-full rounded-lg"
+                />
+                {errorComentario && (
+                  <p className="text-red-500 mt-2">{errorComentario}</p>
+                )}
+              </div>
             </div>
 
             {/* Footer con el mismo color del header */}
@@ -348,6 +398,9 @@ const EvaluacionSemanal = () => {
               <button
                 className="bg-white text-[#3684DB] py-2 px-4 rounded-lg border border-[#3684DB]"
                 onClick={saveRubricScores}
+                disabled={
+                  !!errorComentario || comentario.trim().split(/\s+/).length < 3
+                }
               >
                 Calificar
               </button>
@@ -360,4 +413,3 @@ const EvaluacionSemanal = () => {
 };
 
 export default EvaluacionSemanal;
-////////
