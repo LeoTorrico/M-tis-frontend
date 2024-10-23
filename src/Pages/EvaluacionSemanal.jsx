@@ -330,28 +330,26 @@ const EvaluacionSemanal = () => {
                       <label className="font-bold mb-2">
                         {rubrica.nombre_rubrica}
                       </label>
-                      <span className="text-sm">{rubrica.peso} Punto/s</span>{" "}
-                      {/* Peso de la rúbrica */}
+                      <span className="text-sm">{rubrica.peso} Punto/s</span>
                     </div>
                     <p className="mb-2 text-sm">
                       {rubrica.descripcion_rubrica}
                     </p>
 
-                    {/* Aquí se añaden los detalles de detalle_rubrica */}
-                    {rubrica.detalles.length > 0 ? (
-                      rubrica.detalles.map((detalle, detalleIndex) => (
-                        <div key={detalle.cod_detalle} className="mb-2">
-                          <p className="text-xs">
-                            Clasificación: {detalle.clasificacion_rubrica}
-                          </p>
-                          <p className="text-xs">
-                            Peso Rúbrica: {detalle.peso_rubrica}
-                          </p>
+                    {/* Aquí se añaden los datos de detalle_rubrica */}
+                    <div className="flex mb-2 space-x-4">
+                      {rubrica.detalles.map((detalle) => (
+                        <div
+                          key={detalle.cod_detalle}
+                          className="border border-gray-300 rounded-md p-2"
+                        >
+                          <span className="text-sm">
+                            {detalle.clasificacion_rubrica} :{" "}
+                            {detalle.peso_rubrica}
+                          </span>
                         </div>
-                      ))
-                    ) : (
-                      <p className="text-xs">No hay detalles disponibles</p>
-                    )}
+                      ))}
+                    </div>
 
                     <input
                       type="number"
