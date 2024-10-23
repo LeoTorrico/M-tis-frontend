@@ -1,15 +1,22 @@
 import React, { useState } from "react";
 import Nivel from "./Nivel";
 import { FaRegTrashAlt } from "react-icons/fa";
+
 const Criterio = ({ criterio, onChange, onDelete }) => {
   const { titulo, descripcion, niveles } = criterio;
 
   const handleTituloChange = (e) => {
-    onChange({ ...criterio, titulo: e.target.value });
+    const newTitulo = e.target.value;
+    if (newTitulo.length <= 50) {
+      onChange({ ...criterio, titulo: newTitulo });
+    }
   };
 
   const handleDescripcionChange = (e) => {
-    onChange({ ...criterio, descripcion: e.target.value });
+    const newDescripcion = e.target.value;
+    if (newDescripcion.length <= 200) {
+      onChange({ ...criterio, descripcion: newDescripcion });
+    }
   };
 
   const agregarNivel = () => {
@@ -37,14 +44,16 @@ const Criterio = ({ criterio, onChange, onDelete }) => {
         type="text"
         value={titulo}
         onChange={handleTituloChange}
-        placeholder="Título del criterio"
+        placeholder="Título del criterio (máx. 50 caracteres)"
         className="w-full mb-2 p-2 border border-gray-300 rounded"
+        maxLength="50"
       />
       <textarea
         value={descripcion}
         onChange={handleDescripcionChange}
-        placeholder="Descripción del criterio"
+        placeholder="Descripción del criterio (máx. 200 caracteres)"
         className="w-full mb-2 p-2 border border-gray-300 rounded"
+        maxLength="200"
       />
 
       <div className="flex flex-row space-x-4">

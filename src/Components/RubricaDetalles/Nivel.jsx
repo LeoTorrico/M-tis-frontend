@@ -6,7 +6,10 @@ const Nivel = ({ nivel, onChange, onDelete }) => {
   const [menuVisible, setMenuVisible] = useState(false);
 
   const handlePuntosChange = (e) => {
-    onChange({ ...nivel, puntos: e.target.value });
+    const newPuntos = parseInt(e.target.value);
+    if (newPuntos >= 0 && newPuntos <= 100) {
+      onChange({ ...nivel, puntos: newPuntos });
+    }
   };
 
   const handleTituloChange = (e) => {
@@ -14,7 +17,10 @@ const Nivel = ({ nivel, onChange, onDelete }) => {
   };
 
   const handleDescripcionChange = (e) => {
-    onChange({ ...nivel, descripcion: e.target.value });
+    const newDescripcion = e.target.value;
+    if (newDescripcion.length >= 10 && newDescripcion.length <= 300) {
+      onChange({ ...nivel, descripcion: newDescripcion });
+    }
   };
 
   const toggleMenu = () => {
@@ -27,21 +33,28 @@ const Nivel = ({ nivel, onChange, onDelete }) => {
         type="number"
         value={puntos}
         onChange={handlePuntosChange}
-        placeholder="Puntos"
+        placeholder="Puntos (0-100)"
         className="w-full mb-2 p-2 border border-gray-300 rounded"
+        min="0"
+        max="100"
       />
-      <input
-        type="text"
+      <select
         value={tituloNivel}
         onChange={handleTituloChange}
-        placeholder="Título del nivel"
         className="w-full mb-2 p-2 border border-gray-300 rounded"
-      />
+      >
+        <option value="">Seleccione un nivel</option>
+        <option value="Muy bien">Muy bien</option>
+        <option value="Bien">Bien</option>
+        <option value="Insuficiente">Insuficiente</option>
+      </select>
       <textarea
         value={descripcion}
         onChange={handleDescripcionChange}
-        placeholder="Descripción"
+        placeholder="Descripción (10-300 caracteres)"
         className="w-full p-2 border border-gray-300 rounded"
+        minLength="10"
+        maxLength="300"
       />
 
       {/* Icono de tres puntos con una circunferencia en la esquina inferior derecha */}
