@@ -23,6 +23,8 @@ const ModalRegistroGrupo = ({
 }) => {
   const [horarios, setHorarios] = useState([]); // Estado para almacenar los horarios
   const [loadingHorarios, setLoadingHorarios] = useState(true); // Estado para gestionar la carga de horarios
+  const [nombreLargoError, setNombreLargoError] = useState("");
+  const [nombreCortoError, setNombreCortoError] = useState("");
 
   useEffect(() => {
     const fetchHorarios = async () => {
@@ -58,6 +60,25 @@ const ModalRegistroGrupo = ({
       return;
     }
     handleFileChange(e); // Llamar al manejador de archivos original
+  };
+  const validateNombreLargo = (value) => {
+    if (value.length < 3 || value.length > 80) {
+      setNombreLargoError(
+        "El nombre largo debe tener entre 3 y 80 caracteres."
+      );
+    } else {
+      setNombreLargoError("");
+    }
+  };
+
+  const validateNombreCorto = (value) => {
+    if (value.length < 3 || value.length > 30) {
+      setNombreCortoError(
+        "El nombre corto debe tener entre 3 y 30 caracteres."
+      );
+    } else {
+      setNombreCortoError("");
+    }
   };
   return (
     <Modal
@@ -107,6 +128,7 @@ const ModalRegistroGrupo = ({
               <input
                 type="file"
                 name="logo"
+                accept=".jpg,.jpeg,.png"
                 onChange={handleFileValidation}
                 className="hidden"
                 id="fileInput"
@@ -130,10 +152,17 @@ const ModalRegistroGrupo = ({
                     type="text"
                     name="nombreLargo"
                     value={groupData.nombreLargo}
-                    onChange={handleInputChange}
+                    onChange={(e) => {
+                      handleInputChange(e);
+                      validateNombreLargo(e.target.value);
+                    }}
+                    maxLength={80}
                     className="border rounded-lg w-full p-2"
                     required
                   />
+                  {nombreLargoError && (
+                    <p className="text-red-500">{nombreLargoError}</p>
+                  )}
                 </div>
                 <div>
                   <label className="block font-semibold mb-2">
@@ -143,10 +172,17 @@ const ModalRegistroGrupo = ({
                     type="text"
                     name="nombreCorto"
                     value={groupData.nombreCorto}
-                    onChange={handleInputChange}
+                    onChange={(e) => {
+                      handleInputChange(e);
+                      validateNombreCorto(e.target.value);
+                    }}
+                    maxLength={30}
                     className="border rounded-lg w-full p-2"
                     required
                   />
+                  {nombreCortoError && (
+                    <p className="text-red-500">{nombreCortoError}</p>
+                  )}
                 </div>
 
                 {/* Select para seleccionar el horario */}

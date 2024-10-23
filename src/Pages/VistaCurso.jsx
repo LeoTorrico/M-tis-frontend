@@ -114,7 +114,30 @@ const VistaCurso = () => {
   }, [cod_clase, codigoSis, token, rol]);
 
   const openModal = () => setModalIsOpen(true);
-  const closeModal = () => setModalIsOpen(false);
+  const closeModal = () => {
+    Swal.fire({
+      title: "¿Estás seguro de que deseas salir del registro?",
+      text: "Perderás los cambios no guardados",
+      icon: "warning",
+      iconColor: "#3684DB",
+      showCancelButton: true,
+      confirmButtonColor: "#d33",
+      cancelButtonColor: "#3085d6",
+      confirmButtonText: "Sí",
+      cancelButtonText: "No",
+    }).then((result) => {
+      if (result.isConfirmed) {
+        setModalIsOpen(false);
+        setGroupData({
+          logo: null,
+          nombreLargo: "",
+          nombreCorto: "",
+          integrantes: [],
+          cod_horario: "",
+        });
+      }
+    });
+  };
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
