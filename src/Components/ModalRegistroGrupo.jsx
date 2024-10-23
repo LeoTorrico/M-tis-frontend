@@ -23,6 +23,8 @@ const ModalRegistroGrupo = ({
 }) => {
   const [horarios, setHorarios] = useState([]); // Estado para almacenar los horarios
   const [loadingHorarios, setLoadingHorarios] = useState(true); // Estado para gestionar la carga de horarios
+  const [nombreLargoError, setNombreLargoError] = useState("");
+  const [nombreCortoError, setNombreCortoError] = useState("");
 
   useEffect(() => {
     const fetchHorarios = async () => {
@@ -49,7 +51,35 @@ const ModalRegistroGrupo = ({
       alert("Se ha alcanzado el límite máximo de 6 integrantes.");
     }
   };
+  const handleFileValidation = (e) => {
+    const file = e.target.files[0];
+    const allowedExtensions = /(\.jpg|\.jpeg|\.png)$/i;
+    if (!allowedExtensions.exec(file.name)) {
+      alert("Solo se permiten archivos .png o .jpg.");
+      e.target.value = ""; // Limpiar el campo de archivo
+      return;
+    }
+    handleFileChange(e); // Llamar al manejador de archivos original
+  };
+  const validateNombreLargo = (value) => {
+    if (value.length < 3 || value.length > 80) {
+      setNombreLargoError(
+        "El nombre largo debe tener entre 3 y 80 caracteres."
+      );
+    } else {
+      setNombreLargoError("");
+    }
+  };
 
+  const validateNombreCorto = (value) => {
+    if (value.length < 3 || value.length > 30) {
+      setNombreCortoError(
+        "El nombre corto debe tener entre 3 y 30 caracteres."
+      );
+    } else {
+      setNombreCortoError("");
+    }
+  };
   return (
     <Modal
       isOpen={modalIsOpen}
@@ -57,7 +87,7 @@ const ModalRegistroGrupo = ({
       className="fixed inset-0 flex items-center justify-center"
       overlayClassName="fixed inset-0 bg-black bg-opacity-50"
     >
-      <div className="bg-blue-modal w-[1050px] h-[650px] rounded-xl flex flex-col font-title">
+      <div className="bg-blue-modal w-[1050px] h-[600px] rounded-xl flex flex-col font-title">
         <div className="relative">
           <h2 className="text-2xl font-semibold text-center text-white p-4">
             Registrar Grupo empresa
@@ -98,7 +128,8 @@ const ModalRegistroGrupo = ({
               <input
                 type="file"
                 name="logo"
-                onChange={handleFileChange}
+                accept=".jpg,.jpeg,.png"
+                onChange={handleFileValidation}
                 className="hidden"
                 id="fileInput"
               />
@@ -121,10 +152,17 @@ const ModalRegistroGrupo = ({
                     type="text"
                     name="nombreLargo"
                     value={groupData.nombreLargo}
-                    onChange={handleInputChange}
+                    onChange={(e) => {
+                      handleInputChange(e);
+                      validateNombreLargo(e.target.value);
+                    }}
+                    maxLength={80}
                     className="border rounded-lg w-full p-2"
                     required
                   />
+                  {nombreLargoError && (
+                    <p className="text-red-500">{nombreLargoError}</p>
+                  )}
                 </div>
                 <div>
                   <label className="block font-semibold mb-2">
@@ -134,10 +172,17 @@ const ModalRegistroGrupo = ({
                     type="text"
                     name="nombreCorto"
                     value={groupData.nombreCorto}
-                    onChange={handleInputChange}
+                    onChange={(e) => {
+                      handleInputChange(e);
+                      validateNombreCorto(e.target.value);
+                    }}
+                    maxLength={30}
                     className="border rounded-lg w-full p-2"
                     required
                   />
+                  {nombreCortoError && (
+                    <p className="text-red-500">{nombreCortoError}</p>
+                  )}
                 </div>
 
                 {/* Select para seleccionar el horario */}
