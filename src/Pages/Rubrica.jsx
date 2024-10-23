@@ -2,9 +2,12 @@ import React, { useState } from "react";
 import Criterio from "../Components/RubricaDetalles/Criterio";
 import Swal from "sweetalert2";
 import axios from "axios";
+
 const Rubrica = () => {
   const [criterios, setCriterios] = useState([]);
+  const [errors, setErrors] = useState({});
   const token = localStorage.getItem("token");
+
   const agregarCriterio = () => {
     setCriterios([
       ...criterios,
@@ -26,11 +29,75 @@ const Rubrica = () => {
     setCriterios(criterios.filter((_, i) => i !== index));
   };
 
+  const validarCriterio = (criterio, index) => {
+    let valid = true;
+    let criterioErrors = {};
+
+    // Validar título del criterio
+    if (criterio.titulo.length < 10 || criterio.titulo.length > 50) {
+      criterioErrors.titulo = "El título debe tener entre 10 y 50 caracteres.";
+      valid = false;
+    }
+
+    // Validar descripción del criterio
+    if (criterio.descripcion.length < 10 || criterio.descripcion.length > 200) {
+      criterioErrors.descripcion =
+        "La descripción debe tener entre 10 y 200 caracteres.";
+      valid = false;
+    }
+
+    // Validar niveles
+    criterio.niveles.forEach((nivel, nivelIndex) => {
+      if (nivel.puntos < 0 || nivel.puntos > 100) {
+        criterioErrors[`nivelPuntos${nivelIndex}`] =
+          "Los puntos deben estar entre 0 y 100.";
+        valid = false;
+      }
+      if (nivel.descripcion.length < 10 || nivel.descripcion.length > 300) {
+        criterioErrors[`nivelDescripcion${nivelIndex}`] =
+          "La descripción del nivel debe tener entre 10 y 300 caracteres.";
+        valid = false;
+      }
+      if (!nivel.tituloNivel) {
+        criterioErrors[`nivelTitulo${nivelIndex}`] = "Seleccione un nivel.";
+        valid = false;
+      }
+    });
+
+    setErrors((prevErrors) => ({
+      ...prevErrors,
+      [index]: criterioErrors,
+    }));
+
+    return valid;
+  };
+
   const registrarRubrica = async () => {
+    let valid = true;
+
+    criterios.forEach((criterio, index) => {
+      if (!validarCriterio(criterio, index)) {
+        valid = false;
+      }
+    });
+
+    if (!valid) {
+      Swal.fire({
+        title: "Error!",
+        text: "Por favor, corrige los errores antes de registrar la rúbrica.",
+        icon: "error",
+        confirmButtonText: "Aceptar",
+        customClass: {
+          confirmButton:
+            "text-white bg-red-600 hover:bg-red-700 px-4 py-2 rounded",
+        },
+      });
+      return;
+    }
+
     const rubrica = {
       codEvaluacion: 9,
       rubricas: criterios.map((criterio) => {
-        // Calcular el peso como el número mayor de los niveles
         const pesoRubrica = Math.max(
           ...criterio.niveles.map((nivel) => parseFloat(nivel.puntos) || 0)
         );
@@ -38,7 +105,7 @@ const Rubrica = () => {
         return {
           nombreRubrica: criterio.titulo,
           descripcionRubrica: criterio.descripcion,
-          pesoRubrica, // Incluir el peso en la estructura
+          pesoRubrica,
           detallesRubrica: criterio.niveles.map((nivel) => ({
             peso: parseFloat(nivel.puntos) || 0,
             clasificacion: nivel.tituloNivel,
@@ -47,8 +114,6 @@ const Rubrica = () => {
         };
       }),
     };
-
-    console.log("Datos de la rúbrica a enviar:", rubrica);
 
     try {
       const response = await axios.post(
@@ -108,6 +173,7 @@ const Rubrica = () => {
               actualizarCriterio(index, nuevoCriterio)
             }
             onDelete={() => eliminarCriterio(index)}
+            errors={errors[index] || {}}
           />
         ))}
         <div className="flex justify-end">

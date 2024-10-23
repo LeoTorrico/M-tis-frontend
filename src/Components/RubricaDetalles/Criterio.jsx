@@ -4,19 +4,29 @@ import { FaRegTrashAlt } from "react-icons/fa";
 
 const Criterio = ({ criterio, onChange, onDelete }) => {
   const { titulo, descripcion, niveles } = criterio;
+  const [errores, setErrores] = useState({
+    titulo: "",
+    descripcion: "",
+  });
 
   const handleTituloChange = (e) => {
     const newTitulo = e.target.value;
-    if (newTitulo.length <= 50) {
-      onChange({ ...criterio, titulo: newTitulo });
+    let error = "";
+    if (newTitulo.length < 10 || newTitulo.length > 50) {
+      error = "El título debe tener entre 10 y 50 caracteres.";
     }
+    setErrores((prev) => ({ ...prev, titulo: error }));
+    onChange({ ...criterio, titulo: newTitulo });
   };
 
   const handleDescripcionChange = (e) => {
     const newDescripcion = e.target.value;
-    if (newDescripcion.length <= 200) {
-      onChange({ ...criterio, descripcion: newDescripcion });
+    let error = "";
+    if (newDescripcion.length < 10 || newDescripcion.length > 200) {
+      error = "La descripción debe tener entre 10 y 200 caracteres.";
     }
+    setErrores((prev) => ({ ...prev, descripcion: error }));
+    onChange({ ...criterio, descripcion: newDescripcion });
   };
 
   const agregarNivel = () => {
@@ -44,17 +54,24 @@ const Criterio = ({ criterio, onChange, onDelete }) => {
         type="text"
         value={titulo}
         onChange={handleTituloChange}
-        placeholder="Título del criterio (máx. 50 caracteres)"
+        placeholder="Título del criterio (10-50 caracteres)"
         className="w-full mb-2 p-2 border border-gray-300 rounded"
         maxLength="50"
+        required
       />
+      {errores.titulo && <span className="text-red-500">{errores.titulo}</span>}
+
       <textarea
         value={descripcion}
         onChange={handleDescripcionChange}
-        placeholder="Descripción del criterio (máx. 200 caracteres)"
+        placeholder="Descripción del criterio (10-200 caracteres)"
         className="w-full mb-2 p-2 border border-gray-300 rounded"
         maxLength="200"
+        required
       />
+      {errores.descripcion && (
+        <span className="text-red-500">{errores.descripcion}</span>
+      )}
 
       <div className="flex flex-row space-x-4">
         {niveles.map((nivel, index) => (
