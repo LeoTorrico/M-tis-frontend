@@ -148,20 +148,21 @@ const EvaluacionSemanal = () => {
     setRubricScores(updatedScores);
   };
 
-  const handleComentarioChange = (e) => {
-    const newComentario = e.target.value;
-    const wordCount = newComentario.trim().split(/\s+/).length;
+ const handleComentarioChange = (e) => {
+   const newComentario = e.target.value;
+   const letterCount = newComentario.replace(/\s+/g, "").length; // Cuenta solo letras, ignora espacios
 
-    if (wordCount < 3) {
-      setErrorComentario("El comentario debe tener al menos 3 palabras.");
-    } else if (wordCount > 100) {
-      setErrorComentario("El comentario no debe exceder las 100 palabras.");
-    } else {
-      setErrorComentario(""); // No hay errores
-    }
+   if (letterCount < 3) {
+     setErrorComentario("El comentario debe tener al menos 3 letras.");
+   } else if (letterCount > 100) {
+     setErrorComentario("El comentario no debe exceder las 100 letras.");
+   } else {
+     setErrorComentario(""); // No hay errores
+   }
 
-    setComentario(newComentario);
-  };
+   setComentario(newComentario);
+ };
+
 
   const saveRubricScores = () => {
     const totalScore = rubricScores[selectedStudentIndex]?.reduce(
@@ -269,6 +270,7 @@ const EvaluacionSemanal = () => {
                     className="bg-[#D1DDED] border border-gray-300 rounded-lg p-1 w-full h-10 text-center"
                   >
                     <option value="presente">Presente</option>
+                    <option value="retraso">Retraso</option>
                     <option value="ausente_con_justificacion">
                       Ausente con justificación
                     </option>
@@ -376,7 +378,7 @@ const EvaluacionSemanal = () => {
                 <textarea
                   value={comentario}
                   onChange={handleComentarioChange}
-                  placeholder="Ingrese un comentario (mínimo 3 palabras, máximo 100)..."
+                  placeholder="Ingrese un comentario..."
                   className="border border-gray-300 p-2 w-full rounded-lg"
                 />
                 {errorComentario && (
