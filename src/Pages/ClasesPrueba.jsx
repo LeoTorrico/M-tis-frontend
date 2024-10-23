@@ -190,46 +190,55 @@ const handleUnirseClase = async () => {
   };
 
   return (
-    <div className="h-screen bg-gray-50 p-3">
-      <div className="flex justify-between items-center mb-3">
-        <h1 className="font-title text-2xl font-bold">Clases</h1>
-        <button
-          className="bg-[#3684DB] text-white font-semibold py-2 px-4 rounded"
-          onClick={handleAbrirModal}
-        >
-          {rol === "docente" ? "Crear clase" : "Unirse a clase"}
-        </button>
-      </div>
-
-      <div className="flex flex-col-reverse md:grid md:grid-cols-2 lg:grid-cols-3 gap-2">
-        {clases.slice(0).reverse().map((clase, index) => (
-          <div
-            key={index}
-            className="bg-[#031930] text-white p-3 rounded-lg shadow-lg"
+    <div className="h-screen bg-gray-50 p-3 relative">
+      {/* Fondo oscuro que cubre toda la página y el contenido cuando el modal está abierto */}
+      {mostrarModal && (
+        <div className="fixed inset-0 bg-black opacity-50 z-40" />
+      )}
+  
+      {/* El contenido de la página se mantiene detrás del modal */}
+      <div className={`relative z-30 ${mostrarModal ? 'pointer-events-none' : ''}`}>
+        <div className="flex justify-between items-center mb-3">
+          <h1 className="font-title text-2xl font-bold">Clases</h1>
+          <button
+            className="bg-[#3684DB] text-white font-semibold py-2 px-4 rounded"
+            onClick={handleAbrirModal}
           >
-            <h2 className="font-title text-lg font-bold">
-              {clase.nombre_clase || "Clase no especificada"}
-            </h2>
-            <p className="font-title text-sm">
-              {clase.gestion || "Gestión no especificada"}
-            </p>
-            <div className="bg-blue-500 rounded-lg h-2 mb-2" />
-            <button
-              className="bg-[#3684DB] text-white py-2 px-4 rounded"
-              onClick={() => handleViewClass(clase.cod_clase)}
+            {rol === "docente" ? "Crear clase" : "Unirse a clase"}
+          </button>
+        </div>
+  
+        <div className="flex flex-col-reverse md:grid md:grid-cols-2 lg:grid-cols-3 gap-2">
+          {clases.slice(0).reverse().map((clase, index) => (
+            <div
+              key={index}
+              className="bg-[#031930] text-white p-3 rounded-lg shadow-lg"
             >
-              Ver clase
-            </button>
-          </div>
-        ))}
+              <h2 className="font-title text-lg font-bold">
+                {clase.nombre_clase || "Clase no especificada"}
+              </h2>
+              <p className="font-title text-sm">
+                {clase.gestion || "Gestión no especificada"}
+              </p>
+              <div className="bg-blue-500 rounded-lg h-2 mb-2" />
+              <button
+                className="bg-[#3684DB] text-white py-2 px-4 rounded"
+                onClick={() => handleViewClass(clase.cod_clase)}
+              >
+                Ver clase
+              </button>
+            </div>
+          ))}
+        </div>
       </div>
-
+  
+      {/* El modal siempre se muestra encima del contenido */}
       {mostrarModal && (
         <div className="fixed inset-0 flex items-center justify-center z-50">
-          <div className="bg-white rounded-lg shadow-lg w-96">
-            <div className="bg-[#3684DB] text-white p-2 relative">
+          <div className="bg-white rounded-3xl shadow-lg w-96"> {/* Borde redondeado */}
+            <div className="bg-[#3684DB] text-white p-3 rounded-t-3xl relative">
               <button
-                className="absolute right-2 top-2"
+                className="absolute right-4 top-3"
                 onClick={handleCerrarModal}
               >
                 X
@@ -238,7 +247,7 @@ const handleUnirseClase = async () => {
                 {rol === "docente" ? "Crear clase" : "Unirse a clase"}
               </h2>
             </div>
-
+  
             <div className="p-4">
               {rol === "docente" ? (
                 <>
@@ -284,20 +293,20 @@ const handleUnirseClase = async () => {
                 </>
               )}
             </div>
-            {/* Header en la parte inferior */}
-            <div className="bg-[#3684DB] text-white p-2">
-              <div className="flex justify-between">
+  
+            <div className="bg-[#3684DB] text-white p-3 rounded-b-3xl">
+              <div className="flex justify-end gap-2">
                 <button
-                  className="border rounded-lg bg-white text-[#3684DB] font-semibold py-2 px-4"
-                  onClick={handleCerrarModal}
-                >
-                  Cancelar
-                </button>
-                <button
-                  className="bg-white text-[#3684DB] font-semibold py-2 px-4 rounded"
+                  className="bg-white text-[#3684DB] font-semibold py-1.5 px-3 rounded"
                   onClick={rol === "docente" ? handleCrearClase : handleUnirseClase}
                 >
                   {rol === "docente" ? "Crear" : "Unirse"}
+                </button>
+                <button
+                  className="border rounded-lg bg-white text-[#3684DB] font-semibold py-1.5 px-3"
+                  onClick={handleCerrarModal}
+                >
+                  Cancelar
                 </button>
               </div>
             </div>
@@ -306,6 +315,7 @@ const handleUnirseClase = async () => {
       )}
     </div>
   );
+  
 };
 
 export default ClasesPrueba;
