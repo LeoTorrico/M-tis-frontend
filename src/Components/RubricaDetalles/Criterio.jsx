@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import Nivel from "./Nivel";
-
+import { FaRegTrashAlt } from "react-icons/fa";
 const Criterio = ({ criterio, onChange, onDelete }) => {
   const { titulo, descripcion, niveles } = criterio;
 
@@ -71,7 +71,7 @@ const Criterio = ({ criterio, onChange, onDelete }) => {
         onClick={onDelete}
         className="bg-red-500 text-white px-4 py-2 rounded mt-4"
       >
-        Eliminar criterio
+        <FaRegTrashAlt className="text-white" />
       </button>
     </div>
   );

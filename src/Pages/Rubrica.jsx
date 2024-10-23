@@ -99,7 +99,7 @@ const Rubrica = () => {
           Registrar rúbrica
         </button>
       </div>
-      <div className="bg-light-blue p-6 rounded-lg">
+      <div className="bg-blue-table p-6 rounded-lg">
         {criterios.map((criterio, index) => (
           <Criterio
             key={index}
@@ -110,13 +110,14 @@ const Rubrica = () => {
             onDelete={() => eliminarCriterio(index)}
           />
         ))}
-
-        <button
-          onClick={agregarCriterio}
-          className="bg-dark-blue text-white px-4 py-2 rounded mt-4 hover:bg-semi-blue"
-        >
-          + Añadir un criterio
-        </button>
+        <div className="flex justify-end">
+          <button
+            onClick={agregarCriterio}
+            className="bg-semi-blue text-white px-4 py-2 rounded mt-4"
+          >
+            + Añadir un criterio
+          </button>
+        </div>
       </div>
     </div>
   );
