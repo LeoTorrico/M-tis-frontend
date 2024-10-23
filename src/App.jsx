@@ -47,7 +47,7 @@ function App() {
             <Route path="/LoginEstudiantes" element={<LoginEstudiantes />} />
             <Route path="/LoginDocentes" element={<LoginDocentes />} />
             <Route
-              path="/Vista-Curso/:cod_clase/evaluacion-semanal/:cod_grupoempresa"
+              path="/Vista-Curso/:cod_clase/evaluacion-semanal/:cod_grupoempresa/:cod_evaluacion"
               element={<EvaluacionSemanal />}
             />
             <Route path="/Asistencia" element={<Asistencia />} />

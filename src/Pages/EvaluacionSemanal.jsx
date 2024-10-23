@@ -6,8 +6,13 @@ import axios from "axios";
 const EvaluacionSemanal = () => {
   const navigate = useNavigate();
   const { cod_grupoempresa, cod_clase, cod_evaluacion } = useParams();
- 
 
+  useEffect(() => {
+    console.log("Parámetros:", { cod_grupoempresa, cod_clase, cod_evaluacion });
+  }, [cod_grupoempresa, cod_clase, cod_evaluacion]);
+
+
+  
   // Estado para la información del curso
   const [curso, setCurso] = useState({
     nombre: "",
@@ -86,7 +91,6 @@ const EvaluacionSemanal = () => {
   }, [cod_grupoempresa]);
 
   useEffect(() => {
-    // Obtener rúbricas desde el backend
     const fetchRubricas = async () => {
       try {
         const token = localStorage.getItem("token");
@@ -103,14 +107,21 @@ const EvaluacionSemanal = () => {
             },
           }
         );
+
+        // Verifica la respuesta antes de agregar al estado
+        console.log("Rúbricas obtenidas:", response.data);
+
+        // Actualiza el estado solo si los datos son diferentes
         setRubricas(response.data);
       } catch (error) {
         console.error("Error al obtener las rúbricas:", error);
       }
     };
 
-    fetchRubricas();
-  }, []);
+    if (cod_evaluacion) {
+      fetchRubricas();
+    }
+  }, [cod_evaluacion]);
 
   const handleRetroalimentacionChange = (e) => {
     setRetroalimentacion(e.target.value);
@@ -154,12 +165,12 @@ const EvaluacionSemanal = () => {
     setIntegrantes(updatedIntegrantes);
     setSelectedStudentIndex(null);
   };
+
   function verificarToken() {
     const token = localStorage.getItem("token"); // Suponiendo que el token está almacenado con la clave 'token'
 
     if (token) {
       console.log("Token obtenido:", token);
-      // Aquí puedes agregar cualquier otra lógica si es necesario
     } else {
       console.log("No se obtuvo el token");
     }
@@ -257,7 +268,6 @@ const EvaluacionSemanal = () => {
             </div>
           </div>
         </div>
-
         <div className="mt-6">
           <h2 className="font-bold text-md mb-2">Retroalimentación</h2>
           <table className="table-auto w-full mb-6 border-collapse">
@@ -287,18 +297,20 @@ const EvaluacionSemanal = () => {
       </div>
 
       {selectedStudentIndex !== null && (
-        <div className="fixed inset-0 flex items-center justify-center z-50">
-          <div className="bg-white p-4 rounded-lg shadow-lg">
-            <h2 className="bg-[#3684DB] p-4 rounded-t-lg text-white w-full text-center">
-              Evaluar a {integrantes[selectedStudentIndex]?.nombre_estudiante}
+        <div className="fixed inset-0 flex items-center justify-center z-50 bg-black bg-opacity-50">
+          <div className="bg-white p-4 rounded-lg shadow-lg max-w-4xl w-full mx-4 lg:mx-auto max-h-[90vh] overflow-y-auto">
+            <h2 className="bg-[#3684DB] p-4 rounded-t-lg text-white font-bold w-full text-center">
+              Evaluar a {integrantes[selectedStudentIndex]?.nombre_estudiante}{" "}
+              {integrantes[selectedStudentIndex]?.apellido_estudiante}
             </h2>
 
-            <div className="max-h-60 overflow-y-auto mb-4">
-              {" "}
-              {/* Aquí se añade el contenedor con scrollbar */}
+            <div className="mb-4">
               {rubricas.length > 0 ? (
                 rubricas.map((rubrica, rubricIndex) => (
-                  <div key={rubricIndex} className="mb-4">
+                  <div
+                    key={`${rubrica.nombre_rubrica}-${rubricIndex}`}
+                    className="mb-4"
+                  >
                     <label className="font-bold mb-2">
                       {rubrica.nombre_rubrica}
                     </label>
@@ -315,7 +327,7 @@ const EvaluacionSemanal = () => {
                       onChange={(e) =>
                         handleRubricChange(rubricIndex, e.target.value)
                       }
-                      className="border border-gray-300 p-2 w-full"
+                      className="border border-gray-300 p-2 w-full bg-[#B3D6FF] rounded-xl"
                       placeholder={`Peso máximo: ${rubrica.peso}`}
                     />
                   </div>
@@ -325,15 +337,16 @@ const EvaluacionSemanal = () => {
               )}
             </div>
 
-            <div className="flex justify-end">
+            {/* Footer con el mismo color del header */}
+            <div className="bg-[#3684DB] p-4 rounded-b-lg flex justify-end">
               <button
-                className="bg-[#3684DB] text-white py-2 px-4 rounded-lg mr-2"
+                className="bg-white text-[#3684DB] py-2 px-4 rounded-lg mr-2 border border-[#3684DB]"
                 onClick={() => setSelectedStudentIndex(null)}
               >
                 Cancelar
               </button>
               <button
-                className="bg-[#3684DB] text-white py-2 px-4 rounded-lg"
+                className="bg-white text-[#3684DB] py-2 px-4 rounded-lg border border-[#3684DB]"
                 onClick={saveRubricScores}
               >
                 Calificar

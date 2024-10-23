@@ -110,7 +110,7 @@ const TrabajoGrupo = ({ evaluacion }) => {
                     className="bg-dark-blue text-white px-4 py-2 rounded"
                     onClick={() =>
                       navigate(
-                        `/Vista-Curso/${cod_clase}/evaluacion-semanal/${grupo.cod_grupoempresa}`
+                        `/Vista-Curso/${cod_clase}/evaluacion-semanal/${grupo.cod_grupoempresa}/${evaluacion.cod_evaluacion}`
                       )
                     }
                   >
