@@ -17,6 +17,7 @@ import EvaluacionSemanal from "./Pages/EvaluacionSemanal";
 import Asistencia from "./Pages/Asistencia";
 import Rubrica from "./Pages/Rubrica";
 import EvaluacionDetalles from "./Pages/EvaluacionDetalles";
+import Evaluacion from "./Pages/Evaluacion";
 Modal.setAppElement("#root");
 
 function App() {
@@ -36,6 +37,7 @@ function App() {
               element={<EvaluacionDetalles />}
             />
             <Route path="/RegistroDocentes" element={<RegistroDocentes />} />
+            <Route path="/Evaluacion/:cod_clase" element={<Evaluacion />} />
             <Route
               path="/RegistroEstudiante"
               element={<RegistroEstudiante />}
@@ -45,7 +47,7 @@ function App() {
               path="/reset-password/:token"
               element={<RestablecerContrasenia />}
             />
-            <Route path="/Rubrica" element={<Rubrica />} />
+            <Route path="/Rubrica/:cod_evaluacion" element={<Rubrica />} />
             <Route path="/LoginEstudiantes" element={<LoginEstudiantes />} />
             <Route path="/LoginDocentes" element={<LoginDocentes />} />
             <Route
@@ -69,14 +71,14 @@ function Layout({ children }) {
     location.pathname === "/RegistroDocentes" ||
     location.pathname === "/RegistroEstudiante";
 
-  const isSidebarPage =
+    const isSidebarPage =
     location.pathname === "/" ||
     location.pathname.match(/^\/Vista-Curso\/.+$/) ||
     (location.pathname.startsWith("/Vista-Curso/") &&
       location.pathname.includes("evaluacion-semanal")) ||
-    location.pathname === "/Asistencia";
-    location.pathname === "/Rubrica";
-
+    location.pathname === "/Asistencia" ||
+    location.pathname.match(/^\/Rubrica\/.+$/) ||
+    location.pathname.match(/^\/Evaluacion\/.+$/);
   return (
     <div className="flex flex-grow">
       {isSidebarPage && <Sidebar />}
