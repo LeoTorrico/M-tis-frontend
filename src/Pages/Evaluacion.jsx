@@ -3,12 +3,6 @@ import axios from "axios";
 import { useNavigate, useParams } from "react-router-dom";
 import Swal from "sweetalert2";
 import ConfirmationModal from "../Components/ConfirmationModal";
-import OutlinedInput from '@mui/material/OutlinedInput';
-import InputLabel from '@mui/material/InputLabel';
-import MenuItem from '@mui/material/MenuItem';
-import ListItemText from '@mui/material/ListItemText';
-import Select from '@mui/material/Select';
-import Checkbox from '@mui/material/Checkbox';
 
 const Evaluacion = () => {
   const { cod_clase } = useParams();
@@ -19,7 +13,6 @@ const Evaluacion = () => {
     cod_docente: "",
     cod_gestion: ""
   });
-  const cod_docente = "";
 
   const [cargando, setCargando] = useState(true);
   const [nombreEvaluacion, setNombreEvaluacion] = useState("");
@@ -37,7 +30,6 @@ const Evaluacion = () => {
   const [openModalOfExit, setOpenModalOfExit] = useState(false);
   const [inputValue, setInputValue] = useState("");
   const [addTema, setAddTema] = useState(false);
-
   const textOfModal = "¿Quieres guardar tus cambios?";
   const titleOfModal = "Confirmación";
 
@@ -166,8 +158,9 @@ const Evaluacion = () => {
           }
         }
       );
-
-      if (response.status === 201) {
+      
+      
+      if (response.status === 200) {
         setNombreEvaluacion("");
         setDescripcion("");
         setFechaEntrega("");
@@ -182,26 +175,16 @@ const Evaluacion = () => {
         icon: "success",
         confirmButtonText: "Aceptar"
       });
-      //navigate(`/Vista-Curso/${cod_clase}`); //Me redirige aqui despues de crear la evaluacion?
+      return response.data ;
     } catch (error) {
       console.error("Error al registrar la evaluación:", error);
     }
   };
 
-  const handleSave = () => {
-    handleSubmitEvaluacion();
+  const handleSave = async () => {
+    const cod = await handleSubmitEvaluacion();
     setmostrarModal(false);
-  };
-
-  const ITEM_HEIGHT = 48;
-  const ITEM_PADDING_TOP = 8; 
-  const MenuProps = {
-    PaperProps: {
-      style: {
-        maxHeight: ITEM_HEIGHT * 4.5 + ITEM_PADDING_TOP,
-        width: 250,
-      },
-    },
+    navigate(`/Rubrica/${cod}`);
   };
 
   const handleClose = () => {
@@ -248,6 +231,7 @@ const Evaluacion = () => {
   };
 
   const handleButtonCrear = () => {
+    const data = {nombre_tema : inputValue}
     setTemas([...temas, data]);
     setTema(data.nombre_tema);
     setInputValue("");

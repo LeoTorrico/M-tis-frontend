@@ -47,7 +47,7 @@ function App() {
               path="/reset-password/:token"
               element={<RestablecerContrasenia />}
             />
-            <Route path="/Rubrica" element={<Rubrica />} />
+            <Route path="/Rubrica/:cod_evaluacion" element={<Rubrica />} />
             <Route path="/LoginEstudiantes" element={<LoginEstudiantes />} />
             <Route path="/LoginDocentes" element={<LoginDocentes />} />
             <Route
@@ -71,15 +71,13 @@ function Layout({ children }) {
     location.pathname === "/RegistroDocentes" ||
     location.pathname === "/RegistroEstudiante";
 
-  const isSidebarPage =
+    const isSidebarPage =
     location.pathname === "/" ||
     location.pathname.match(/^\/Vista-Curso\/.+$/) ||
     (location.pathname.startsWith("/Vista-Curso/") &&
       location.pathname.includes("evaluacion-semanal")) ||
-    location.pathname === "/Asistencia";
-    location.pathname === "/Rubrica";
-
-    location.pathname === "/" || location.pathname.match(/^\/Vista-Curso\/.+$/) ||
+    location.pathname === "/Asistencia" ||
+    location.pathname.match(/^\/Rubrica\/.+$/) ||
     location.pathname.match(/^\/Evaluacion\/.+$/);
   return (
     <div className="flex flex-grow">
