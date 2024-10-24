@@ -148,21 +148,20 @@ const EvaluacionSemanal = () => {
     setRubricScores(updatedScores);
   };
 
- const handleComentarioChange = (e) => {
-   const newComentario = e.target.value;
-   const letterCount = newComentario.replace(/\s+/g, "").length; // Cuenta solo letras, ignora espacios
+  const handleComentarioChange = (e) => {
+    const newComentario = e.target.value;
+    const wordCount = newComentario.trim().split(/\s+/).length;
 
-   if (letterCount < 3) {
-     setErrorComentario("El comentario debe tener al menos 3 letras.");
-   } else if (letterCount > 100) {
-     setErrorComentario("El comentario no debe exceder las 100 letras.");
-   } else {
-     setErrorComentario(""); // No hay errores
-   }
+    if (wordCount < 3) {
+      setErrorComentario("El comentario debe tener al menos 3 palabras.");
+    } else if (wordCount > 100) {
+      setErrorComentario("El comentario no debe exceder las 100 palabras.");
+    } else {
+      setErrorComentario(""); // No hay errores
+    }
 
-   setComentario(newComentario);
- };
-
+    setComentario(newComentario);
+  };
 
   const saveRubricScores = () => {
     const totalScore = rubricScores[selectedStudentIndex]?.reduce(
