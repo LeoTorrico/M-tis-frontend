@@ -15,6 +15,7 @@ import { AnimatePresence } from "framer-motion";
 import GrupoDetalles from "./Pages/GrupoDetalles";
 import EvaluacionSemanal from "./Pages/EvaluacionSemanal";
 import Asistencia from "./Pages/Asistencia";
+import Rubrica from "./Pages/Rubrica";
 import EvaluacionDetalles from "./Pages/EvaluacionDetalles";
 Modal.setAppElement("#root");
 
@@ -44,6 +45,7 @@ function App() {
               path="/reset-password/:token"
               element={<RestablecerContrasenia />}
             />
+            <Route path="/Rubrica" element={<Rubrica />} />
             <Route path="/LoginEstudiantes" element={<LoginEstudiantes />} />
             <Route path="/LoginDocentes" element={<LoginDocentes />} />
             <Route
@@ -73,6 +75,7 @@ function Layout({ children }) {
     (location.pathname.startsWith("/Vista-Curso/") &&
       location.pathname.includes("evaluacion-semanal")) ||
     location.pathname === "/Asistencia";
+    location.pathname === "/Rubrica";
 
   return (
     <div className="flex flex-grow">

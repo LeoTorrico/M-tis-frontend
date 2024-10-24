@@ -19,7 +19,7 @@ const Tablon = () => {
         // Hacer una llamada al backend usando cod_clase
         const response = await axios.get(`http://localhost:3000/evaluaciones/${cod_clase}`, {
           headers: {
-            Authorization: `Bearer ${user.token}` 
+            Authorization: `Bearer ${user?.token}` // Uso del operador de encadenamiento opcional
           }
         });
         setTareas(response.data); 
@@ -30,10 +30,10 @@ const Tablon = () => {
       }
     };
 
-    if (cod_clase) {
+    if (cod_clase && user?.token) { // Asegúrate de que el token existe
       fetchTareas();
     }
-  }, [cod_clase, user.token]); 
+  }, [cod_clase, user?.token]); 
 
   if (cargando) {
     return <div>Cargando tareas...</div>;
@@ -57,7 +57,7 @@ const Tablon = () => {
   const noEvaluaciones = tareas.length === 0;
 
   const handleVerEvaluacion = (cod_evaluacion) => {
-    navigate(`/Vista-Curso/${cod_clase}/evaluacion/${cod_evaluacion}`); // Redirigir a la página de la evaluacion
+    navigate(`/Vista-Curso/${cod_clase}/evaluacion/${cod_evaluacion}`); 
   };
 
   return (
@@ -82,22 +82,22 @@ const Tablon = () => {
                       <span className="text-lg font-semibold font-Montserrat">
                         {e.evaluacion} 
                       </span>
-                      <div className="text-sm text-gray-600">Dia de entrega: {e.fecha_fin}</div> {/* Mostrar descripción de la evaluación */}
+                      <div className="text-sm text-gray-600">Día de entrega: {e.fecha_fin}</div> {/* Mostrar descripción de la evaluación */}
                     </div>
                   </div>
-                  {/* Botón para editar o realizar acción */}
+                  {/* Botón para ver la evaluación */}
                   {user.rol === "docente" ? (
                     <button 
                     onClick={() => handleVerEvaluacion(e.cod_evaluacion)}
                     className="bg-dark-blue text-white font-Montserrat px-4 py-2 rounded-lg">
-                      Ver Evaluación
+                      Ver Evaluación subida
                     </button>
                   ) : (
-                    <button 
+                  <button 
                     onClick={() => handleVerEvaluacion(e.cod_evaluacion)}
                     className="bg-dark-blue text-white font-Montserrat px-4 py-2 rounded-lg">
-                      Ver Evaluación
-                    </button>
+                    Ver Evaluación
+                  </button>
                   )}
                 </div>
               ))

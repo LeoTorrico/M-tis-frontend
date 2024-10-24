@@ -114,7 +114,30 @@ const VistaCurso = () => {
   }, [cod_clase, codigoSis, token, rol]);
 
   const openModal = () => setModalIsOpen(true);
-  const closeModal = () => setModalIsOpen(false);
+  const closeModal = () => {
+    Swal.fire({
+      title: "¿Estás seguro de que deseas salir del registro?",
+      text: "Perderás los cambios no guardados",
+      icon: "warning",
+      iconColor: "#3684DB",
+      showCancelButton: true,
+      confirmButtonColor: "#d33",
+      cancelButtonColor: "#3085d6",
+      confirmButtonText: "Sí",
+      cancelButtonText: "No",
+    }).then((result) => {
+      if (result.isConfirmed) {
+        setModalIsOpen(false);
+        setGroupData({
+          logo: null,
+          nombreLargo: "",
+          nombreCorto: "",
+          integrantes: [],
+          cod_horario: "",
+        });
+      }
+    });
+  };
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
@@ -244,7 +267,12 @@ const VistaCurso = () => {
       <HeaderCurso activeTab={activeTab} setActiveTab={setActiveTab} />
       <div className="bg-semi-blue text-white p-6 rounded-lg m-4">
         <h1 className="text-3xl font-bold">{curso.nombre}</h1>
-        <p className="text-xl">{curso.gestion}</p>
+        <div className="flex justify-between">
+          <p className="text-xl">{curso.gestion}</p>
+          {rol === "docente" && (
+            <p className="text-xl">Codigo de clase: {cod_clase}</p>
+          )}
+        </div>
         {activeTab === "GruposEmpresas" && rol === "estudiante" && (
           <div className="flex justify-end">
             <button

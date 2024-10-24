@@ -4,26 +4,25 @@ import getDetailsFromToken from "../Pages/Utils";
 export const UserContext = createContext();
 
 const UserProvider = ({ children }) => {
-  const [user, setUser] = useState(null);
+  const [user, setUser] = useState(() => {
+    const token = localStorage.getItem("token");
+    if (token) {
+      const userDetails = getDetailsFromToken(token);
+      return { ...userDetails, token };
+    }
+    return { token: null, rol: null }; // Retornar estado inicial si no hay token
+  });
 
   useEffect(() => {
-    const loadUserFromToken = () => {
-      const token = localStorage.getItem("token");
-      if (token) {
-        const userDetails = getDetailsFromToken(token);
-        setUser({ ...userDetails, token });
-      } else {
-        setUser(null); // No token, usuario no autenticado
-      }
-    };
-
-    // Cargar el usuario inicialmente
-    loadUserFromToken();
-
-    // Escuchar los cambios en el almacenamiento local
     const handleStorageChange = (event) => {
       if (event.key === "token") {
-        loadUserFromToken();
+        const token = localStorage.getItem("token");
+        if (token) {
+          const userDetails = getDetailsFromToken(token);
+          setUser({ ...userDetails, token });
+        } else {
+          setUser({ token: null, rol: null }); // Reiniciar estado si no hay token
+        }
       }
     };
 
@@ -36,7 +35,7 @@ const UserProvider = ({ children }) => {
 
   const logout = () => {
     localStorage.removeItem("token");
-    setUser(null);
+    setUser({ token: null, rol: null }); // Reiniciar el estado
   };
 
   return (

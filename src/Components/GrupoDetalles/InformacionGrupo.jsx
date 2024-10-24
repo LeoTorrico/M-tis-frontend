@@ -15,40 +15,42 @@ const InformacionGrupo = ({ grupo, user }) => {
           <div>
             <h1 className="text-3xl font-bold">{grupo.nombre_largo}</h1>
             <p className="text-xl">{grupo.nombre_corto}</p>
+            <p className="text-xl">
+              Horario: {grupo.horario.dia_horario} {grupo.horario.hora_inicio}-
+              {grupo.horario.hora_fin}
+            </p>
           </div>
         </div>
-        {user.rol === "estudiante" && (
-          <div className="flex justify-end">
-            <button className="bg-white text-dark-blue px-4 py-2 rounded-lg border border-blue-800 flex items-center ">
-              Ver planificacion
-            </button>
-          </div>
-        )}
       </div>
-
-      <div className="mt-6 p-6">
-        <table className="min-w-full table-auto">
-          <thead>
-            <tr>
-              <th className="px-4 py-2">Codigo sis</th>
-              <th className="px-4 py-2">Integrantes</th>
-              <th className="px-4 py-2">Rol asignado</th>
-            </tr>
-          </thead>
-          <tbody>
-            {grupo.integrantes.map((integrante, index) => (
-              <tr key={index}>
-                <td className="border px-4 py-2">{integrante.codigo_sis}</td>
-                <td className="border px-4 py-2">
-                  {integrante.nombre_estudiante +
-                    " " +
-                    integrante.apellido_estudiante}
-                </td>
-                <td className="border px-4 py-2">{integrante.rol}</td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
+      <div className="p-4">
+        <div className="p-6 bg-light-blue rounded-lg shadow-md w-full">
+          <div className="overflow-x-auto ">
+            <table className="min-w-full table-auto bg-white rounded-lg shadow-md">
+              <thead>
+                <tr>
+                  <th className="px-4 py-2">Codigo sis</th>
+                  <th className="px-4 py-2">Integrantes</th>
+                  <th className="px-4 py-2">Rol asignado</th>
+                </tr>
+              </thead>
+              <tbody>
+                {grupo.integrantes.map((integrante, index) => (
+                  <tr key={index}>
+                    <td className="border px-4 py-2">
+                      {integrante.codigo_sis}
+                    </td>
+                    <td className="border px-4 py-2">
+                      {integrante.nombre_estudiante +
+                        " " +
+                        integrante.apellido_estudiante}
+                    </td>
+                    <td className="border px-4 py-2">{integrante.rol}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        </div>
       </div>
     </div>
   );
