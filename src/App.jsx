@@ -13,6 +13,8 @@ import RestablecerContrasenia from "./Pages/RestablecerContrasenia";
 import LoginDocentes from "./Pages/LoginDocentes";
 import { AnimatePresence } from "framer-motion";
 import GrupoDetalles from "./Pages/GrupoDetalles";
+import EvaluacionSemanal from "./Pages/EvaluacionSemanal";
+import Asistencia from "./Pages/Asistencia";
 import Rubrica from "./Pages/Rubrica";
 import EvaluacionDetalles from "./Pages/EvaluacionDetalles";
 Modal.setAppElement("#root");
@@ -23,7 +25,7 @@ function App() {
       <Layout>
         <AnimatePresence>
           <Routes>
-            <Route path="/" element={<ClasesPrueba />} />{" "}
+            <Route path="/" element={<ClasesPrueba />} />
             <Route path="/Vista-Curso/:cod_clase" element={<VistaCurso />} />
             <Route
               path="/Vista-Curso/:cod_clase/grupo/:cod_grupoempresa"
@@ -46,6 +48,11 @@ function App() {
             <Route path="/Rubrica" element={<Rubrica />} />
             <Route path="/LoginEstudiantes" element={<LoginEstudiantes />} />
             <Route path="/LoginDocentes" element={<LoginDocentes />} />
+            <Route
+              path="/Vista-Curso/:cod_clase/evaluacion-semanal/:cod_grupoempresa/:cod_evaluacion"
+              element={<EvaluacionSemanal />}
+            />
+            <Route path="/Asistencia" element={<Asistencia />} />
           </Routes>
         </AnimatePresence>
       </Layout>
@@ -55,6 +62,7 @@ function App() {
 
 function Layout({ children }) {
   const location = useLocation();
+
   const isLoginPage =
     location.pathname === "/LoginEstudiantes" ||
     location.pathname === "/LoginDocentes" ||
@@ -64,6 +72,9 @@ function Layout({ children }) {
   const isSidebarPage =
     location.pathname === "/" ||
     location.pathname.match(/^\/Vista-Curso\/.+$/) ||
+    (location.pathname.startsWith("/Vista-Curso/") &&
+      location.pathname.includes("evaluacion-semanal")) ||
+    location.pathname === "/Asistencia";
     location.pathname === "/Rubrica";
 
   return (
