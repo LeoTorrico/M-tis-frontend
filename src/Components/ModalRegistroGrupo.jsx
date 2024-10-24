@@ -1,0 +1,302 @@
+import React, { useState, useEffect } from "react";
+import Modal from "react-modal";
+import { IoMdClose } from "react-icons/io"; // Ícono de cerrar
+import { RingLoader } from "react-spinners";
+import axios from "axios";
+
+const ModalRegistroGrupo = ({
+  modalIsOpen,
+  closeModal,
+  groupData,
+  handleFileChange,
+  handleInputChange,
+  handleSubmit,
+  integrantesPosibles,
+  rolesPosibles,
+  loading,
+  handleIntegranteChange,
+  handleRolChange,
+  handleAddIntegrante,
+  handleRemoveIntegrante,
+  handleHorarioChange,
+  cod_clase, // Asegúrate de que este prop sea pasado correctamente
+}) => {
+  const [horarios, setHorarios] = useState([]); // Estado para almacenar los horarios
+  const [loadingHorarios, setLoadingHorarios] = useState(true); // Estado para gestionar la carga de horarios
+  const [nombreLargoError, setNombreLargoError] = useState("");
+  const [nombreCortoError, setNombreCortoError] = useState("");
+
+  useEffect(() => {
+    const fetchHorarios = async () => {
+      try {
+        const response = await axios.get(
+          `http://localhost:3000/clases/${cod_clase}/obtener-horarios`
+        );
+        setHorarios(response.data.horarios); // Extrae el arreglo de horarios
+      } catch (error) {
+        console.error("Error fetching horarios:", error);
+      } finally {
+        setLoadingHorarios(false); // Finaliza la carga
+      }
+    };
+
+    fetchHorarios();
+  }, [cod_clase]); // Dependencia para volver a ejecutar cuando cambie cod_clase
+
+  // Limitar los integrantes a un máximo de 6
+  const addIntegrante = () => {
+    if (groupData.integrantes.length < 6) {
+      handleAddIntegrante();
+    } else {
+      alert("Se ha alcanzado el límite máximo de 6 integrantes.");
+    }
+  };
+  const handleFileValidation = (e) => {
+    const file = e.target.files[0];
+    const allowedExtensions = /(\.jpg|\.jpeg|\.png)$/i;
+    if (!allowedExtensions.exec(file.name)) {
+      alert("Solo se permiten archivos .png o .jpg.");
+      e.target.value = ""; // Limpiar el campo de archivo
+      return;
+    }
+    handleFileChange(e); // Llamar al manejador de archivos original
+  };
+  const validateNombreLargo = (value) => {
+    if (value.length < 3 || value.length > 80) {
+      setNombreLargoError(
+        "El nombre largo debe tener entre 3 y 80 caracteres."
+      );
+    } else {
+      setNombreLargoError("");
+    }
+  };
+
+  const validateNombreCorto = (value) => {
+    if (value.length < 3 || value.length > 30) {
+      setNombreCortoError(
+        "El nombre corto debe tener entre 3 y 30 caracteres."
+      );
+    } else {
+      setNombreCortoError("");
+    }
+  };
+  return (
+    <Modal
+      isOpen={modalIsOpen}
+      onRequestClose={closeModal}
+      className="fixed inset-0 flex items-center justify-center"
+      overlayClassName="fixed inset-0 bg-black bg-opacity-50"
+    >
+      <div className="bg-blue-modal w-[1050px] h-[600px] rounded-xl flex flex-col font-title">
+        <div className="relative">
+          <h2 className="text-2xl font-semibold text-center text-white p-4">
+            Registrar Grupo empresa
+          </h2>
+          <button
+            type="button"
+            onClick={closeModal}
+            className="absolute top-4 right-4 text-white px-2 py-2 hover:text-black"
+          >
+            <IoMdClose className="w-6 h-6" />
+          </button>
+        </div>
+        {loadingHorarios || loading ? ( // Comprueba si los horarios se están cargando
+          <div className="flex justify-center items-center flex-1">
+            <RingLoader color={"#ffffff"} size={150} />
+          </div>
+        ) : (
+          <form
+            id="grupoForm"
+            onSubmit={handleSubmit}
+            className="flex flex-1 bg-white"
+          >
+            <div className="w-1/2 flex flex-col items-center justify-center border-r">
+              <label className="font-semibold mb-2">Logotipo*</label>
+              {groupData.logo ? (
+                <div className="bg-light-blue w-64 h-64 rounded-lg flex items-center justify-center">
+                  <img
+                    src={`data:image/jpeg;base64,${groupData.logo}`}
+                    alt="Vista previa"
+                    className="w-full h-full object-cover rounded-lg"
+                  />
+                </div>
+              ) : (
+                <div className="bg-light-blue w-64 h-64 rounded-lg flex items-center justify-center text-gray-600">
+                  Subir foto
+                </div>
+              )}
+              <input
+                type="file"
+                name="logo"
+                accept=".jpg,.jpeg,.png"
+                onChange={handleFileValidation}
+                className="hidden"
+                id="fileInput"
+              />
+              <button
+                type="button"
+                onClick={() => document.getElementById("fileInput").click()}
+                className="mt-4 bg-blue-modal text-white px-4 py-2 rounded-lg hover:bg-semi-blue"
+              >
+                Seleccionar archivo
+              </button>
+            </div>
+
+            <div className="w-1/2 bg-white p-6 flex flex-col justify-between">
+              <div className="space-y-4">
+                <div>
+                  <label className="block font-semibold mb-2">
+                    Nombre Largo*
+                  </label>
+                  <input
+                    type="text"
+                    name="nombreLargo"
+                    value={groupData.nombreLargo}
+                    onChange={(e) => {
+                      handleInputChange(e);
+                      validateNombreLargo(e.target.value);
+                    }}
+                    maxLength={80}
+                    className="border rounded-lg w-full p-2"
+                    required
+                  />
+                  {nombreLargoError && (
+                    <p className="text-red-500">{nombreLargoError}</p>
+                  )}
+                </div>
+                <div>
+                  <label className="block font-semibold mb-2">
+                    Nombre Corto*
+                  </label>
+                  <input
+                    type="text"
+                    name="nombreCorto"
+                    value={groupData.nombreCorto}
+                    onChange={(e) => {
+                      handleInputChange(e);
+                      validateNombreCorto(e.target.value);
+                    }}
+                    maxLength={30}
+                    className="border rounded-lg w-full p-2"
+                    required
+                  />
+                  {nombreCortoError && (
+                    <p className="text-red-500">{nombreCortoError}</p>
+                  )}
+                </div>
+
+                {/* Select para seleccionar el horario */}
+                <div>
+                  <label className="block font-semibold mb-2">Horario*</label>
+                  <select
+                    value={groupData.cod_horario || ""}
+                    onChange={(e) => handleHorarioChange(e.target.value)}
+                    className="border rounded-lg w-full p-2"
+                    required
+                  >
+                    <option value="" disabled>
+                      Seleccionar horario
+                    </option>
+                    {horarios.map((horario) => (
+                      <option
+                        key={horario.cod_horario}
+                        value={horario.cod_horario}
+                      >
+                        {`${horario.dia_horario} ${horario.hora_inicio} - ${horario.hora_fin}`}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+
+                {/* Área desplazable para los integrantes */}
+                <div className="max-h-[200px] overflow-y-auto border p-2 rounded-lg">
+                  {groupData.integrantes.map((integrante, index) => (
+                    <div
+                      key={index}
+                      className="flex items-center space-x-4 p-2"
+                    >
+                      <select
+                        value={integrante.codigo_sis || ""}
+                        onChange={(e) =>
+                          handleIntegranteChange(index, e.target.value)
+                        }
+                        className="border rounded-lg w-1/2 p-2"
+                        required
+                        disabled={integrantesPosibles.length === 0} // Deshabilitar si no hay estudiantes
+                      >
+                        <option value="" disabled>
+                          {integrantesPosibles.length === 0
+                            ? "No hay estudiantes disponibles"
+                            : "Seleccionar integrante"}
+                        </option>
+                        {integrantesPosibles.map((estudiante) => (
+                          <option
+                            key={estudiante.codigo_sis}
+                            value={estudiante.codigo_sis}
+                          >
+                            {estudiante.nombre_estudiante +
+                              " " +
+                              estudiante.apellido_estudiante}
+                          </option>
+                        ))}
+                      </select>
+                      <select
+                        value={integrante.rol || ""}
+                        onChange={(e) => handleRolChange(index, e.target.value)}
+                        className="border rounded-lg w-1/2 p-2"
+                        required
+                      >
+                        <option value="" disabled>
+                          Seleccionar rol
+                        </option>
+                        {rolesPosibles.map((rol) => (
+                          <option key={rol} value={rol}>
+                            {rol}
+                          </option>
+                        ))}
+                      </select>
+                      {/* Botón para eliminar integrante */}
+                      <button
+                        type="button"
+                        onClick={() => handleRemoveIntegrante(index)}
+                        className="text-red-500 hover:text-red-700"
+                      >
+                        <IoMdClose className="w-6 h-6" />
+                      </button>
+                    </div>
+                  ))}
+                </div>
+                <button
+                  type="button"
+                  onClick={addIntegrante}
+                  className="mt-4 bg-blue-modal text-white px-4 py-2 rounded-lg hover:bg-semi-blue"
+                >
+                  Agregar Integrante
+                </button>
+              </div>
+            </div>
+          </form>
+        )}
+        <div className="bg-blue-modal flex justify-end p-4 rounded-xl">
+          <button
+            type="button"
+            onClick={closeModal}
+            form="grupoForm"
+            className="bg-white text-black px-4 py-2 rounded-lg mr-4 hover:bg-red-500 hover:text-white"
+          >
+            Cancelar
+          </button>
+          <button
+            type="submit"
+            form="grupoForm"
+            className="bg-white text-black px-4 py-2 rounded-lg hover:bg-semi-blue hover:text-white"
+          >
+            Registrar
+          </button>
+        </div>
+      </div>
+    </Modal>
+  );
+};
+
+export default ModalRegistroGrupo;
