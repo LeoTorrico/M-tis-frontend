@@ -108,10 +108,8 @@ const EvaluacionSemanal = () => {
           }
         );
 
-        // Verifica la respuesta antes de agregar al estado
         console.log("Rúbricas obtenidas:", response.data);
 
-        // Actualiza el estado solo si los datos son diferentes
         setRubricas(response.data);
       } catch (error) {
         console.error("Error al obtener las rúbricas:", error);
@@ -135,16 +133,20 @@ const EvaluacionSemanal = () => {
 
   const openRubricModal = (index) => {
     setSelectedStudentIndex(index);
-    setComentario(""); // Reiniciar el comentario al abrir el modal
-    setErrorComentario(""); // Reiniciar los errores al abrir el modal
+    setComentario("");
+    setErrorComentario("");
   };
 
   const handleRubricChange = (rubricIndex, value) => {
     const updatedScores = { ...rubricScores };
+
     if (!updatedScores[selectedStudentIndex]) {
-      updatedScores[selectedStudentIndex] = Array(rubricas.length).fill(0);
+      updatedScores[selectedStudentIndex] = Array(rubricas.length).fill(null);
     }
-    updatedScores[selectedStudentIndex][rubricIndex] = Number(value);
+
+    updatedScores[selectedStudentIndex][rubricIndex] =
+      value === "" ? "" : Number(value);
+
     setRubricScores(updatedScores);
   };
 
@@ -241,7 +243,11 @@ const EvaluacionSemanal = () => {
                   >
                     <input
                       type="text"
-                      value={integrante.score || "/..."}
+                      value={
+                        integrante.score !== undefined
+                          ? integrante.score
+                          : "/..."
+                      }
                       readOnly
                       className="bg-[#D1DDED] border border-gray-300 rounded-lg p-1 w-full h-10 text-center cursor-pointer"
                     />
@@ -357,7 +363,10 @@ const EvaluacionSemanal = () => {
                       min="0"
                       max={rubrica.peso}
                       value={
-                        rubricScores[selectedStudentIndex]?.[rubricIndex] || ""
+                        rubricScores[selectedStudentIndex]?.[rubricIndex] !==
+                        undefined
+                          ? rubricScores[selectedStudentIndex][rubricIndex]
+                          : ""
                       }
                       onChange={(e) =>
                         handleRubricChange(rubricIndex, e.target.value)
