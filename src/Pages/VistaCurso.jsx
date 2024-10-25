@@ -6,12 +6,11 @@ import Alumnos from "../Components/Alumnos";
 import ModalRegistroGrupo from "../Components/ModalRegistroGrupo";
 import axios from "axios";
 import Swal from "sweetalert2";
-import { useParams, useNavigate } from "react-router-dom"; // Importa useNavigate
+import { useParams } from "react-router-dom";
 import getDetailsFromToken from "./Utils";
 
 const VistaCurso = () => {
   const { cod_clase } = useParams();
-  const navigate = useNavigate(); // Define el hook useNavigate
   const [curso, setCurso] = useState({
     nombre: "",
     gestion: "",
@@ -54,7 +53,7 @@ const VistaCurso = () => {
           );
           const clase = response.data.clases.find(
             (c) => c.cod_clase === cod_clase
-          );
+          ); // Buscar la clase correspondiente
           if (clase) {
             setCurso({
               nombre: clase.nombre_clase,
@@ -108,6 +107,7 @@ const VistaCurso = () => {
 
     fetchClase();
 
+    // Solo llamar a fetchEstudiantes si el rol es "ESTUDIANTE"
     if (rol === "estudiante") {
       fetchEstudiantes();
     }
@@ -149,6 +149,7 @@ const VistaCurso = () => {
     const reader = new FileReader();
 
     reader.onloadend = () => {
+      // Guardar el archivo en base64 en el estado
       const base64String = reader.result.replace(
         /^data:image\/[a-z]+;base64,/,
         ""
@@ -156,6 +157,7 @@ const VistaCurso = () => {
       setGroupData({ ...groupData, logo: base64String });
     };
 
+    // Verificar si el archivo fue seleccionado antes de intentar leerlo
     if (file) {
       reader.readAsDataURL(file);
     }
@@ -179,17 +181,14 @@ const VistaCurso = () => {
       integrantes: [...groupData.integrantes, { codigo_sis: "", rol: "" }],
     });
   };
-
   const handleRemoveIntegrante = (index) => {
     const nuevosIntegrantes = [...groupData.integrantes];
-    nuevosIntegrantes.splice(index, 1);
+    nuevosIntegrantes.splice(index, 1); // Elimina el integrante por su índice
     setGroupData({ ...groupData, integrantes: nuevosIntegrantes });
   };
-
   const handleHorarioChange = (cod_horario) => {
     setGroupData({ ...groupData, cod_horario });
   };
-
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
@@ -198,13 +197,12 @@ const VistaCurso = () => {
       logo: groupData.logo,
       nombreLargo: groupData.nombreLargo,
       nombreCorto: groupData.nombreCorto,
-      cod_clase: cod_clase,
-      cod_docente: curso.cod_docente,
+      cod_clase: cod_clase, // Cambia esto por el valor correcto
+      cod_docente: curso.cod_docente, // Cambia esto por el valor correcto
       integrantes: groupData.integrantes,
       cod_gestion: curso.cod_gestion,
       cod_horario: groupData.cod_horario,
     };
-
     console.log("Datos enviados al backend:", groupDataToSend);
     try {
       const response = await axios.post(
@@ -239,6 +237,7 @@ const VistaCurso = () => {
           },
         });
 
+        // Recargar la página
         window.location.reload();
       } else {
         console.error("Error al registrar el grupo");
@@ -284,36 +283,24 @@ const VistaCurso = () => {
             </button>
           </div>
         )}
-        {activeTab === "Tablon" && rol === "docente" && (
-          <div className="flex justify-end">
-            <button
-              className="bg-white text-dark-blue px-4 py-2 rounded-lg border border-blue-800 flex items-center mt-6"
-              onClick={() => navigate(`/Evaluacion/${cod_clase}`)} // Redirige a la página de Evaluación
-            >
-              Crear Evaluación
-            </button>
-          </div>
-        )}
       </div>
-      {cargando ? (
-        <p>Cargando...</p>
-      ) : (
-        renderContent()
-      )}
+      <div className="p-4">{renderContent()}</div>
       <ModalRegistroGrupo
         modalIsOpen={modalIsOpen}
         closeModal={closeModal}
-        handleInputChange={handleInputChange}
+        groupData={groupData}
         handleFileChange={handleFileChange}
+        handleInputChange={handleInputChange}
         handleIntegranteChange={handleIntegranteChange}
         handleRolChange={handleRolChange}
         handleAddIntegrante={handleAddIntegrante}
+        handleSubmit={handleSubmit}
+        loading={loading} //
+        integrantesPosibles={estudiantes}
+        rolesPosibles={rolesPosibles}
         handleRemoveIntegrante={handleRemoveIntegrante}
         handleHorarioChange={handleHorarioChange}
-        handleSubmit={handleSubmit}
-        groupData={groupData}
-        loading={loading}
-        rolesPosibles={rolesPosibles}
+        cod_clase={cod_clase}
       />
     </div>
   );
