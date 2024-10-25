@@ -19,7 +19,12 @@ const GrupoDetalles = () => {
   const fetchGrupo = async () => {
     try {
       const response = await fetch(
-        `http://localhost:3000/api/grupos/grupo/${cod_grupoempresa}`
+        `http://localhost:3000/api/grupos/grupo/${cod_grupoempresa}`,
+        {
+          headers: {
+            Authorization: `Bearer ${user.token}`,
+          },
+        }
       );
       const data = await response.json();
       setGrupo(data);

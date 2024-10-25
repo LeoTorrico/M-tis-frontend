@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import HeaderCurso from "../Components/HeaderCurso";
 import GruposEmpresas from "../Components/GruposEmpresas";
 import Tablon from "../Components/Tablon";
@@ -8,6 +8,7 @@ import axios from "axios";
 import Swal from "sweetalert2";
 import { useParams } from "react-router-dom";
 import getDetailsFromToken from "./Utils";
+import { UserContext } from "../context/UserContext";
 
 const VistaCurso = () => {
   const { cod_clase } = useParams();
@@ -31,6 +32,7 @@ const VistaCurso = () => {
     cod_horario: "",
   });
   const [estudiantes, setEstudiantes] = useState([]);
+  const { user } = useContext(UserContext);
   const rolesPosibles = [
     "Scrum master",
     "Backend",
@@ -93,7 +95,12 @@ const VistaCurso = () => {
     const fetchEstudiantes = async () => {
       try {
         const response = await axios.get(
-          `http://localhost:3000/api/grupos/${cod_clase}/estudiantes-sin-grupo`
+          `http://localhost:3000/api/grupos/${cod_clase}/estudiantes-sin-grupo`,
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          }
         );
         setEstudiantes(response.data);
       } catch (error) {
@@ -210,6 +217,7 @@ const VistaCurso = () => {
         groupDataToSend,
         {
           headers: {
+            Authorization: `Bearer ${user.token}`,
             "Content-Type": "application/json",
           },
         }

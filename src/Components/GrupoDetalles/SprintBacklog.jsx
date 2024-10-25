@@ -8,6 +8,7 @@ import RequerimientosModal from "./RequerimientosModal";
 const SprintBacklog = () => {
   const [sprints, setSprints] = useState([]); // Nuevo estado para almacenar los sprints
   const [requerimientos, setRequerimientos] = useState([]);
+  const token = localStorage.getItem("token");
   const [modalIsOpen, setModalIsOpen] = useState(false);
   const [requerimientosModalOpen, setRequerimientosModalOpen] = useState(false); // Nuevo estado
   const [selectedSprint, setSelectedSprint] = useState(null);
@@ -24,7 +25,12 @@ const SprintBacklog = () => {
     const fetchTasks = async () => {
       try {
         const response = await fetch(
-          `http://localhost:3000/planificacion/productbacklog/sin-sprint/${cod_grupoempresa}`
+          `http://localhost:3000/planificacion/productbacklog/sin-sprint/${cod_grupoempresa}`,
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          }
         );
         const data = await response.json();
         if (data.length > 0) {
@@ -42,7 +48,12 @@ const SprintBacklog = () => {
     const fetchSprints = async () => {
       try {
         const response = await fetch(
-          `http://localhost:3000/planificacion/sprints/${cod_grupoempresa}`
+          `http://localhost:3000/planificacion/sprints/${cod_grupoempresa}`,
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          }
         );
         const data = await response.json();
         setSprints(data); // Almacenar los sprints en el estado
@@ -84,7 +95,12 @@ const SprintBacklog = () => {
     try {
       const response = await axios.post(
         "http://localhost:3000/planificacion/registrar-sprint",
-        sprintPayload
+        sprintPayload,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
       );
       console.log("Sprint registrado:", response.data);
       setModalIsOpen(false);
@@ -168,7 +184,12 @@ const SprintBacklog = () => {
       // Realizar la solicitud POST con la estructura correcta
       await axios.put(
         "http://localhost:3000/planificacion/requerimientos/registrar-sprint",
-        dataToSend
+        dataToSend,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
       );
 
       closeRequerimientosModal();

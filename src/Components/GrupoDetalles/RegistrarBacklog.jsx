@@ -7,6 +7,7 @@ import { IoMdClose } from "react-icons/io";
 const MostrarRequerimientos = () => {
   const [tasks, setTasks] = useState([]);
   const [loading, setLoading] = useState(false);
+  const token = localStorage.getItem("token");
   const [modalIsOpen, setModalIsOpen] = useState(false);
   const [newRequirement, setNewRequirement] = useState({
     requerimiento: "",
@@ -36,7 +37,12 @@ const MostrarRequerimientos = () => {
       setLoading(true);
       try {
         const response = await fetch(
-          `http://localhost:3000/planificacion/productbacklog/${cod_grupoempresa}`
+          `http://localhost:3000/planificacion/productbacklog/${cod_grupoempresa}`,
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          }
         );
         const data = await response.json();
 
@@ -110,6 +116,7 @@ const MostrarRequerimientos = () => {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
           },
           body: JSON.stringify({
             codigoGrupo: cod_grupoempresa,
