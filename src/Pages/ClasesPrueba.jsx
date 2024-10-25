@@ -177,7 +177,7 @@ const handleUnirseClase = async () => {
       setCodigoClase("");
       setError(""); // Limpiar el error si la unión fue exitosa
       handleCerrarModal();
-      //window.location.reload(); Para que es esto
+      window.location.reload();
   } catch (error) {
       console.error("Error joining class:", error);
       const errorMessage = error.response.data.error;
