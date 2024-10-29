@@ -6,12 +6,13 @@ import Alumnos from "../Components/Alumnos";
 import ModalRegistroGrupo from "../Components/ModalRegistroGrupo";
 import axios from "axios";
 import Swal from "sweetalert2";
-import { useParams } from "react-router-dom";
+import { useParams,useNavigate  } from "react-router-dom";
 import getDetailsFromToken from "./Utils";
 import { UserContext } from "../context/UserContext";
 
 const VistaCurso = () => {
   const { cod_clase } = useParams();
+  const navigate = useNavigate();
   const [curso, setCurso] = useState({
     nombre: "",
     gestion: "",
@@ -288,6 +289,16 @@ const VistaCurso = () => {
               onClick={openModal}
             >
               Registrar grupo empresa
+            </button>
+          </div>
+        )}
+        {activeTab === "Tablon" && rol === "docente" && (
+          <div className="flex justify-end">
+            <button
+              className="bg-white text-dark-blue px-4 py-2 rounded-lg border border-blue-800 flex items-center mt-6"
+              onClick={() => navigate(`/Evaluacion/${cod_clase}`)} // Redirige a la página de Evaluación
+            >
+              Crear Evaluación
             </button>
           </div>
         )}
