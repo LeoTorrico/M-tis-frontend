@@ -25,12 +25,17 @@ const ModalRegistroGrupo = ({
   const [loadingHorarios, setLoadingHorarios] = useState(true); // Estado para gestionar la carga de horarios
   const [nombreLargoError, setNombreLargoError] = useState("");
   const [nombreCortoError, setNombreCortoError] = useState("");
-
+  const token = localStorage.getItem("token");
   useEffect(() => {
     const fetchHorarios = async () => {
       try {
         const response = await axios.get(
-          `http://localhost:3000/clases/${cod_clase}/obtener-horarios`
+          `http://localhost:3000/clases/${cod_clase}/obtener-horarios`,
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          }
         );
         setHorarios(response.data.horarios); // Extrae el arreglo de horarios
       } catch (error) {

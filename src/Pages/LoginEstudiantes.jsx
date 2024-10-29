@@ -78,6 +78,7 @@ function LoginEstudiantes() {
           codigoSis: formState.codsis,
           password: formState.password,
           correo: formState.email,
+          captchaToken: captchaValue
         }
       );
       localStorage.setItem("token", response.data.estudiante.token);
@@ -226,7 +227,7 @@ function LoginEstudiantes() {
 
           <div className="flex mb-6 justify-center">
             <ReCAPTCHA
-              sitekey="6LeW-EIqAAAAAKzpUQfxGq7wtwr-37KO-bpSA8lJ"
+              sitekey="6LeFdWsqAAAAAMBCYWmyLeFhaLCGtZRkJqCmFJ7G"
               onChange={handleCaptchaChange}
             />
           </div>

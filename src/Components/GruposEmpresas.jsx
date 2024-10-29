@@ -5,13 +5,21 @@ import { useNavigate, useParams } from "react-router-dom"; // Importar useNaviga
 const GruposEmpresas = () => {
   const [grupos, setGrupos] = useState([]);
   const navigate = useNavigate(); // Hook para navegar
-  const { cod_clase } = useParams(); // Obtener el código de clase de la URL
 
+  const { cod_clase } = useParams(); // Obtener el código del curso de la URL
+  const token = localStorage.getItem("token");
+  // Función para obtener los datos desde la API
   const fetchGrupos = async () => {
     try {
       const response = await fetch(
-        `http://localhost:3000/api/grupos/${cod_clase}`
-      );
+        `http://localhost:3000/api/grupos/${cod_clase}`,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      ); // Ajusta la URL según tu backend
+
       const data = await response.json();
       setGrupos(data);
     } catch (error) {
