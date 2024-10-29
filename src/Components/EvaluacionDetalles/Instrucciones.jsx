@@ -266,7 +266,7 @@ const Instrucciones = ({ evaluacion }) => {
                     type="file"
                     onChange={handleFileChange}
                     className="hidden"
-                    accept="image/*,.pdf,.docx,.pptx"
+                    accept="image/*,.pdf"
                   />
                 </label>
               )}
