@@ -25,7 +25,7 @@ const SprintBacklog = () => {
     const fetchTasks = async () => {
       try {
         const response = await fetch(
-          `http://localhost:3000/planificacion/productbacklog/sin-sprint/${cod_grupoempresa}`,
+          `https://mtis.netlify.app/planificacion/productbacklog/sin-sprint/${cod_grupoempresa}`,
           {
             headers: {
               Authorization: `Bearer ${token}`,
@@ -48,7 +48,7 @@ const SprintBacklog = () => {
     const fetchSprints = async () => {
       try {
         const response = await fetch(
-          `http://localhost:3000/planificacion/sprints/${cod_grupoempresa}`,
+          `https://mtis.netlify.app/planificacion/sprints/${cod_grupoempresa}`,
           {
             headers: {
               Authorization: `Bearer ${token}`,
@@ -94,7 +94,7 @@ const SprintBacklog = () => {
 
     try {
       const response = await axios.post(
-        "http://localhost:3000/planificacion/registrar-sprint",
+        "https://mtis.netlify.app/planificacion/registrar-sprint",
         sprintPayload,
         {
           headers: {
@@ -183,7 +183,7 @@ const SprintBacklog = () => {
     try {
       // Realizar la solicitud POST con la estructura correcta
       await axios.put(
-        "http://localhost:3000/planificacion/requerimientos/registrar-sprint",
+        "https://mtis.netlify.app/planificacion/requerimientos/registrar-sprint",
         dataToSend,
         {
           headers: {

@@ -113,7 +113,7 @@ function RegistroDocentes() {
     if (Object.keys(newErrors).length === 0) {
       try {
         const response = await axios.post(
-          "http://localhost:3000/docentes/registro",
+          "https://mtis.netlify.app/docentes/registro",
           formData,
           {
             headers: {

@@ -37,7 +37,7 @@ const MostrarRequerimientos = () => {
       setLoading(true);
       try {
         const response = await fetch(
-          `http://localhost:3000/planificacion/productbacklog/${cod_grupoempresa}`,
+          `https://mtis.netlify.app/planificacion/productbacklog/${cod_grupoempresa}`,
           {
             headers: {
               Authorization: `Bearer ${token}`,
@@ -111,7 +111,7 @@ const MostrarRequerimientos = () => {
 
     try {
       const response = await fetch(
-        "http://localhost:3000/planificacion/requerimientos",
+        "https://mtis.netlify.app/planificacion/requerimientos",
         {
           method: "POST",
           headers: {

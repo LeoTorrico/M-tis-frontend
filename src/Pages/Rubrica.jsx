@@ -117,7 +117,7 @@ const Rubrica = () => {
 
     try {
       const response = await axios.post(
-        "http://localhost:3000/rubricas/registrar-rubrica",
+        "https://mtis.netlify.app/rubricas/registrar-rubrica",
         rubrica,
         {
           headers: {

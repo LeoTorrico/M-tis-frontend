@@ -18,7 +18,7 @@ const Instrucciones = ({ evaluacion }) => {
       if (user.rol === "estudiante") {
         try {
           const response = await axios.get(
-            `http://localhost:3000/evaluaciones/${evaluacion.cod_evaluacion}/entregado`,
+            `https://mtis.netlify.app/evaluaciones/${evaluacion.cod_evaluacion}/entregado`,
             {
               headers: {
                 Authorization: `Bearer ${user.token}`,
@@ -95,7 +95,7 @@ const Instrucciones = ({ evaluacion }) => {
         const base64File = await handleFileToBase64(selectedFile);
 
         const response = await axios.post(
-          `http://localhost:3000/evaluaciones/${evaluacion.cod_evaluacion}/entregables`,
+          `https://mtis.netlify.app/evaluaciones/${evaluacion.cod_evaluacion}/entregables`,
           {
             archivo_grupo: base64File,
           },
