@@ -30,7 +30,7 @@ const ModalRegistroGrupo = ({
     const fetchHorarios = async () => {
       try {
         const response = await axios.get(
-          `http://localhost:3000/clases/${cod_clase}/obtener-horarios`,
+          `https://mtis.netlify.app/clases/${cod_clase}/obtener-horarios`,
           {
             headers: {
               Authorization: `Bearer ${token}`,

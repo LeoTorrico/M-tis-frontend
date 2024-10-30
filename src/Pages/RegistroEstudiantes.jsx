@@ -119,7 +119,7 @@ function RegistroEstudiante() {
     if (Object.keys(newErrors).length === 0) {
       try {
         const response = await axios.post(
-          "http://localhost:3000/estudiantes/registro",
+          "https://mtis.netlify.app/estudiantes/registro",
           formData,
           {
             headers: {

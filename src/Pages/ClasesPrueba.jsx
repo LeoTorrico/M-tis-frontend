@@ -19,7 +19,7 @@ const ClasesPrueba = () => {
     const fetchClasesDocente = async () => {
       try {
         const response = await axios.get(
-          "http://localhost:3000/clases/obtener",
+          "https://mtis.netlify.app/clases/obtener",
           {
             headers: {
               Authorization: `Bearer ${token}`,
@@ -35,7 +35,7 @@ const ClasesPrueba = () => {
     const fetchClasesEstudiante = async () => {
       try {
         const response = await axios.get(
-          "http://localhost:3000/clases-estudiante/obtener-clases",
+          "https://mtis.netlify.app/clases-estudiante/obtener-clases",
           {
             params: {
               codigoSis: codigoSis,
@@ -53,7 +53,7 @@ const ClasesPrueba = () => {
 
     const fetchGestiones = async () => {
       try {
-        const response = await axios.get("http://localhost:3000/gestiones/", {
+        const response = await axios.get("https://mtis.netlify.app/gestiones/", {
           headers: {
             Authorization: `Bearer ${token}`,
           },
@@ -105,7 +105,7 @@ const ClasesPrueba = () => {
           codGestion: Number(gestion),
           nombreClase: nameClase,
       };
-      const response = await axios.post("http://localhost:3000/clases/crear", requestBody, {
+      const response = await axios.post("https://mtis.netlify.app/clases/crear", requestBody, {
           headers: {
               Authorization: `Bearer ${token}`,
           },
@@ -159,7 +159,7 @@ const handleUnirseClase = async () => {
           codigoClase: codigoClase,
       };
       const response = await axios.post(
-          "http://localhost:3000/clases-estudiante/unirse-clase",
+          "https://mtis.netlify.app/clases-estudiante/unirse-clase",
           requestBody,
           {
               headers: {

@@ -17,7 +17,7 @@ const Tablon = () => {
       setCargando(true);
       try {
         // Hacer una llamada al backend usando cod_clase
-        const response = await axios.get(`http://localhost:3000/evaluaciones/${cod_clase}`, {
+        const response = await axios.get(`https://mtis.netlify.app/evaluaciones/${cod_clase}`, {
           headers: {
             Authorization: `Bearer ${user?.token}` // Uso del operador de encadenamiento opcional
           }

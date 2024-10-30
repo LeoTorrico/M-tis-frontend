@@ -13,7 +13,7 @@ const Alumnos = () => {
       try {
         const token = localStorage.getItem("token"); // Obtener el token del localStorage
         const response = await axios.get(
-          `http://localhost:3000/clases-estudiante/obtener-estudiantes?codigoClase=${cod_clase}`,
+          `https://mtis.netlify.app/clases-estudiante/obtener-estudiantes?codigoClase=${cod_clase}`,
           {
             headers: { Authorization: `Bearer ${token}` }, // Enviar el token en los headers
           }

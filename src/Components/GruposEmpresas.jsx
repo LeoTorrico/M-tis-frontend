@@ -11,7 +11,7 @@ const GruposEmpresas = () => {
   const fetchGrupos = async () => {
     try {
       const response = await fetch(
-        `http://localhost:3000/api/grupos/${cod_clase}`,
+        `https://mtis.netlify.app/api/grupos/${cod_clase}`,
         {
           headers: {
             Authorization: `Bearer ${token}`,
