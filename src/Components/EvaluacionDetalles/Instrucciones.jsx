@@ -73,10 +73,12 @@ const Instrucciones = ({ evaluacion }) => {
   };
 
   const handleRemoveFile = () => {
-    setSelectedFile(null);
-    setFilePreview(null);
-    setSubmitted(false);
-    setRetrievedFile(null);
+    if (!submitted) {
+      setSelectedFile(null);
+      setFilePreview(null);
+      setSubmitted(false);
+      setRetrievedFile(null);
+    }
   };
 
   const handleFileToBase64 = (file) => {
@@ -173,12 +175,13 @@ const Instrucciones = ({ evaluacion }) => {
             />
           ) : null}
         </div>
-
+        {!submitted && (
         <AiOutlineClose
           className="absolute top-2 right-2 text-gray-500 cursor-pointer hover:text-gray-700"
           onClick={handleRemoveFile}
           size={24}
         />
+        )}
       </div>
     );
   };
