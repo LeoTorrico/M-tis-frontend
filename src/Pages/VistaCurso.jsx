@@ -4,6 +4,7 @@ import GruposEmpresas from "../Components/GruposEmpresas";
 import Tablon from "../Components/Tablon";
 import Alumnos from "../Components/Alumnos";
 import ModalRegistroGrupo from "../Components/ModalRegistroGrupo";
+//import RegistroHorarioModal from "../Components/RegistroHorarioModal";
 import axios from "axios";
 import Swal from "sweetalert2";
 import { useParams,useNavigate  } from "react-router-dom";
@@ -12,7 +13,7 @@ import { UserContext } from "../context/UserContext";
 
 const VistaCurso = () => {
   const { cod_clase } = useParams();
-  const navigate = useNavigate();
+ // const navigate = useNavigate();
   const [curso, setCurso] = useState({
     nombre: "",
     gestion: "",
@@ -25,6 +26,10 @@ const VistaCurso = () => {
   const [activeTab, setActiveTab] = useState("Tablon");
   const [loading, setLoading] = useState(false);
   const [modalIsOpen, setModalIsOpen] = useState(false);
+ // const [isHorarioModalOpen, setIsHorarioModalOpen] = useState(false);
+  //const openHorarioModal = () => setIsHorarioModalOpen(true);
+ // const closeHorarioModal = () => setIsHorarioModalOpen(false);
+
   const [groupData, setGroupData] = useState({
     logo: null,
     nombreLargo: "",
@@ -42,6 +47,7 @@ const VistaCurso = () => {
     "Gestión de calidad",
     "Documentación",
   ];
+
 
   useEffect(() => {
     const fetchClase = async () => {
@@ -120,7 +126,6 @@ const VistaCurso = () => {
       fetchEstudiantes();
     }
   }, [cod_clase, codigoSis, token, rol]);
-
   const openModal = () => setModalIsOpen(true);
   const closeModal = () => {
     Swal.fire({
@@ -292,7 +297,7 @@ const VistaCurso = () => {
             </button>
           </div>
         )}
-        {activeTab === "Tablon" && rol === "docente" && (
+        {/*{activeTab === "Tablon" && rol === "docente" && (
           <div className="flex justify-end">
             <button
               className="bg-white text-dark-blue px-4 py-2 rounded-lg border border-blue-800 flex items-center mt-6"
@@ -302,6 +307,16 @@ const VistaCurso = () => {
             </button>
           </div>
         )}
+        {/*{activeTab === "GruposEmpresas" && rol === "docente" && (
+          <div className="flex justify-end">
+            <button
+              className="bg-white text-dark-blue px-4 py-2 rounded-lg border border-blue-800 flex items-center mt-6"
+              onClick={openHorarioModal}
+            >
+              Registrar horario
+            </button>
+          </div>
+        )}*/}
       </div>
       <div className="p-4">{renderContent()}</div>
       <ModalRegistroGrupo
@@ -320,7 +335,12 @@ const VistaCurso = () => {
         handleRemoveIntegrante={handleRemoveIntegrante}
         handleHorarioChange={handleHorarioChange}
         cod_clase={cod_clase}
-      />
+      /> 
+      {/*<RegistroHorarioModal 
+        isHorarioModalOpen={isHorarioModalOpen} 
+        onClose={closeHorarioModal}
+        codClase = {cod_clase} 
+      /> */}
     </div>
   );
 };

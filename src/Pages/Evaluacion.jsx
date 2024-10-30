@@ -19,7 +19,7 @@ const Evaluacion = () => {
   const [descripcion, setDescripcion] = useState("");
   const [fechaEntrega, setFechaEntrega] = useState("");
   const [tema, setTema] = useState("");
-  const [asignarA, setAsignarA] = useState("");
+  const [asignarA, setAsignarA] = useState(0);
   const [tipoEvaluacion, setTipoEvaluacion] = useState("");
   const [archivoAdjunto, setArchivoAdjunto] = useState(null);
   const token = localStorage.getItem("token");
@@ -87,7 +87,7 @@ const Evaluacion = () => {
         );
         const grupos = response.data;
         if (grupos) {
-          setGrupos(grupos);
+          setGrupos([...grupos,{"cod_grupoempresa":0,"nombre_largo":"Seleccionar todos","nombre_corto":"Seleccionar todos","logotipo":null}]);
         }
       } catch (error) {
         console.error("Error al obtener datos del curso:", error);
@@ -124,7 +124,7 @@ const Evaluacion = () => {
     if (!tema) {
       nuevosErrores.tema = "Este campo es requerido";
     }
-    if (!asignarA) {
+    if (asignarA<0) {
       nuevosErrores.asignados = "Este campo es requerido";
     }
     if (!tipoEvaluacion) {
