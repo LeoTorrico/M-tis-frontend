@@ -73,7 +73,7 @@ function LoginEstudiantes() {
 
     try {
       const response = await axios.post(
-        "https://mtis.netlify.app/login/estudiante",
+        "https://backend-tis-silk.vercel.app/login/estudiante",
         {
           codigoSis: formState.codsis,
           password: formState.password,

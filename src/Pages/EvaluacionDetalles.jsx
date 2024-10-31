@@ -23,7 +23,7 @@ const EvaluacionDetalles = () => {
 
     try {
       const response = await axios.get(
-        `https://mtis.netlify.app/evaluaciones/detalles/${cod_evaluacion}`,
+        `https://backend-tis-silk.vercel.app/evaluaciones/detalles/${cod_evaluacion}`,
         {
           headers: {
             Authorization: `Bearer ${user.token}`,

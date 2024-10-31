@@ -13,7 +13,7 @@ const TrabajoGrupo = ({ evaluacion }) => {
     const fetchGrupos = async () => {
       try {
         const response = await fetch(
-          `https://mtis.netlify.app/evaluaciones/${evaluacion.cod_evaluacion}/entregas`,
+          `https://backend-tis-silk.vercel.app/evaluaciones/${evaluacion.cod_evaluacion}/entregas`,
           {
             headers: {
               Authorization: `Bearer ${user.token}`,

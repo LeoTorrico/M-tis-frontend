@@ -42,7 +42,7 @@ function RestablecerContraseniaEstudiante() {
     };
     
     try {
-      const response = await axios.post('https://mtis.netlify.app/password/reset-password', datos);
+      const response = await axios.post('https://backend-tis-silk.vercel.app/password/reset-password', datos);
       setError('');
       navigate('/LoginEstudiantes');
     } catch (err) {
