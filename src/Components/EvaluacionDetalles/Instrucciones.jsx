@@ -12,6 +12,8 @@ const Instrucciones = ({ evaluacion }) => {
   const [retrievedFile, setRetrievedFile] = useState(null);
   const { user } = useContext(UserContext);
 
+  const isPastDueDate = new Date(evaluacion.fecha_fin) < new Date();
+
   useEffect(() => {
     // Solo se ejecuta si el rol es estudiante
     const fetchSubmittedFile = async () => {
@@ -176,11 +178,11 @@ const Instrucciones = ({ evaluacion }) => {
           ) : null}
         </div>
         {!submitted && (
-        <AiOutlineClose
-          className="absolute top-2 right-2 text-gray-500 cursor-pointer hover:text-gray-700"
-          onClick={handleRemoveFile}
-          size={24}
-        />
+          <AiOutlineClose
+            className="absolute top-2 right-2 text-gray-500 cursor-pointer hover:text-gray-700"
+            onClick={handleRemoveFile}
+            size={24}
+          />
         )}
       </div>
     );
@@ -200,7 +202,6 @@ const Instrucciones = ({ evaluacion }) => {
 
     return (
       <div className="flex flex-col border border-gray-300 bg-white rounded-lg p-2 shadow-sm relative h-full">
-        <h3 className="font-bold font-Montserrat">Archivo Entregado:</h3>
         <a
           href={fileURL}
           target="_blank"
@@ -248,6 +249,14 @@ const Instrucciones = ({ evaluacion }) => {
         </div>
 
         <div className="bg-blue-gray p-4 rounded-lg flex flex-col h-full">
+          <p className={`text-xm font-bold font-Montserrat ${isPastDueDate ? "text-red-500" : ""}`}>
+            Fecha de entrega: {new Date(evaluacion.fecha_fin).toLocaleDateString('es-ES', {
+              day: '2-digit',
+              month: 'short',
+              year: 'numeric'
+            })}
+          </p>
+
           {user.rol === "estudiante" ? (
             <form onSubmit={handleSubmit} className="flex flex-col h-full">
               {/* Mostrar archivo recuperado solo si el rol es estudiante y ya se entregó */}
@@ -255,7 +264,7 @@ const Instrucciones = ({ evaluacion }) => {
 
               {/* Desaparecer el botón de "Añadir archivo" si ya se entregó */}
               {!submitted && (
-                <label className="inline-block w-full">
+                <label className="inline-block w-full mt-2">
                   <button
                     type="button"
                     className="border border-gray-300 text-blue-500 bg-white py-2 px-4 rounded-lg w-full cursor-pointer flex items-center justify-center"
@@ -282,11 +291,13 @@ const Instrucciones = ({ evaluacion }) => {
 
               <button
                 type="submit"
-                className={`px-4 py-2 rounded-lg w-full mt-4 ${submitted ? 'bg-gray-400 text-white' : 'bg-semi-blue text-white'}`}
-                disabled={submitted} // Deshabilitar si ya se entregó
+                className={`px-4 py-2 rounded-lg w-full mt-4 ${submitted ? 'bg-gray-400 text-white' : isPastDueDate ? 'bg-red-400 text-white' : 'bg-semi-blue text-white'
+                  }`}
+                disabled={submitted || isPastDueDate} // Deshabilitar si ya se entregó o si la fecha ha pasado
               >
-                {submitted ? "Entregado" : "Entregar"}
+                {submitted ? "Entregado" : isPastDueDate ? "Sin entregar" : "Entregar"}
               </button>
+
             </form>
           ) : (
             evaluacion.archivo_evaluacion ? (
