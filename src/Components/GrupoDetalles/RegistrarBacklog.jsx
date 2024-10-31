@@ -1,11 +1,12 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import { useParams } from "react-router-dom";
 import Swal from "sweetalert2";
 import Modal from "react-modal";
 import { IoMdClose } from "react-icons/io";
-
+import { UserContext } from "../../context/UserContext";
 const MostrarRequerimientos = () => {
   const [tasks, setTasks] = useState([]);
+  const { user } = useContext(UserContext);
   const [loading, setLoading] = useState(false);
   const token = localStorage.getItem("token");
   const [modalIsOpen, setModalIsOpen] = useState(false);
@@ -348,12 +349,14 @@ const MostrarRequerimientos = () => {
             </tbody>
           </table>
           <div className="flex justify-end ">
-            <button
-              className="mt-4 bg-semi-blue text-white p-2 px-4 py-2 rounded-lg"
-              onClick={openModal}
-            >
-              Agregar Requerimiento +
-            </button>
+            {user.rol === "estudiante" && (
+              <button
+                className="mt-4 bg-semi-blue text-white p-2 px-4 py-2 rounded-lg"
+                onClick={openModal}
+              >
+                Agregar Requerimiento +
+              </button>
+            )}
           </div>
         </div>
       </div>

@@ -1,10 +1,9 @@
 import React, { useEffect, useState, useContext } from "react";
 import { UserContext } from "../context/UserContext";
-import { useParams } from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom";
 import InformacionGrupo from "../Components/GrupoDetalles/InformacionGrupo";
 import RegistrarBacklog from "../Components/GrupoDetalles/RegistrarBacklog";
 import SprintBacklog from "../Components/GrupoDetalles/SprintBacklog";
-import { useNavigate } from "react-router-dom";
 import { TbArrowBackUp } from "react-icons/tb";
 
 const GrupoDetalles = () => {
@@ -12,6 +11,7 @@ const GrupoDetalles = () => {
   const [activeTab, setActiveTab] = useState(
     localStorage.getItem("activeTab") || "informacion"
   );
+  const [error, setError] = useState(null);
   const { user } = useContext(UserContext);
   const { cod_grupoempresa, cod_clase } = useParams();
   const navigate = useNavigate();
@@ -27,7 +27,16 @@ const GrupoDetalles = () => {
         }
       );
       const data = await response.json();
-      setGrupo(data);
+      if (data.error) {
+        setError(data.detalle);
+        setTimeout(() => {
+          navigate(`/Vista-Curso/${cod_clase}`, {
+            state: { activeTab: "Tablon" },
+          });
+        }, 3000); // Espera 3 segundos antes de redirigir
+      } else {
+        setGrupo(data);
+      }
     } catch (error) {
       console.error("Error al obtener los detalles del grupo:", error);
     }
@@ -41,6 +50,20 @@ const GrupoDetalles = () => {
     localStorage.setItem("activeTab", activeTab);
   }, [activeTab]);
 
+  if (error) {
+    return (
+      <div className="flex items-center justify-center min-h-screen bg-gray-100">
+        <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded-lg shadow-lg max-w-md text-center">
+          <p className="font-semibold text-lg">Error</p>
+          <p className="mt-2">{error}</p>
+          <p className="mt-4 text-sm text-gray-600">
+            Serás redirigido en unos segundos...
+          </p>
+        </div>
+      </div>
+    );
+  }
+
   if (!grupo) {
     return <p>Cargando detalles del grupo...</p>;
   }
@@ -51,17 +74,14 @@ const GrupoDetalles = () => {
 
   return (
     <div className="flex flex-col w-full">
-      {/* Header de navegación con diseño adaptado */}
       <div className="flex justify-between items-center border-b-2 border-dark-blue px-6 py-2">
-        {/* Contenedor vacío para mantener el ícono de usuario en la derecha (en caso de necesitar espacio adicional) */}
         <div className="w-20"></div>
         <button
           onClick={handleBackToBoard}
-          className="absolute  text-black px-2 py-2 hover:text-semi-blue"
+          className="absolute text-black px-2 py-2 hover:text-semi-blue"
         >
           <TbArrowBackUp className="w-6 h-6" />
         </button>
-        {/* Pestañas centradas */}
         <div className="flex justify-center space-x-8 flex-grow">
           <button
             onClick={() => setActiveTab("informacion")}
