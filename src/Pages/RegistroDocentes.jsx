@@ -113,7 +113,7 @@ function RegistroDocentes() {
     if (Object.keys(newErrors).length === 0) {
       try {
         const response = await axios.post(
-          "https://mtis.netlify.app/docentes/registro",
+          "https://backend-tis-silk.vercel.app/docentes/registro",
           formData,
           {
             headers: {

@@ -11,7 +11,7 @@ const GruposEmpresas = () => {
   const fetchGrupos = async () => {
     try {
       const response = await fetch(
-        `https://mtis.netlify.app/api/grupos/${cod_clase}`,
+        `https://backend-tis-silk.vercel.app/api/grupos/${cod_clase}`,
         {
           headers: {
             Authorization: `Bearer ${token}`,

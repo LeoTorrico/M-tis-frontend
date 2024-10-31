@@ -25,7 +25,7 @@ const SprintBacklog = () => {
     const fetchTasks = async () => {
       try {
         const response = await fetch(
-          `https://mtis.netlify.app/planificacion/productbacklog/sin-sprint/${cod_grupoempresa}`,
+          `https://backend-tis-silk.vercel.app/planificacion/productbacklog/sin-sprint/${cod_grupoempresa}`,
           {
             headers: {
               Authorization: `Bearer ${token}`,
@@ -48,7 +48,7 @@ const SprintBacklog = () => {
     const fetchSprints = async () => {
       try {
         const response = await fetch(
-          `https://mtis.netlify.app/planificacion/sprints/${cod_grupoempresa}`,
+          `https://backend-tis-silk.vercel.app/planificacion/sprints/${cod_grupoempresa}`,
           {
             headers: {
               Authorization: `Bearer ${token}`,
@@ -94,7 +94,7 @@ const SprintBacklog = () => {
 
     try {
       const response = await axios.post(
-        "https://mtis.netlify.app/planificacion/registrar-sprint",
+        "https://backend-tis-silk.vercel.app/planificacion/registrar-sprint",
         sprintPayload,
         {
           headers: {
@@ -183,7 +183,7 @@ const SprintBacklog = () => {
     try {
       // Realizar la solicitud POST con la estructura correcta
       await axios.put(
-        "https://mtis.netlify.app/planificacion/requerimientos/registrar-sprint",
+        "https://backend-tis-silk.vercel.app/planificacion/requerimientos/registrar-sprint",
         dataToSend,
         {
           headers: {

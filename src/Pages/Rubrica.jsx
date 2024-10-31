@@ -117,7 +117,7 @@ const Rubrica = () => {
 
     try {
       const response = await axios.post(
-        "https://mtis.netlify.app/rubricas/registrar-rubrica",
+        "https://backend-tis-silk.vercel.app/rubricas/registrar-rubrica",
         rubrica,
         {
           headers: {

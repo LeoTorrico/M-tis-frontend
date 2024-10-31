@@ -47,7 +47,7 @@ const VistaCurso = () => {
       try {
         if (rol === "estudiante") {
           const response = await axios.get(
-            "https://mtis.netlify.app/clases-estudiante/obtener-clases",
+            "https://backend-tis-silk.vercel.app/clases-estudiante/obtener-clases",
             {
               params: { codigoSis: codigoSis },
               headers: { Authorization: `Bearer ${token}` },
@@ -66,7 +66,7 @@ const VistaCurso = () => {
           }
         } else if (rol === "docente") {
           const response = await axios.get(
-            "https://mtis.netlify.app/clases/obtener",
+            "hhttps://backend-tis-silk.vercel.app/clases/obtener",
             {
               headers: {
                 Authorization: `Bearer ${token}`,
@@ -95,7 +95,7 @@ const VistaCurso = () => {
     const fetchEstudiantes = async () => {
       try {
         const response = await axios.get(
-          `https://mtis.netlify.app/api/grupos/${cod_clase}/estudiantes-sin-grupo`,
+          `https://backend-tis-silk.vercel.app/api/grupos/${cod_clase}/estudiantes-sin-grupo`,
           {
             headers: {
               Authorization: `Bearer ${token}`,
@@ -213,7 +213,7 @@ const VistaCurso = () => {
     console.log("Datos enviados al backend:", groupDataToSend);
     try {
       const response = await axios.post(
-        "https://mtis.netlify.app/api/grupos/registrarGrupo",
+        "https://backend-tis-silk.vercel.app/api/grupos/registrarGrupo",
         groupDataToSend,
         {
           headers: {
