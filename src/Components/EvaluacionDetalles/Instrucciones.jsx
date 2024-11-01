@@ -110,15 +110,8 @@ const Instrucciones = ({ evaluacion }) => {
             },
           }
         );
-        const backendMessage = response.data.message;
-
-        if (backendMessage === "Este entregable ya ha sido subido anteriormente") {
-          Swal.fire({
-            icon: "error",
-            title: "Archivo Duplicado",
-            text: "Este entregable ya ha sido subido anteriormente.",
-          });
-        } else if (backendMessage === "Entregable subido exitosamente") {
+        
+        if (response.data.message === "Archivo del entregable actualizado exitosamente") {
           Swal.fire({
             icon: "success",
             title: "Éxito",
@@ -249,7 +242,7 @@ const Instrucciones = ({ evaluacion }) => {
         </div>
 
         <div className="bg-blue-gray p-4 rounded-lg flex flex-col h-full">
-          <p className={`text-xm font-bold font-Montserrat ${isPastDueDate ? "text-red-500" : ""}`}>
+          <p className={`text-xm font-bold font-Montserrat ${isPastDueDate ? "text-red-400" : ""}`}>
             Fecha de entrega: {new Date(evaluacion.fecha_fin).toLocaleDateString('es-ES', {
               day: '2-digit',
               month: 'short',
@@ -291,7 +284,7 @@ const Instrucciones = ({ evaluacion }) => {
 
               <button
                 type="submit"
-                className={`px-4 py-2 rounded-lg w-full mt-4 ${submitted ? 'bg-gray-400 text-white' : isPastDueDate ? 'bg-red-400 text-white' : 'bg-semi-blue text-white'
+                className={`px-4 py-2 rounded-lg w-full mt-4 ${submitted ? 'bg-gray-400 text-white' : isPastDueDate ? 'bg-white text-red-500 border border-red-500' : 'bg-semi-blue text-white'
                   }`}
                 disabled={submitted || isPastDueDate} // Deshabilitar si ya se entregó o si la fecha ha pasado
               >
