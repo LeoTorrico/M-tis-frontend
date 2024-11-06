@@ -205,25 +205,7 @@ const EvaluacionSemanal = () => {
         }
       );
 
-      // Enviar retroalimentación grupal
-      if (retroalimentacion.trim()) {
-        await axios.post(
-          "http://localhost:3000/evaluacion/retroalimentacion",
-          {
-            codEvaluacion: cod_evaluacion,
-            codClase: cod_clase,
-            codGrupo: cod_grupoempresa,
-            comentario: retroalimentacion,
-          },
-          {
-            headers: {
-              Authorization: `Bearer ${token}`,
-            },
-          }
-        );
-      }
-
-      // Actualizar el estado del estudiante
+          // Actualizar el estado del estudiante
       const updatedIntegrantes = [...integrantes];
       updatedIntegrantes[selectedStudentIndex].score = totalScore;
       updatedIntegrantes[selectedStudentIndex].comentario = comentario;
@@ -232,8 +214,7 @@ const EvaluacionSemanal = () => {
 
       setIntegrantes(updatedIntegrantes);
       setSelectedStudentIndex(null);
-      setComentario("");
-      setRetroalimentacion("");
+    
     } catch (error) {
       console.error("Error al guardar la calificación:", error);
     }
@@ -250,7 +231,35 @@ const EvaluacionSemanal = () => {
   }
 
   verificarToken();
+const saveRetroalimentacionGrupal = async () => {
+  try {
+    const token = localStorage.getItem("token");
 
+    if (retroalimentacion.trim()) {
+      await axios.post(
+        "http://localhost:3000/evaluacion/retroalimentacion", 
+        {
+          codEvaluacion: cod_evaluacion,
+          codClase: cod_clase,
+          codGrupo: cod_grupoempresa,
+          comentario: retroalimentacion,
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+      
+      alert("Retroalimentación grupal guardada con éxito.");
+    } else {
+      alert("Por favor, ingrese retroalimentación antes de guardar.");
+    }
+  } catch (error) {
+    console.error("Error al guardar la retroalimentación grupal:", error);
+    alert("Hubo un error al guardar la retroalimentación grupal.");
+  }
+};
   return (
     <div className="flex flex-col w-full p-6 bg-white">
       <div className="bg-semi-blue text-white p-6 mb-6 rounded-lg">
@@ -343,7 +352,7 @@ const EvaluacionSemanal = () => {
             </div>
           </div>
         </div>
-      {/*Retroalimentacion grupal*/}
+        {/*Retroalimentacion grupal*/}
         <div className="mt-6">
           <h2 className="font-bold text-md mb-2">Retroalimentación grupal</h2>
           <table className="table-auto w-full mb-6 border-collapse">
@@ -372,15 +381,14 @@ const EvaluacionSemanal = () => {
           </table>
         </div>{" "}
         {/* Botón alineado a la derecha */}
-  <div className="flex justify-end mt-4">
-    <button
-      onClick={saveRubricScores}
-      className="bg-blue-500 text-white rounded-lg px-6 py-2"
-    >
-      Guardar Retroalimentación
-    </button>
-  </div>
-
+        <div className="flex justify-end mt-4">
+          <button
+            onClick={saveRetroalimentacionGrupal}
+            className="bg-blue-500 text-white rounded-lg px-6 py-2"
+          >
+            Guardar retroalimentación grupal
+          </button>
+        </div>
       </div>
 
       {selectedStudentIndex !== null && integrantes[selectedStudentIndex] && (
