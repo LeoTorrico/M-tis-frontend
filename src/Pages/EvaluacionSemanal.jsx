@@ -371,6 +371,16 @@ const EvaluacionSemanal = () => {
             </tbody>
           </table>
         </div>{" "}
+        {/* Botón alineado a la derecha */}
+  <div className="flex justify-end mt-4">
+    <button
+      onClick={saveRubricScores}
+      className="bg-blue-500 text-white rounded-lg px-6 py-2"
+    >
+      Guardar Retroalimentación
+    </button>
+  </div>
+
       </div>
 
       {selectedStudentIndex !== null && integrantes[selectedStudentIndex] && (
