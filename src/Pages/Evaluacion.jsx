@@ -11,7 +11,7 @@ const Evaluacion = () => {
     nombre: "",
     gestion: "",
     cod_docente: "",
-    cod_gestion: ""
+    cod_gestion: "",
   });
 
   const [cargando, setCargando] = useState(true);
@@ -39,7 +39,7 @@ const Evaluacion = () => {
         const response = await axios.get(
           `http://localhost:3000/clases/obtener`,
           {
-            headers: { Authorization: `Bearer ${token}` }
+            headers: { Authorization: `Bearer ${token}` },
           }
         );
         const clase = response.data.clases.find(
@@ -50,7 +50,7 @@ const Evaluacion = () => {
             nombre: clase.nombre_clase,
             gestion: clase.gestion,
             cod_docente: clase.cod_docente,
-            cod_gestion: clase.cod_gestion
+            cod_gestion: clase.cod_gestion,
           });
         }
       } catch (error) {
@@ -64,7 +64,7 @@ const Evaluacion = () => {
         const response = await axios.get(
           `http://localhost:3000/temas/${cod_clase}`,
           {
-            headers: { Authorization: `Bearer ${token}` }
+            headers: { Authorization: `Bearer ${token}` },
           }
         );
         const tema = response.data;
@@ -82,12 +82,20 @@ const Evaluacion = () => {
         const response = await axios.get(
           `http://localhost:3000/api/grupos/${cod_clase}`,
           {
-            headers: { Authorization: `Bearer ${token}` }
+            headers: { Authorization: `Bearer ${token}` },
           }
         );
         const grupos = response.data;
         if (grupos) {
-          setGrupos([...grupos,{"cod_grupoempresa":0,"nombre_largo":"Seleccionar todos","nombre_corto":"Seleccionar todos","logotipo":null}]);
+          setGrupos([
+            ...grupos,
+            {
+              cod_grupoempresa: 0,
+              nombre_largo: "Seleccionar todos",
+              nombre_corto: "Seleccionar todos",
+              logotipo: null,
+            },
+          ]);
         }
       } catch (error) {
         console.error("Error al obtener datos del curso:", error);
@@ -100,6 +108,14 @@ const Evaluacion = () => {
     fetchGrupos();
   }, [cod_clase, token]);
 
+  // Efecto para manejar la selección de evaluación cruzada
+  useEffect(() => {
+    if (tipoEvaluacion === "Evaluación cruzada") {
+      setAsignarA(0); // Establece "Seleccionar todos"
+      setArchivoAdjunto(null); // Limpia cualquier archivo adjunto
+    }
+  }, [tipoEvaluacion]);
+
   useEffect(() => {
     validarCampos();
   }, [
@@ -108,8 +124,9 @@ const Evaluacion = () => {
     fechaEntrega,
     tema,
     asignarA,
-    tipoEvaluacion
+    tipoEvaluacion,
   ]);
+
   const validarCampos = () => {
     const nuevosErrores = {};
     if (!nombreEvaluacion) {
@@ -124,7 +141,7 @@ const Evaluacion = () => {
     if (!tema) {
       nuevosErrores.tema = "Este campo es requerido";
     }
-    if (asignarA<0) {
+    if (asignarA < 0) {
       nuevosErrores.asignados = "Este campo es requerido";
     }
     if (!tipoEvaluacion) {
@@ -132,9 +149,12 @@ const Evaluacion = () => {
     }
     setErrores(nuevosErrores);
   };
+
   const handleArchivoChange = (e) => {
-    const file = e.target.files[0];
-    setArchivoAdjunto(file);
+    if (tipoEvaluacion !== "Evaluación cruzada") {
+      const file = e.target.files[0];
+      setArchivoAdjunto(file);
+    }
   };
 
   const handleSubmitEvaluacion = async () => {
@@ -146,7 +166,7 @@ const Evaluacion = () => {
       fechaEntrega: fechaEntrega,
       archivo: archivoAdjunto,
       descripcion: descripcion,
-      codigosGrupos: [asignarA]
+      codigosGrupos: [asignarA],
     };
     try {
       const response = await axios.post(
@@ -154,12 +174,11 @@ const Evaluacion = () => {
         formData,
         {
           headers: {
-            Authorization: `Bearer ${token}`
-          }
+            Authorization: `Bearer ${token}`,
+          },
         }
       );
-      
-      
+
       if (response.status === 200) {
         setNombreEvaluacion("");
         setDescripcion("");
@@ -173,9 +192,9 @@ const Evaluacion = () => {
         title: "Éxito",
         text: "Evaluación registrada correctamente",
         icon: "success",
-        confirmButtonText: "Aceptar"
+        confirmButtonText: "Aceptar",
       });
-      return response.data ;
+      return response.data;
     } catch (error) {
       console.error("Error al registrar la evaluación:", error);
     }
@@ -231,7 +250,7 @@ const Evaluacion = () => {
   };
 
   const handleButtonCrear = () => {
-    const data = {nombre_tema : inputValue}
+    const data = { nombre_tema: inputValue };
     setTemas([...temas, data]);
     setTema(data.nombre_tema);
     setInputValue("");
@@ -247,7 +266,6 @@ const Evaluacion = () => {
         onClose={handleClose}
         onSave={handleSave}
       />
-      {/*<HeaderCurso activeTab={activeTab} setActiveTab={setActiveTab} />*/}
       {openModalOfExit && displayModalOfExit()}
 
       <div className="bg-semi-blue text-white p-6 rounded-lg m-4">
@@ -363,18 +381,18 @@ const Evaluacion = () => {
                     className="w-full p-2 border border-gray-300 rounded text-black"
                     style={{ backgroundColor: "#D1DDED" }}
                   />
-                 <button
-                onClick={handleButtonCrear}
-                className="text-white rounded-full"
-                style={{
-                backgroundColor: "#223A59", // Fondo del botón
-                width: "45px",
-                height: "38px",
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "center"
-                }}
-                >
+                  <button
+                    onClick={handleButtonCrear}
+                    className="text-white rounded-full"
+                    style={{
+                      backgroundColor: "#223A59", // Fondo del botón
+                      width: "45px",
+                      height: "38px",
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "center",
+                    }}
+                  >
                     +
                   </button>
                   <button
@@ -386,7 +404,7 @@ const Evaluacion = () => {
                       height: "38px",
                       display: "flex",
                       alignItems: "center",
-                      justifyContent: "center"
+                      justifyContent: "center",
                     }}
                   >
                     x
@@ -411,15 +429,15 @@ const Evaluacion = () => {
                     ))}
                   </select>
                   <button
-                      onClick={() => setAddTema(!addTema)}
-                      className="text-white rounded-2xl"
-                      style={{
-                        backgroundColor: "#223A59", // Fondo del botón
-                        width: "60px",
-                        height: "40px",
-                        cursor: "pointer"
-                      }}
-                    >
+                    onClick={() => setAddTema(!addTema)}
+                    className="text-white rounded-2xl"
+                    style={{
+                      backgroundColor: "#223A59", // Fondo del botón
+                      width: "60px",
+                      height: "40px",
+                      cursor: "pointer",
+                    }}
+                  >
                     Crear
                   </button>
                 </div>
@@ -445,7 +463,11 @@ const Evaluacion = () => {
                 value={asignarA}
                 onChange={(e) => setAsignarA(e.target.value)}
                 className="w-full p-2 border border-gray-300 rounded text-black"
-                style={{ backgroundColor: "#D1DDED" }} // Color de fondo del campo
+                style={{
+                  backgroundColor: "#D1DDED",
+                  opacity: tipoEvaluacion === "Evaluación cruzada" ? 0.7 : 1,
+                }}
+                disabled={tipoEvaluacion === "Evaluación cruzada"}
               >
                 <option value="" className="text-white">
                   Selecciona una opción
@@ -463,6 +485,7 @@ const Evaluacion = () => {
                 <p className="text-red-500 text-xs mt-1">{errores.asignados}</p>
               )}
             </div>
+
             <div className="mb-4">
               <label
                 htmlFor="tipoEvaluacion"
@@ -475,7 +498,7 @@ const Evaluacion = () => {
                 value={tipoEvaluacion}
                 onChange={(e) => setTipoEvaluacion(e.target.value)}
                 className="w-full p-2 border border-gray-300 rounded text-black"
-                style={{ backgroundColor: "#D1DDED" }} // Color de fondo del campo
+                style={{ backgroundColor: "#D1DDED" }}
               >
                 <option value="" className="text-white">
                   Selecciona una opción
@@ -492,18 +515,24 @@ const Evaluacion = () => {
               )}
             </div>
 
-            <div className="mb-4">
-              <label htmlFor="archivo" className="block text-sm font-bold mb-2">
-                Adjuntar archivo (opcional):
-              </label>
-              <input
-                type="file"
-                id="archivo"
-                onChange={handleArchivoChange}
-                className="w-full p-2 border border-gray-300 rounded"
-                style={{ backgroundColor: "#D1DDED" }} // Color de fondo del campo
-              />
-            </div>
+            {/* Campo de archivo adjunto condicionalmente renderizado */}
+            {tipoEvaluacion !== "Evaluación cruzada" && (
+              <div className="mb-4">
+                <label
+                  htmlFor="archivo"
+                  className="block text-sm font-bold mb-2"
+                >
+                  Adjuntar archivo (opcional):
+                </label>
+                <input
+                  type="file"
+                  id="archivo"
+                  onChange={handleArchivoChange}
+                  className="w-full p-2 border border-gray-300 rounded"
+                  style={{ backgroundColor: "#D1DDED" }}
+                />
+              </div>
+            )}
           </div>
         </div>
       </div>

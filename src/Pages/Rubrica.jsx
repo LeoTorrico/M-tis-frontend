@@ -6,6 +6,7 @@ import axios from "axios";
 
 const Rubrica = () => {
   const { cod_evaluacion } = useParams();
+  const navigate = useNavigate();
   const [criterios, setCriterios] = useState([]);
   const [errors, setErrors] = useState({});
   const token = localStorage.getItem("token");
@@ -139,6 +140,7 @@ const Rubrica = () => {
               "text-white bg-blue-modal hover:bg-semi-blue px-4 py-2 rounded",
           },
         });
+        navigate(`/`);
       }
     } catch (error) {
       console.error("Error al registrar la rúbrica:", error);
