@@ -1,9 +1,9 @@
 import React, { useState, useEffect, useContext } from "react";
 import axios from "axios";
 import Swal from "sweetalert2";
-import { AiOutlineClose, AiOutlinePlus } from "react-icons/ai";
-import { MdLibraryBooks } from "react-icons/md";
 import { UserContext } from "../../context/UserContext";
+import EvaluacionDetails from "./EvaluacionDetails";
+import FilePreview from "./FilePreview";
 
 const Instrucciones = ({ evaluacion }) => {
   const [selectedFile, setSelectedFile] = useState(null);
@@ -74,15 +74,6 @@ const Instrucciones = ({ evaluacion }) => {
     }
   };
 
-  const handleRemoveFile = () => {
-    if (!submitted) {
-      setSelectedFile(null);
-      setFilePreview(null);
-      setSubmitted(false);
-      setRetrievedFile(null);
-    }
-  };
-
   const handleFileToBase64 = (file) => {
     return new Promise((resolve, reject) => {
       const reader = new FileReader();
@@ -136,50 +127,6 @@ const Instrucciones = ({ evaluacion }) => {
     }
   };
 
-  const renderFilePreview = () => {
-    if (!selectedFile || !filePreview) return null;
-
-    const fileType = selectedFile.type.split("/")[0];
-
-    return (
-      <div className="flex flex-col border border-gray-300 bg-white rounded-lg p-2 shadow-sm relative h-full">
-        <div className="w-full mb-2">
-          <a
-            href={filePreview}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="font-medium text-blue-600 hover:underline block truncate"
-          >
-            {selectedFile.name}
-          </a>
-        </div>
-
-        <div className="flex-grow overflow-auto">
-          {fileType === "image" ? (
-            <img
-              src={filePreview}
-              alt="Vista previa"
-              className="w-full h-auto max-h-64 object-contain rounded"
-            />
-          ) : selectedFile.type === "application/pdf" ? (
-            <iframe
-              src={filePreview}
-              title="Vista previa de PDF"
-              className="w-full h-full rounded"
-              style={{ border: "none", minHeight: "200px" }}
-            />
-          ) : null}
-        </div>
-        {!submitted && (
-          <AiOutlineClose
-            className="absolute top-2 right-2 text-gray-500 cursor-pointer hover:text-gray-700"
-            onClick={handleRemoveFile}
-            size={24}
-          />
-        )}
-      </div>
-    );
-  };
 
   const renderRetrievedFile = () => {
     if (!retrievedFile || !retrievedFile.base64) return null;
@@ -222,112 +169,23 @@ const Instrucciones = ({ evaluacion }) => {
   };
 
   return (
-    <div className="flex flex-col h-screen" style={{ maxHeight: "calc(100vh - 60px)" }}>
-      <div className="bg-semi-blue text-white p-6 rounded-lg m-4">
-        <div className="flex items-center">
-          <span className="bg-white p-2 rounded-full text-black mr-4">
-            <MdLibraryBooks size={32} />
-          </span>
-          <div>
-            <h1 className="text-3xl font-bold font-Montserrat">{evaluacion.evaluacion}</h1>
-            <p className="text-xl font-Montserrat">{evaluacion.tipo_evaluacion}</p>
-          </div>
-        </div>
-      </div>
-
-      <div className="border p-6 rounded-lg m-4 flex-grow grid grid-cols-2 gap-4">
-        <div className="bg-blue-gray p-4 rounded-lg">
-          <p className="text-xm font-bold font-Montserrat">Descripción de la evaluación:</p>
-          <p className="text-xm font-Montserrat">{evaluacion.descripcion_evaluacion}</p>
-        </div>
-
-        <div className="bg-blue-gray p-4 rounded-lg flex flex-col h-full">
-          <p className={`text-xm font-bold font-Montserrat ${isPastDueDate ? "text-red-400" : ""}`}>
-            Fecha de entrega: {new Date(evaluacion.fecha_fin).toLocaleDateString('es-ES', {
-              day: '2-digit',
-              month: 'short',
-              year: 'numeric'
-            })}
-          </p>
-
-          {user.rol === "estudiante" ? (
-            <form onSubmit={handleSubmit} className="flex flex-col h-full">
-              {/* Mostrar archivo recuperado solo si el rol es estudiante y ya se entregó */}
-              {submitted && user.rol === "estudiante" && retrievedFile && renderRetrievedFile()}
-
-              {/* Desaparecer el botón de "Añadir archivo" si ya se entregó */}
-              {!submitted && (
-                <label className="inline-block w-full mt-2">
-                  <button
-                    type="button"
-                    className="border border-gray-300 text-blue-500 bg-white py-2 px-4 rounded-lg w-full cursor-pointer flex items-center justify-center"
-                    onClick={() => document.getElementById('file-input').click()}
-                  >
-                    <AiOutlinePlus className="mr-2 font-Montserrat" />
-                    Añadir archivo
-                  </button>
-                  <input
-                    id="file-input"
-                    type="file"
-                    onChange={handleFileChange}
-                    className="hidden"
-                    accept="image/*,.pdf"
-                  />
-                </label>
-              )}
-
-              {selectedFile && (
-                <div className="relative mt-4 flex-grow">
-                  {renderFilePreview()}
-                </div>
-              )}
-
-              <button
-                type="submit"
-                className={`px-4 py-2 rounded-lg w-full mt-4 ${submitted ? 'bg-gray-400 text-white' : isPastDueDate ? 'bg-white text-red-500 border border-red-500' : 'bg-semi-blue text-white'
-                  }`}
-                disabled={submitted || isPastDueDate} // Deshabilitar si ya se entregó o si la fecha ha pasado
-              >
-                {submitted ? "Entregado" : isPastDueDate ? "Sin entregar" : "Entregar"}
-              </button>
-
-            </form>
-          ) : (
-            evaluacion.archivo_evaluacion ? (
-              <>
-                <a
-                  href={`data:application/octet-stream;base64,${evaluacion.archivo_evaluacion}`}
-                  className="text-blue-600 underline"
-                  download
-                >
-                  Descargar archivo
-                </a>
-
-                {evaluacion.archivo_evaluacion.startsWith("JVBERi0") ? (
-                  <iframe
-                    src={`data:application/pdf;base64,${evaluacion.archivo_evaluacion}`}
-                    title="Previsualización de PDF"
-                    className="flex flex-col h-full"
-                    style={{ border: "none" }}
-                  />
-                ) : evaluacion.archivo_evaluacion.startsWith("/9j/") ||
-                  evaluacion.archivo_evaluacion.startsWith("iVBORw0KGgo") ? (
-                  <img
-                    src={`data:image/jpeg;base64,${evaluacion.archivo_evaluacion}`}
-                    alt="Previsualización del archivo"
-                    className="mt-4"
-                    style={{ maxWidth: "100%", maxHeight: "400px" }}
-                  />
-                ) : (
-                  <p className="mt-4">Este tipo de archivo no se puede previsualizar.</p>
-                )}
-              </>
-            ) : (
-              <p>No hay archivo adjunto.</p>
-            ))}
-        </div>
-      </div>
-    </div>
+    <EvaluacionDetails
+      evaluacion={evaluacion}
+      user={user}
+      submitted={submitted}
+      retrievedFile={retrievedFile}
+      isPastDueDate={isPastDueDate}
+      handleFileChange={handleFileChange}
+      handleSubmit={handleSubmit}
+      renderFilePreview={() => (
+        <FilePreview
+          file={selectedFile}
+          filePreview={filePreview}
+        />
+      )}
+      renderRetrievedFile={renderRetrievedFile}
+      selectedFile={selectedFile}
+    />
   );
 };
 
