@@ -18,6 +18,7 @@ import Asistencia from "./Pages/Asistencia";
 import Rubrica from "./Pages/Rubrica";
 import EvaluacionDetalles from "./Pages/EvaluacionDetalles";
 import Evaluacion from "./Pages/Evaluacion";
+import VistaEvaluacion from "./Pages/VistaEvaluacion";
 Modal.setAppElement("#root");
 
 function App() {
@@ -34,7 +35,7 @@ function App() {
             />
             <Route
               path="/Vista-Curso/:cod_clase/evaluacion/:cod_evaluacion"
-              element={<EvaluacionDetalles />}
+              element={<VistaEvaluacion />}
             />
             <Route path="/RegistroDocentes" element={<RegistroDocentes />} />
             <Route path="/Evaluacion/:cod_clase" element={<Evaluacion />} />
@@ -71,7 +72,7 @@ function Layout({ children }) {
     location.pathname === "/RegistroDocentes" ||
     location.pathname === "/RegistroEstudiante";
 
-    const isSidebarPage =
+  const isSidebarPage =
     location.pathname === "/" ||
     location.pathname.match(/^\/Vista-Curso\/.+$/) ||
     (location.pathname.startsWith("/Vista-Curso/") &&
