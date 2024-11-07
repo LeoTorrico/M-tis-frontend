@@ -6,6 +6,7 @@ import { FaChevronDown, FaChevronUp } from 'react-icons/fa';
 const MostrarRubrica = ({ evaluacion }) => {
   const { user } = useContext(UserContext);
   const [rubricas, setRubricas] = useState(null);
+  const [notaTotal, setNotaTotal] = useState(null);
   const [error, setError] = useState(null);
   const [activeRubricas, setActiveRubricas] = useState({});
 
@@ -21,6 +22,8 @@ const MostrarRubrica = ({ evaluacion }) => {
           }
         );
 
+        // Verifica y asigna `nota_total` y `rubricas`
+        setNotaTotal(response.data.nota_total); // Asigna la nota total al estado
         if (response.data.rubricas && Array.isArray(response.data.rubricas)) {
           setRubricas(response.data.rubricas);
         } else {
@@ -55,7 +58,7 @@ const MostrarRubrica = ({ evaluacion }) => {
     <div className="overflow-x-auto p-0">
       {user.rol === 'estudiante' && (
         <h3 className="text-sm font-bold p-4 text-right">
-          Calificación: {evaluacion.nota_total}
+          Calificación: {notaTotal}
         </h3>
       )}
       <div className="space-y-1">
