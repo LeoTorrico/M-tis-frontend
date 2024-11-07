@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import EvaluacionDetalles from "./EvaluacionDetalles";
 import EvaluacionCruzada from "./EvaluacionCruzada";
+import EvaluacionPares from "./EvaluacionPares";
 
 const VistaEvaluacion = () => {
   const { cod_evaluacion } = useParams();
@@ -56,18 +57,21 @@ const VistaEvaluacion = () => {
   if (!evaluacionTipo) {
     return <div>Loading...</div>;
   }
-
+  console.log(normalizarTexto(evaluacionTipo));
   // Utilizamos el texto normalizado para las comparaciones
   const isEvaluacionCruzada =
     normalizarTexto(evaluacionTipo) === "evaluacion cruzada";
   const isEvaluacionSemanal =
     normalizarTexto(evaluacionTipo) === "evaluacion semanal";
+  const isEvaluacionPares =
+    normalizarTexto(evaluacionTipo) === "evaluacion de pares";
 
   return (
     <div>
       {isEvaluacionCruzada && <EvaluacionCruzada />}
       {isEvaluacionSemanal && <EvaluacionDetalles />}
-      {!isEvaluacionCruzada && !isEvaluacionSemanal && (
+      {isEvaluacionPares && <EvaluacionPares />}
+      {!isEvaluacionCruzada && !isEvaluacionSemanal && !isEvaluacionPares &&(
         <div>Tipo de evaluación no reconocido: {evaluacionTipo}</div>
       )}
     </div>

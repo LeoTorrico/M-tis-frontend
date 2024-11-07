@@ -516,7 +516,7 @@ const Evaluacion = () => {
             </div>
 
             {/* Campo de archivo adjunto condicionalmente renderizado */}
-            {tipoEvaluacion !== "Evaluación cruzada" && (
+            {tipoEvaluacion !== "Evaluación cruzada" && tipoEvaluacion !== "Evaluación de pares" &&(
               <div className="mb-4">
                 <label
                   htmlFor="archivo"
