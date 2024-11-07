@@ -21,10 +21,8 @@ const MostrarRubrica = ({ evaluacion }) => {
           }
         );
 
-        console.log(response.data); // Verifica lo que llega del backend
-
         if (response.data.rubricas && Array.isArray(response.data.rubricas)) {
-          setRubricas(response.data.rubricas); // Guarda las rúbricas en el estado
+          setRubricas(response.data.rubricas); 
         } else {
           setError('Datos de rúbrica no válidos');
           console.error('Respuesta de la API:', response.data);
@@ -78,7 +76,6 @@ const MostrarRubrica = ({ evaluacion }) => {
               </div>
             </div>
 
-            {/* Descripción y detalles de la rúbrica */}
             {activeRubricas[index] && (
               <div className="mt-0 bg-gray-100">
                 <p className="text-sm p-4 py-0 text-gray-700">{rubrica.descripcion_rubrica}</p>
