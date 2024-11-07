@@ -100,7 +100,7 @@ const EvaluacionSemanal = () => {
         }
 
         const response = await axios.get(
-          `http://localhost:3000/rubricas/${cod_evaluacion}/grupos/${cod_grupoempresa}/rubricas`,
+          `http://localhost:3000/rubricas/${cod_evaluacion}/grupos/${cod_grupoempresa}/calificaciones`,
           {
             headers: {
               Authorization: `Bearer ${token}`,
@@ -164,26 +164,60 @@ const EvaluacionSemanal = () => {
 
     setComentario(newComentario);
   };
-
-  const saveRubricScores = () => {
-    const totalScore = rubricScores[selectedStudentIndex]?.reduce(
-      (sum, score) => sum + score,
-      0
+  const saveRubricScores = async () => {
+    const selectedStudent = integrantes[selectedStudentIndex];
+    const calificaciones = rubricScores[selectedStudentIndex]?.map(
+      (nota, i) => ({
+        codRubrica: rubricas[i].cod_rubrica,
+        nota: nota || 0,
+      })
     );
 
-    const updatedIntegrantes = [...integrantes];
-    updatedIntegrantes[selectedStudentIndex].score = totalScore;
-    updatedIntegrantes[selectedStudentIndex].comentario = comentario; // Agregar el comentario al estudiante
+    // Calcula la sumatoria de las calificaciones
+    const totalScore = calificaciones.reduce((sum, cal) => sum + cal.nota, 0);
 
-    if (totalScore === 0) {
-      updatedIntegrantes[selectedStudentIndex].asistencia =
-        "ausente_sin_justificacion";
-    } else if (totalScore >= 1) {
-      updatedIntegrantes[selectedStudentIndex].asistencia = "presente";
+    // Determina el estado de asistencia basado en la sumatoria
+    let nuevoEstadoAsistencia = selectedStudent.asistencia;
+    if (nuevoEstadoAsistencia !== "retraso") {
+      if (totalScore >= 1) {
+        nuevoEstadoAsistencia = "presente";
+      } else {
+        nuevoEstadoAsistencia = "ausente_sin_justificacion";
+      }
     }
 
-    setIntegrantes(updatedIntegrantes);
-    setSelectedStudentIndex(null);
+    try {
+      const token = localStorage.getItem("token");
+
+      // Enviar calificaciones individuales junto con comentario individual
+      await axios.post(
+        "http://localhost:3000/evaluacion/calificar",
+        {
+          codEvaluacion: cod_evaluacion,
+          codigoSis: selectedStudent.codigo_sis,
+          notas: calificaciones,
+          comentario,
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+
+          // Actualizar el estado del estudiante
+      const updatedIntegrantes = [...integrantes];
+      updatedIntegrantes[selectedStudentIndex].score = totalScore;
+      updatedIntegrantes[selectedStudentIndex].comentario = comentario;
+      updatedIntegrantes[selectedStudentIndex].asistencia =
+        nuevoEstadoAsistencia;
+
+      setIntegrantes(updatedIntegrantes);
+      setSelectedStudentIndex(null);
+    
+    } catch (error) {
+      console.error("Error al guardar la calificación:", error);
+    }
   };
 
   function verificarToken() {
@@ -197,7 +231,35 @@ const EvaluacionSemanal = () => {
   }
 
   verificarToken();
+const saveRetroalimentacionGrupal = async () => {
+  try {
+    const token = localStorage.getItem("token");
 
+    if (retroalimentacion.trim()) {
+      await axios.post(
+        "http://localhost:3000/evaluacion/retroalimentacion", 
+        {
+          codEvaluacion: cod_evaluacion,
+          codClase: cod_clase,
+          codGrupo: cod_grupoempresa,
+          comentario: retroalimentacion,
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+      
+      alert("Retroalimentación grupal guardada con éxito.");
+    } else {
+      alert("Por favor, ingrese retroalimentación antes de guardar.");
+    }
+  } catch (error) {
+    console.error("Error al guardar la retroalimentación grupal:", error);
+    alert("Hubo un error al guardar la retroalimentación grupal.");
+  }
+};
   return (
     <div className="flex flex-col w-full p-6 bg-white">
       <div className="bg-semi-blue text-white p-6 mb-6 rounded-lg">
@@ -290,8 +352,9 @@ const EvaluacionSemanal = () => {
             </div>
           </div>
         </div>
+        {/*Retroalimentacion grupal*/}
         <div className="mt-6">
-          <h2 className="font-bold text-md mb-2">Retroalimentación</h2>
+          <h2 className="font-bold text-md mb-2">Retroalimentación grupal</h2>
           <table className="table-auto w-full mb-6 border-collapse">
             <thead>
               <tr>
@@ -304,11 +367,12 @@ const EvaluacionSemanal = () => {
                 <td className="border px-4 py-2">
                   <input type="text" value={fecha || "00/00/00"} readOnly />
                 </td>
+
                 <td className="border px-4 py-2">
                   <textarea
                     value={retroalimentacion}
                     onChange={handleRetroalimentacionChange}
-                    placeholder="Ingrese retroalimentación..."
+                    placeholder="Ingrese retroalimentación grupal..."
                     className="w-full p-2 border border-gray-300 rounded-lg"
                   />
                 </td>
@@ -316,6 +380,15 @@ const EvaluacionSemanal = () => {
             </tbody>
           </table>
         </div>{" "}
+        {/* Botón alineado a la derecha */}
+        <div className="flex justify-end mt-4">
+          <button
+            onClick={saveRetroalimentacionGrupal}
+            className="bg-blue-500 text-white rounded-lg px-6 py-2"
+          >
+            Guardar retroalimentación grupal
+          </button>
+        </div>
       </div>
 
       {selectedStudentIndex !== null && integrantes[selectedStudentIndex] && (
@@ -357,7 +430,7 @@ const EvaluacionSemanal = () => {
                         </div>
                       ))}
                     </div>
-
+                    {/* Campo de calificacion */}
                     <input
                       type="number"
                       min="0"
