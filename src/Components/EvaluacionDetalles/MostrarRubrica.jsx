@@ -1,13 +1,13 @@
 import React, { useEffect, useState, useContext } from 'react';
 import { UserContext } from "../../context/UserContext";
 import axios from 'axios';
-import { FaChevronDown, FaChevronUp } from 'react-icons/fa'; 
+import { FaChevronDown, FaChevronUp } from 'react-icons/fa';
 
 const MostrarRubrica = ({ evaluacion }) => {
   const { user } = useContext(UserContext);
   const [rubricas, setRubricas] = useState(null);
   const [error, setError] = useState(null);
-  const [activeRubricas, setActiveRubricas] = useState({}); 
+  const [activeRubricas, setActiveRubricas] = useState({});
 
   useEffect(() => {
     const fetchRubrica = async () => {
@@ -22,7 +22,7 @@ const MostrarRubrica = ({ evaluacion }) => {
         );
 
         if (response.data.rubricas && Array.isArray(response.data.rubricas)) {
-          setRubricas(response.data.rubricas); 
+          setRubricas(response.data.rubricas);
         } else {
           setError('Datos de rúbrica no válidos');
           console.error('Respuesta de la API:', response.data);
@@ -39,7 +39,7 @@ const MostrarRubrica = ({ evaluacion }) => {
   const toggleRubricaDetails = (index) => {
     setActiveRubricas((prevState) => ({
       ...prevState,
-      [index]: !prevState[index], // Alterna entre mostrar/ocultar detalles
+      [index]: !prevState[index],
     }));
   };
 
@@ -53,13 +53,14 @@ const MostrarRubrica = ({ evaluacion }) => {
 
   return (
     <div className="overflow-x-auto p-0">
-      <h3 className="text-sm font-bold p-4 text-right">
-        Calificación: {evaluacion.nota_total}
-      </h3>
+      {user.rol === 'estudiante' && (
+        <h3 className="text-sm font-bold p-4 text-right">
+          Calificación: {evaluacion.nota_total}
+        </h3>
+      )}
       <div className="space-y-1">
         {rubricas.map((rubrica, index) => (
           <div key={index} className="border-b bg-gray-100 rounded-lg">
-            {/* Fila horizontal con el nombre y peso */}
             <div className="flex items-center text-gray p-4 py-2 justify-between cursor-pointer" onClick={() => toggleRubricaDetails(index)}>
               <div className="flex items-center">
                 <h3 className="text-sm font-semibold">{rubrica.nombre_rubrica}</h3>
@@ -79,7 +80,6 @@ const MostrarRubrica = ({ evaluacion }) => {
             {activeRubricas[index] && (
               <div className="mt-0 bg-gray-100">
                 <p className="text-sm p-4 py-0 text-gray-700">{rubrica.descripcion_rubrica}</p>
-                {/* Detalles de la rúbrica en cuadros */}
                 <div className="mt-2 flex flex-wrap gap-4 m-2 p-2 pt-0">
                   {rubrica.detalles && rubrica.detalles.map((detalle, i) => (
                     <div key={i} className="bg-gray-100 border border-gray-300 rounded-lg shadow-md p-2 flex-1 min-w-[250px]">
