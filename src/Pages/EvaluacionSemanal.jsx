@@ -110,7 +110,8 @@ const EvaluacionSemanal = () => {
 
         console.log("Rúbricas obtenidas:", response.data);
 
-        setRubricas(response.data);
+       setRubricas(response.data.rubricas);
+
       } catch (error) {
         console.error("Error al obtener las rúbricas:", error);
       }
