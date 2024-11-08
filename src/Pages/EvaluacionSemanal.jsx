@@ -110,8 +110,12 @@ const EvaluacionSemanal = () => {
 
         console.log("Rúbricas obtenidas:", response.data);
 
-       setRubricas(response.data.rubricas);
+        setRubricas(response.data.rubricas);
 
+        // Actualiza `integrantes` con los estudiantes que contienen la propiedad `calificacion`
+        if (response.data.rubricas[0]?.estudiantes) {
+          setIntegrantes(response.data.rubricas[0].estudiantes);
+        }
       } catch (error) {
         console.error("Error al obtener las rúbricas:", error);
       }
@@ -120,7 +124,7 @@ const EvaluacionSemanal = () => {
     if (cod_evaluacion) {
       fetchRubricas();
     }
-  }, [cod_evaluacion]);
+  }, [cod_evaluacion, cod_grupoempresa]);
 
   const handleRetroalimentacionChange = (e) => {
     setRetroalimentacion(e.target.value);
@@ -206,7 +210,7 @@ const EvaluacionSemanal = () => {
         }
       );
 
-          // Actualizar el estado del estudiante
+      // Actualizar el estado del estudiante
       const updatedIntegrantes = [...integrantes];
       updatedIntegrantes[selectedStudentIndex].score = totalScore;
       updatedIntegrantes[selectedStudentIndex].comentario = comentario;
@@ -215,7 +219,6 @@ const EvaluacionSemanal = () => {
 
       setIntegrantes(updatedIntegrantes);
       setSelectedStudentIndex(null);
-    
     } catch (error) {
       console.error("Error al guardar la calificación:", error);
     }
@@ -232,35 +235,35 @@ const EvaluacionSemanal = () => {
   }
 
   verificarToken();
-const saveRetroalimentacionGrupal = async () => {
-  try {
-    const token = localStorage.getItem("token");
+  const saveRetroalimentacionGrupal = async () => {
+    try {
+      const token = localStorage.getItem("token");
 
-    if (retroalimentacion.trim()) {
-      await axios.post(
-        "http://localhost:3000/evaluacion/retroalimentacion", 
-        {
-          codEvaluacion: cod_evaluacion,
-          codClase: cod_clase,
-          codGrupo: cod_grupoempresa,
-          comentario: retroalimentacion,
-        },
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
+      if (retroalimentacion.trim()) {
+        await axios.post(
+          "http://localhost:3000/evaluacion/retroalimentacion",
+          {
+            codEvaluacion: cod_evaluacion,
+            codClase: cod_clase,
+            codGrupo: cod_grupoempresa,
+            comentario: retroalimentacion,
           },
-        }
-      );
-      
-      alert("Retroalimentación grupal guardada con éxito.");
-    } else {
-      alert("Por favor, ingrese retroalimentación antes de guardar.");
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        );
+
+        alert("Retroalimentación grupal guardada con éxito.");
+      } else {
+        alert("Por favor, ingrese retroalimentación antes de guardar.");
+      }
+    } catch (error) {
+      console.error("Error al guardar la retroalimentación grupal:", error);
+      alert("Hubo un error al guardar la retroalimentación grupal.");
     }
-  } catch (error) {
-    console.error("Error al guardar la retroalimentación grupal:", error);
-    alert("Hubo un error al guardar la retroalimentación grupal.");
-  }
-};
+  };
   return (
     <div className="flex flex-col w-full p-6 bg-white">
       <div className="bg-semi-blue text-white p-6 mb-6 rounded-lg">
@@ -440,7 +443,8 @@ const saveRetroalimentacionGrupal = async () => {
                         rubricScores[selectedStudentIndex]?.[rubricIndex] !==
                         undefined
                           ? rubricScores[selectedStudentIndex][rubricIndex]
-                          : ""
+                          : integrantes[selectedStudentIndex]?.calificacion ||
+                            ""
                       }
                       onChange={(e) =>
                         handleRubricChange(rubricIndex, e.target.value)
@@ -458,7 +462,12 @@ const saveRetroalimentacionGrupal = async () => {
               <div className="mb-4">
                 <label className="font-bold mb-2">Comentarios</label>
                 <textarea
-                  value={comentario}
+                  value={
+                    comentario !== undefined && comentario !== ""
+                      ? comentario
+                      : integrantes[selectedStudentIndex]
+                          ?.retroalimentacion_individual || ""
+                  }
                   onChange={handleComentarioChange}
                   placeholder="Ingrese un comentario..."
                   className="border border-gray-300 p-2 w-full rounded-lg"
