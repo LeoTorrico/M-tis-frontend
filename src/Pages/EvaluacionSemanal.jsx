@@ -26,7 +26,8 @@ const EvaluacionSemanal = () => {
   const [rubricas, setRubricas] = useState([]); // Para las rúbricas obtenidas del backend
   const [selectedStudentIndex, setSelectedStudentIndex] = useState(null);
   const [comentario, setComentario] = useState(""); // Estado para el comentario
-  const [errorComentario, setErrorComentario] = useState(""); // Para mostrar errores
+  const [errorComentario, setErrorComentario] = useState(""); 
+  const [retroalimentacionGrupal, setRetroalimentacionGrupal] = useState("");
 
   useEffect(() => {
     // Obtener datos de la clase
@@ -116,6 +117,9 @@ const EvaluacionSemanal = () => {
         if (response.data.rubricas[0]?.estudiantes) {
           setIntegrantes(response.data.rubricas[0].estudiantes);
         }
+         setRetroalimentacionGrupal(
+           response.data.retroalimentacion_grupal || ""
+         );
       } catch (error) {
         console.error("Error al obtener las rúbricas:", error);
       }
@@ -374,7 +378,7 @@ const EvaluacionSemanal = () => {
 
                 <td className="border px-4 py-2">
                   <textarea
-                    value={retroalimentacion}
+                    value={retroalimentacionGrupal || retroalimentacion}
                     onChange={handleRetroalimentacionChange}
                     placeholder="Ingrese retroalimentación grupal..."
                     className="w-full p-2 border border-gray-300 rounded-lg"
