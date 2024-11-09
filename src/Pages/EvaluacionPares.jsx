@@ -4,12 +4,9 @@ import { useParams } from "react-router-dom";
 import axios from "axios";
 
 const EvaluacionPares = () => {
-  //const { cod_clase } = useParams();
-  const cod_clase = 12;
+  const { cod_clase } = useParams();
 
-  const [grupoData, setGrupoData] = useState([]
-  );
-
+  const [grupoData, setGrupoData] = useState({});
   const [rubricScores, setRubricScores] = useState({});
   const [selectedStudentIndex, setSelectedStudentIndex] = useState(null);
   const [comentario, setComentario] = useState("");
@@ -20,7 +17,7 @@ const EvaluacionPares = () => {
       try {
         const token = localStorage.getItem("token");
         const response = await axios.get(
-          `http://localhost:3000/api/grupos/${cod_clase}/estudiantes`,
+          `http://localhost:3000/eval-pares/${cod_clase}`,
           {
             headers: {
               Authorization: `Bearer ${token}`,
@@ -68,14 +65,13 @@ const EvaluacionPares = () => {
   };
 
   const saveRubricScores = () => {
-    const updatedIntegrantes = [...grupoData.integrantes];
-    updatedIntegrantes[selectedStudentIndex].score =
-      rubricScores[selectedStudentIndex];
-    updatedIntegrantes[selectedStudentIndex].comentario = comentario;
+    const updatedEstudiantes = [...grupoData.estudiantes];
+    updatedEstudiantes[selectedStudentIndex].score = rubricScores[selectedStudentIndex];
+    updatedEstudiantes[selectedStudentIndex].comentario = comentario;
 
     setGrupoData((prev) => ({
       ...prev,
-      integrantes: updatedIntegrantes,
+      estudiantes: updatedEstudiantes,
     }));
     setSelectedStudentIndex(null);
   };
@@ -83,8 +79,8 @@ const EvaluacionPares = () => {
   return (
     <div className="flex flex-col w-full p-6 bg-white">
       <div className="bg-semi-blue text-white p-6 mb-6 rounded-lg">
-        <h2 className="text-2xl font-semibold"> Evaluacion de Pares</h2>
-        {/*<p className="text-xl">{grupoData.nombre_corto}</p>*/}
+        <h2 className="text-2xl font-semibold">Evaluación de Pares</h2>
+        <p className="text-xl">{grupoData.nombre_largo}</p>
       </div>
 
       <div className="border border-black rounded-lg p-6 mb-6 overflow-x-auto">
@@ -96,7 +92,7 @@ const EvaluacionPares = () => {
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <div>
             <h2 className="font-bold text-md mb-2">Integrantes</h2>
-            {grupoData.map((integrante, index) => (
+            {grupoData.estudiantes && grupoData.estudiantes.map((integrante, index) => (
               <div key={index} className="mb-2">
                 <input
                   type="text"
@@ -111,7 +107,7 @@ const EvaluacionPares = () => {
           <div>
             <h2 className="font-bold text-md mb-2 text-center">Nota</h2>
             <div className="flex flex-col space-y-2">
-              {grupoData.map((integrante, index) => (
+              {grupoData.estudiantes && grupoData.estudiantes.map((integrante, index) => (
                 <div
                   key={index}
                   className="relative"
@@ -133,16 +129,13 @@ const EvaluacionPares = () => {
       </div>
 
       {selectedStudentIndex !== null &&
-        grupoData[selectedStudentIndex] && (
+        grupoData.estudiantes[selectedStudentIndex] && (
           <div className="fixed inset-0 flex items-center justify-center z-50 bg-black bg-opacity-50">
             <div className="bg-white p-4 rounded-lg shadow-lg max-w-4xl w-full mx-4 lg:mx-auto max-h-[90vh] overflow-y-auto">
               <h2 className="bg-[#3684DB] p-4 rounded-t-lg text-white font-bold w-full text-center">
                 Evaluar a{" "}
-                {grupoData[selectedStudentIndex]?.nombre_estudiante}{" "}
-                {
-                  grupoData[selectedStudentIndex]
-                    ?.apellido_estudiante
-                }
+                {grupoData.estudiantes[selectedStudentIndex]?.nombre_estudiante}{" "}
+                {grupoData.estudiantes[selectedStudentIndex]?.apellido_estudiante}
               </h2>
 
               <div className="mb-4 p-4">
