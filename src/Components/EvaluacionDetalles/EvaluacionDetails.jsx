@@ -76,11 +76,13 @@ const EvaluacionDetails = ({ evaluacion, user, submitted, retrievedFile, isPastD
                             {selectedFile && renderFilePreview && (
                                 <div className="relative mt-4 flex-grow">
                                     {renderFilePreview()}
-                                    <AiOutlineClose
-                                        className="absolute top-2 right-2 text-gray-500 cursor-pointer hover:text-gray-700"
-                                        onClick={handleRemoveFile}
-                                        size={24}
-                                    />
+                                    {!submitted && (
+                                        <AiOutlineClose
+                                            className="absolute top-2 right-2 text-gray-500 cursor-pointer hover:text-gray-700"
+                                            onClick={handleRemoveFile}
+                                            size={24}
+                                        />
+                                    )}
                                 </div>
                             )}
 
