@@ -1,10 +1,11 @@
 import React, { useState } from 'react';
-import { MdLibraryBooks } from 'react-icons/md';
+import { MdLibraryBooks, MdMoreVert } from 'react-icons/md';
 import { AiOutlinePlus, AiOutlineClose } from 'react-icons/ai';
 import MostarRubrica from './MostrarRubrica';
 
-const EvaluacionDetails = ({ evaluacion, user, submitted, retrievedFile, isPastDueDate, handleFileChange, handleSubmit, renderFilePreview, renderRetrievedFile }) => {
+const EvaluacionDetails = ({ evaluacion, user, submitted, retrievedFile, isPastDueDate, handleFileChange, handleSubmit, renderFilePreview, renderRetrievedFile, onEdit, onDelete }) => {
     const [selectedFile, setSelectedFile] = useState(null);
+    const [menuOpen, setMenuOpen] = useState(false);
 
     const onFileChange = (event) => {
         const file = event.target.files[0];
@@ -16,9 +17,13 @@ const EvaluacionDetails = ({ evaluacion, user, submitted, retrievedFile, isPastD
         setSelectedFile(null);
     };
 
+    const toggleMenu = () => {
+        setMenuOpen(!menuOpen);
+    };
+
     return (
         <div className="flex flex-col min-h-[calc(100vh-60px)] h-full">
-            <div className="bg-semi-blue text-white p-6 rounded-lg m-4">
+            <div className="bg-semi-blue text-white p-6 rounded-lg m-4 relative">
                 <div className="flex items-center">
                     <span className="bg-white p-2 rounded-full text-black mr-4">
                         <MdLibraryBooks size={32} />
@@ -28,6 +33,36 @@ const EvaluacionDetails = ({ evaluacion, user, submitted, retrievedFile, isPastD
                         <p className="text-xl font-Montserrat">{evaluacion.tipo_evaluacion}</p>
                     </div>
                 </div>
+
+                {user.rol === 'docente' && (
+                    <div className="absolute top-4 right-4">
+                        <button onClick={toggleMenu} className="text-white">
+                            <MdMoreVert size={24} />
+                        </button>
+                        {menuOpen && (
+                            <div className="absolute right-0 mt-2 w-28 bg-white rounded-lg shadow-lg z-10">
+                                <button
+                                    onClick={() => {
+                                        setMenuOpen(false);
+                                        onEdit(evaluacion);
+                                    }}
+                                    className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 rounded-lg w-full text-left"
+                                >
+                                    Editar
+                                </button>
+                                <button
+                                    onClick={() => {
+                                        setMenuOpen(false);
+                                        onDelete(evaluacion);
+                                    }}
+                                    className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 rounded-lg w-full text-left"
+                                >
+                                    Eliminar
+                                </button>
+                            </div>
+                        )}
+                    </div>
+                )}
             </div>
 
             <div className="border p-4 rounded-lg mt-0 m-4 flex-grow grid grid-cols-[minmax(0,2fr),minmax(0,1fr)] gap-4">
@@ -36,7 +71,7 @@ const EvaluacionDetails = ({ evaluacion, user, submitted, retrievedFile, isPastD
                     <p className="text-xm font-Montserrat">{evaluacion.descripcion_evaluacion}</p>
 
                     <div className="col-span-2 overflow-y-auto mt-2">
-                        <MostarRubrica evaluacion={evaluacion}/>
+                        <MostarRubrica evaluacion={evaluacion} />
                     </div>
                 </div>
 
