@@ -163,8 +163,8 @@ const EvaluacionSemanal = () => {
     const newComentario = e.target.value;
     const wordCount = newComentario.trim().split(/\s+/).length;
 
-    if (wordCount < 3) {
-      setErrorComentario("El comentario debe tener al menos 3 palabras.");
+    if (wordCount < 1) {
+      setErrorComentario("El comentario debe tener al menos 1 palabra.");
     } else if (wordCount > 100) {
       setErrorComentario("El comentario no debe exceder las 100 palabras.");
     } else {
@@ -515,7 +515,7 @@ const EvaluacionSemanal = () => {
                 className="bg-white text-[#3684DB] py-2 px-4 rounded-lg border border-[#3684DB]"
                 onClick={saveRubricScores}
                 disabled={
-                  !!errorComentario || comentario.trim().split(/\s+/).length < 3
+                  !!errorComentario || comentario.trim().split(/\s+/).length < 1
                 }
               >
                 Calificar
