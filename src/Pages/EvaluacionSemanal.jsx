@@ -26,7 +26,7 @@ const EvaluacionSemanal = () => {
   const [rubricas, setRubricas] = useState([]); // Para las rúbricas obtenidas del backend
   const [selectedStudentIndex, setSelectedStudentIndex] = useState(null);
   const [comentario, setComentario] = useState(""); // Estado para el comentario
-  const [errorComentario, setErrorComentario] = useState(""); 
+  const [errorComentario, setErrorComentario] = useState("");
   const [retroalimentacionGrupal, setRetroalimentacionGrupal] = useState("");
 
   useEffect(() => {
@@ -117,9 +117,9 @@ const EvaluacionSemanal = () => {
         if (response.data.rubricas[0]?.estudiantes) {
           setIntegrantes(response.data.rubricas[0].estudiantes);
         }
-         setRetroalimentacionGrupal(
-           response.data.retroalimentacion_grupal || ""
-         );
+        setRetroalimentacionGrupal(
+          response.data.retroalimentacion_grupal || ""
+        );
       } catch (error) {
         console.error("Error al obtener las rúbricas:", error);
       }
@@ -268,6 +268,7 @@ const EvaluacionSemanal = () => {
       alert("Hubo un error al guardar la retroalimentación grupal.");
     }
   };
+
   return (
     <div className="flex flex-col w-full p-6 bg-white">
       <div className="bg-semi-blue text-white p-6 mb-6 rounded-lg">
@@ -373,12 +374,22 @@ const EvaluacionSemanal = () => {
             <tbody>
               <tr>
                 <td className="border px-4 py-2">
-                  <input type="text" value={fecha || "00/00/00"} readOnly />
+                  <input
+                    type="text"
+                    value={
+                      (fecha || retroalimentacionGrupal.fecha_registro)?.split(
+                        "T"
+                      )[0]
+                    }
+                    readOnly
+                  />
                 </td>
 
                 <td className="border px-4 py-2">
                   <textarea
-                    value={retroalimentacionGrupal || retroalimentacion}
+                    value={
+                      retroalimentacionGrupal.comentario || retroalimentacion
+                    }
                     onChange={handleRetroalimentacionChange}
                     placeholder="Ingrese retroalimentación grupal..."
                     className="w-full p-2 border border-gray-300 rounded-lg"
@@ -409,55 +420,65 @@ const EvaluacionSemanal = () => {
 
             <div className="mb-4">
               {rubricas.length > 0 ? (
-                rubricas.map((rubrica, rubricIndex) => (
-                  <div
-                    key={`${rubrica.nombre_rubrica}-${rubricIndex}`}
-                    className="mb-4"
-                  >
-                    <div className="flex justify-between items-center">
-                      <label className="font-bold mb-2">
-                        {rubrica.nombre_rubrica}
-                      </label>
-                      <span className="text-sm">{rubrica.peso} Punto/s</span>
-                    </div>
-                    <p className="mb-2 text-sm">
-                      {rubrica.descripcion_rubrica}
-                    </p>
+                rubricas.map((rubrica, rubricIndex) => {
+                  // Find the student's grade within this rubric's estudiantes
+                  const studentGrade =
+                    rubrica.estudiantes.find(
+                      (estudiante) =>
+                        estudiante.codigo_sis ===
+                        integrantes[selectedStudentIndex]?.codigo_sis
+                    )?.calificacion || ""; // default to empty if not found
 
-                    {/* Aquí se añaden los datos de detalle_rubrica */}
-                    <div className="flex mb-2 space-x-4">
-                      {rubrica.detalles.map((detalle) => (
-                        <div
-                          key={detalle.cod_detalle}
-                          className="border border-gray-300 rounded-md p-2"
-                        >
-                          <span className="text-sm">
-                            {detalle.clasificacion_rubrica} :{" "}
-                            {detalle.peso_rubrica}
-                          </span>
-                        </div>
-                      ))}
+                  return (
+                    <div
+                      key={`${rubrica.nombre_rubrica}-${rubricIndex}`}
+                      className="mb-4"
+                    >
+                      <div className="flex justify-between items-center">
+                        <label className="font-bold mb-2">
+                          {rubrica.nombre_rubrica}
+                        </label>
+                        <span className="text-sm">{rubrica.peso} Punto/s</span>
+                      </div>
+                      <p className="mb-2 text-sm">
+                        {rubrica.descripcion_rubrica}
+                      </p>
+
+                      {/* Display rubric details */}
+                      <div className="flex mb-2 space-x-4">
+                        {rubrica.detalles.map((detalle) => (
+                          <div
+                            key={detalle.cod_detalle}
+                            className="border border-gray-300 rounded-md p-2"
+                          >
+                            <span className="text-sm">
+                              {detalle.clasificacion_rubrica} :{" "}
+                              {detalle.peso_rubrica}
+                            </span>
+                          </div>
+                        ))}
+                      </div>
+
+                      {/* Calificacion input for the selected student */}
+                      <input
+                        type="number"
+                        min="0"
+                        max={rubrica.peso}
+                        value={
+                          rubricScores[selectedStudentIndex]?.[rubricIndex] !==
+                          undefined
+                            ? rubricScores[selectedStudentIndex][rubricIndex]
+                            : studentGrade // Use the found student grade for this rubric
+                        }
+                        onChange={(e) =>
+                          handleRubricChange(rubricIndex, e.target.value)
+                        }
+                        className="border border-gray-300 p-2 w-full bg-[#B3D6FF] rounded-xl"
+                        placeholder={`Peso máximo: ${rubrica.peso}`}
+                      />
                     </div>
-                    {/* Campo de calificacion */}
-                    <input
-                      type="number"
-                      min="0"
-                      max={rubrica.peso}
-                      value={
-                        rubricScores[selectedStudentIndex]?.[rubricIndex] !==
-                        undefined
-                          ? rubricScores[selectedStudentIndex][rubricIndex]
-                          : integrantes[selectedStudentIndex]?.calificacion ||
-                            ""
-                      }
-                      onChange={(e) =>
-                        handleRubricChange(rubricIndex, e.target.value)
-                      }
-                      className="border border-gray-300 p-2 w-full bg-[#B3D6FF] rounded-xl"
-                      placeholder={`Peso máximo: ${rubrica.peso}`}
-                    />
-                  </div>
-                ))
+                  );
+                })
               ) : (
                 <p>No hay rúbricas disponibles</p>
               )}
