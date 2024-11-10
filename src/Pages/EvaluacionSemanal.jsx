@@ -142,8 +142,7 @@ const EvaluacionSemanal = () => {
 
   const openRubricModal = (index) => {
     setSelectedStudentIndex(index);
-    setComentario("");
-    setErrorComentario("");
+       setErrorComentario("");
   };
 
   const handleRubricChange = (rubricIndex, value) => {
