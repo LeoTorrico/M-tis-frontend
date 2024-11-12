@@ -23,7 +23,6 @@ const MostrarRubrica = ({ evaluacion }) => {
             },
           }
         );
-        console.log(response.data);
     
         // Verificar si la retroalimentación y el comentario existen antes de almacenarlos en el localStorage
         if (response.data.retroalimentacion && response.data.retroalimentacion.comentario) {
