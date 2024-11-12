@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { MdLibraryBooks, MdMoreVert } from 'react-icons/md';
 import { AiOutlinePlus, AiOutlineClose } from 'react-icons/ai';
 import MostarRubrica from './MostrarRubrica';
@@ -6,6 +6,14 @@ import MostarRubrica from './MostrarRubrica';
 const EvaluacionDetails = ({ evaluacion, user, submitted, retrievedFile, isPastDueDate, handleFileChange, handleSubmit, renderFilePreview, renderRetrievedFile, onEdit, onDelete }) => {
     const [selectedFile, setSelectedFile] = useState(null);
     const [menuOpen, setMenuOpen] = useState(false);
+    const [comentario, setComentario] = useState(null);
+
+    useEffect(() => {
+        // Recuperar el comentario asociado a la evaluación actual
+        const comentarioKey = `comentario_${evaluacion.cod_evaluacion}`;
+        const savedComentario = localStorage.getItem(comentarioKey);
+        setComentario(savedComentario === 'null' ? null : savedComentario);
+    }, [evaluacion.cod_evaluacion]);
 
     const onFileChange = (event) => {
         const file = event.target.files[0];
@@ -128,6 +136,12 @@ const EvaluacionDetails = ({ evaluacion, user, submitted, retrievedFile, isPastD
                             >
                                 {submitted ? "Entregado" : isPastDueDate ? "Sin entregar" : "Entregar"}
                             </button>
+
+                            {comentario && (
+                                <div className="mt-4 p-2 border-t border-gray-300 text-sm text-black">
+                                    <strong>Comentario del docente:</strong> {comentario}
+                                </div>
+                            )}
                         </form>
                     ) : (
                         evaluacion.archivo_evaluacion ? (
