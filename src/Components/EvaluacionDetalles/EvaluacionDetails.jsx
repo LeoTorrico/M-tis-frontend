@@ -1,12 +1,17 @@
 import React, { useState, useEffect } from 'react';
 import { MdLibraryBooks, MdMoreVert } from 'react-icons/md';
 import { AiOutlinePlus, AiOutlineClose } from 'react-icons/ai';
+import axios from 'axios';
+import { useNavigate, useParams } from 'react-router-dom';
 import MostarRubrica from './MostrarRubrica';
 
-const EvaluacionDetails = ({ evaluacion, user, submitted, retrievedFile, isPastDueDate, handleFileChange, handleSubmit, renderFilePreview, renderRetrievedFile, onEdit, onDelete }) => {
+const EvaluacionDetails = ({ evaluacion, user, submitted, retrievedFile, isPastDueDate, handleFileChange, handleSubmit, renderFilePreview, renderRetrievedFile }) => {
     const [selectedFile, setSelectedFile] = useState(null);
     const [menuOpen, setMenuOpen] = useState(false);
     const [comentario, setComentario] = useState(null);
+    const { cod_clase } = useParams();  
+    const navigate = useNavigate();
+
 
     useEffect(() => {
         // Recuperar el comentario asociado a la evaluación actual
@@ -29,6 +34,27 @@ const EvaluacionDetails = ({ evaluacion, user, submitted, retrievedFile, isPastD
         setMenuOpen(!menuOpen);
     };
 
+        const handleDelete = async () => {
+            try {
+                if (!user?.token) {
+                    throw new Error('Token de autenticación no disponible');
+                }
+        
+                const response = await axios.delete(`http://localhost:3000/evaluaciones/${evaluacion.cod_evaluacion}`, {
+                    headers: {
+                        Authorization: `Bearer ${user.token}` 
+                    }
+                });
+        
+                console.log('Evaluación eliminada con éxito:', response.data);
+                setMenuOpen(false); 
+                navigate(`/Vista-Curso/${cod_clase}`);
+            } catch (error) {
+                console.error('Error al eliminar la evaluación:', error);
+                alert(`Error al eliminar la evaluación: ${error.response?.data?.message || error.message}`);
+            }
+        };
+        
     return (
         <div className="flex flex-col min-h-[calc(100vh-60px)] h-full">
             <div className="bg-semi-blue text-white p-6 rounded-lg m-4 relative">
@@ -59,10 +85,7 @@ const EvaluacionDetails = ({ evaluacion, user, submitted, retrievedFile, isPastD
                                     Editar
                                 </button>
                                 <button
-                                    onClick={() => {
-                                        setMenuOpen(false);
-                                        onDelete(evaluacion);
-                                    }}
+                                    onClick={handleDelete}
                                     className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 rounded-lg w-full text-left"
                                 >
                                     Eliminar
