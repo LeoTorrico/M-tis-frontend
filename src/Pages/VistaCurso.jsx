@@ -3,11 +3,12 @@ import HeaderCurso from "../Components/HeaderCurso";
 import GruposEmpresas from "../Components/GruposEmpresas";
 import Tablon from "../Components/Tablon";
 import Alumnos from "../Components/Alumnos";
+import AsistenciaReporte from "./ReporteAsistencia";
 import ModalRegistroGrupo from "../Components/ModalRegistroGrupo";
 import RegistroHorarioModal from "../Components/RegistroHorarioModal";
 import axios from "axios";
 import Swal from "sweetalert2";
-import { useParams,useNavigate  } from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom";
 import getDetailsFromToken from "./Utils";
 import { UserContext } from "../context/UserContext";
 
@@ -271,6 +272,8 @@ const VistaCurso = () => {
         return <GruposEmpresas curso={curso} />;
       case "Alumnos":
         return <Alumnos curso={curso} />;
+      case "Reporte":
+        return <AsistenciaReporte curso={curso} />;
       default:
         return null;
     }
@@ -335,12 +338,12 @@ const VistaCurso = () => {
         handleRemoveIntegrante={handleRemoveIntegrante}
         handleHorarioChange={handleHorarioChange}
         cod_clase={cod_clase}
-      /> 
-      <RegistroHorarioModal 
-        isHorarioModalOpen={isHorarioModalOpen} 
+      />
+      <RegistroHorarioModal
+        isHorarioModalOpen={isHorarioModalOpen}
         onClose={closeHorarioModal}
-        codClase = {cod_clase} 
-      /> 
+        codClase={cod_clase}
+      />
     </div>
   );
 };

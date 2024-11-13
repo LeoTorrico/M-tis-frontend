@@ -1,12 +1,13 @@
-import React from "react";
+import React, { useContext } from "react";
+import { UserContext } from "../context/UserContext";
 
 function HeaderCurso({ activeTab, setActiveTab }) {
+  const { user } = useContext(UserContext);
+
   return (
     <div className="flex justify-between items-center border-b-2 border-dark-blue px-6 py-2">
-      {/* Contenedor vacío para mantener el ícono de usuario en la derecha */}
       <div className="w-20"></div>
 
-      {/* Pestañas centradas */}
       <div className="flex justify-center space-x-8 flex-grow">
         <button
           onClick={() => setActiveTab("Tablon")}
@@ -38,6 +39,19 @@ function HeaderCurso({ activeTab, setActiveTab }) {
         >
           Alumnos
         </button>
+
+        {user && user.rol === "docente" && (
+          <button
+            onClick={() => setActiveTab("Reporte")}
+            className={`${
+              activeTab === "Reporte"
+                ? "bg-semi-blue text-white"
+                : "text-dark-blue"
+            } px-4 py-2 rounded-lg font-medium`}
+          >
+            Reporte
+          </button>
+        )}
       </div>
     </div>
   );
