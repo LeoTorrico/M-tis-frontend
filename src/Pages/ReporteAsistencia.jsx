@@ -7,6 +7,7 @@ function AsistenciaReporte() {
   const { cod_clase } = useParams();
   const { user } = useContext(UserContext);
   const [asistenciaData, setAsistenciaData] = useState([]);
+  const [nombreClase, setNombreClase] = useState("");
   const [loading, setLoading] = useState(true);
 
   const fetchAsistencia = async () => {
@@ -20,6 +21,8 @@ function AsistenciaReporte() {
         }
       );
       setAsistenciaData(response.data.reporteAsistencia);
+      setNombreClase(response.data.nombreClase);
+      console.log("Respuesta del backend:", response.data);
     } catch (error) {
       console.error("Error al obtener el reporte:", error);
     } finally {
@@ -40,7 +43,7 @@ function AsistenciaReporte() {
       <div className="flex flex-col w-full p-4">
         <div className="border p-4 rounded-lg flex-grow grid grid-cols-1 gap-2">
           <h2 className="text-xl font-bold mb-4 text-center">
-            Reporte de Asistencia para Clase: {cod_clase}
+            Reporte de Asistencia para Clase: {nombreClase}
           </h2>
           <div className="text-center text-gray-500 font-medium">
             No existe reporte aún.
@@ -62,23 +65,23 @@ function AsistenciaReporte() {
     <div className="flex flex-col w-full p-4">
       <div className="border p-4 rounded-lg flex-grow grid grid-cols-1 gap-2">
         <h2 className="text-xl font-bold mb-4 text-center">
-          Reporte de Asistencia para Clase: {cod_clase}
+          Reporte de Asistencia para Clase: {nombreClase}
         </h2>
         {/* Contenedor con scroll interno */}
         <div className="overflow-auto" style={{ maxHeight: "60vh" }}>
           <div
             className="grid gap-0 min-w-max"
             style={{
-              gridTemplateColumns: `200px 250px 250px repeat(${fechasAsistencia.length}, 150px)`,
+              gridTemplateColumns: `200px 250px 250px repeat(${fechasAsistencia.length}, 150px) 120px 150px 150px 200px 150px`,
             }}
           >
-            <div className="font-semibold p-2 bg-gray-200 border border-white">
+            <div className="font-semibold p-2 bg-gray-200 border border-white text-center">
               Código SIS
             </div>
-            <div className="font-semibold p-2 bg-gray-200 border border-white">
+            <div className="font-semibold p-2 bg-gray-200 border border-white text-center">
               Nombre Estudiante
             </div>
-            <div className="font-semibold p-2 bg-gray-200 border border-white">
+            <div className="font-semibold p-2 bg-gray-200 border border-white text-center">
               Correo Estudiante
             </div>
             {fechasAsistencia.map((fecha, index) => (
@@ -89,6 +92,21 @@ function AsistenciaReporte() {
                 {fecha}
               </div>
             ))}
+            <div className="font-semibold p-2 bg-gray-200 border border-white text-center">
+              Presente
+            </div>
+            <div className="font-semibold p-2 bg-gray-200 border border-white text-center">
+              Retraso
+            </div>
+            <div className="font-semibold p-2 bg-gray-200 border border-white text-center">
+              Ausente sin Justificación
+            </div>
+            <div className="font-semibold p-2 bg-gray-200 border border-white text-center">
+              Ausente con Justificación
+            </div>
+            <div className="font-semibold p-2 bg-gray-200 border border-white text-center">
+              Estado Final
+            </div>
 
             {asistenciaData.map((estudiante, index) => (
               <React.Fragment key={index}>
@@ -106,11 +124,29 @@ function AsistenciaReporte() {
                     (item) => item.fecha === fecha
                   );
                   return (
-                    <div key={fechaIndex} className="p-2 border border-gray text-center">
+                    <div
+                      key={fechaIndex}
+                      className="p-2 border border-gray"
+                    >
                       {asistencia ? asistencia.estadoAsistencia : ""}
                     </div>
                   );
                 })}
+                <div className="p-2 border border-gray text-center">
+                  {estudiante.resumenAsistencia.Presente}
+                </div>
+                <div className="p-2 border border-gray text-center">
+                  {estudiante.resumenAsistencia.Retraso}
+                </div>
+                <div className="p-2 border border-gray text-center">
+                  {estudiante.resumenAsistencia["Ausente sin Justificación"]}
+                </div>
+                <div className="p-2 border border-gray text-center">
+                  {estudiante.resumenAsistencia["Ausente con Justificación"]}
+                </div>
+                <div className="p-2 border border-gray text-center">
+                  {estudiante.estado || ""}
+                </div>
               </React.Fragment>
             ))}
           </div>
