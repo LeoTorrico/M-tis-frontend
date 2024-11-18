@@ -4,7 +4,7 @@ import { UserContext } from "../context/UserContext";
 import axios from "axios";
 
 function AsistenciaReporte() {
-  const { cod_clase } = useParams();
+  const { cod_clase, cod_grupoempresa } = useParams();
   const { user } = useContext(UserContext);
   const [asistenciaData, setAsistenciaData] = useState([]);
   const [nombreClase, setNombreClase] = useState("");
@@ -13,7 +13,7 @@ function AsistenciaReporte() {
   const fetchAsistencia = async () => {
     try {
       const response = await axios.get(
-        `http://localhost:3000/asistencia/reporte/${cod_clase}`,
+        `http://localhost:3000/asistencia/reporte/${cod_clase}/${cod_grupoempresa}`,
         {
           headers: {
             Authorization: `Bearer ${user.token}`,
@@ -67,89 +67,89 @@ function AsistenciaReporte() {
         <h2 className="text-xl font-bold mb-4 text-center">
           Reporte de Asistencia para Clase: {nombreClase}
         </h2>
-        {/* Contenedor con scroll interno */}
-        <div className="overflow-auto" style={{ maxHeight: "60vh" }}>
-          <div
-            className="grid gap-0 min-w-max"
-            style={{
-              gridTemplateColumns: `200px 250px 250px repeat(${fechasAsistencia.length}, 150px) 120px 150px 150px 200px 150px`,
-            }}
-          >
-            <div className="font-semibold p-2 bg-gray-200 border border-white text-center">
-              Código SIS
-            </div>
-            <div className="font-semibold p-2 bg-gray-200 border border-white text-center">
-              Nombre Estudiante
-            </div>
-            <div className="font-semibold p-2 bg-gray-200 border border-white text-center">
-              Correo Estudiante
-            </div>
-            {fechasAsistencia.map((fecha, index) => (
-              <div
-                key={index}
-                className="font-semibold p-2 bg-gray-200 text-center border border-white"
-              >
-                {fecha}
-              </div>
-            ))}
-            <div className="font-semibold p-2 bg-gray-200 border border-white text-center">
-              Presente
-            </div>
-            <div className="font-semibold p-2 bg-gray-200 border border-white text-center">
-              Retraso
-            </div>
-            <div className="font-semibold p-2 bg-gray-200 border border-white text-center">
-              Ausente sin Justificación
-            </div>
-            <div className="font-semibold p-2 bg-gray-200 border border-white text-center">
-              Ausente con Justificación
-            </div>
-            <div className="font-semibold p-2 bg-gray-200 border border-white text-center">
-              Estado Final
-            </div>
-
-            {asistenciaData.map((estudiante, index) => (
-              <React.Fragment key={index}>
-                <div className="p-2 border border-gray">
-                  {estudiante.codigo_sis}
-                </div>
-                <div className="p-2 border border-gray">
-                  {`${estudiante.nombre_estudiante} ${estudiante.apellido_estudiante}`}
-                </div>
-                <div className="p-2 border border-gray">
-                  {estudiante.correo_estudiante}
-                </div>
-                {fechasAsistencia.map((fecha, fechaIndex) => {
-                  const asistencia = estudiante.asistencia.find(
-                    (item) => item.fecha === fecha
-                  );
-                  return (
-                    <div
-                      key={fechaIndex}
-                      className="p-2 border border-gray"
-                    >
-                      {asistencia ? asistencia.estadoAsistencia : ""}
-                    </div>
-                  );
-                })}
-                <div className="p-2 border border-gray text-center">
-                  {estudiante.resumenAsistencia.Presente}
-                </div>
-                <div className="p-2 border border-gray text-center">
-                  {estudiante.resumenAsistencia.Retraso}
-                </div>
-                <div className="p-2 border border-gray text-center">
-                  {estudiante.resumenAsistencia["Ausente sin Justificación"]}
-                </div>
-                <div className="p-2 border border-gray text-center">
-                  {estudiante.resumenAsistencia["Ausente con Justificación"]}
-                </div>
-                <div className="p-2 border border-gray text-center">
-                  {estudiante.estado || ""}
-                </div>
-              </React.Fragment>
-            ))}
-          </div>
+        {/* Contenedor con scroll horizontal */}
+        <div className="overflow-x-auto" style={{ maxHeight: "60vh" }}>
+          <table className="min-w-max border-collapse border border-gray-200">
+            <thead className="bg-gray-200">
+              <tr>
+                <th className="border border-gray-300 px-4 py-2 text-center">
+                  Código SIS
+                </th>
+                <th className="border border-gray-300 px-4 py-2 text-center">
+                  Nombre Estudiante
+                </th>
+                <th className="border border-gray-300 px-4 py-2 text-center">
+                  Correo Estudiante
+                </th>
+                {fechasAsistencia.map((fecha, index) => (
+                  <th
+                    key={index}
+                    className="border border-gray-300 px-4 py-2 text-center"
+                  >
+                    {fecha}
+                  </th>
+                ))}
+                <th className="border border-gray-300 px-4 py-2 text-center">
+                  Presente
+                </th>
+                <th className="border border-gray-300 px-4 py-2 text-center">
+                  Retraso
+                </th>
+                <th className="border border-gray-300 px-4 py-2 text-center">
+                  Ausente sin Justificación
+                </th>
+                <th className="border border-gray-300 px-4 py-2 text-center">
+                  Ausente con Justificación
+                </th>
+                <th className="border border-gray-300 px-4 py-2 text-center">
+                  Estado Final
+                </th>
+              </tr>
+            </thead>
+            <tbody>
+              {asistenciaData.map((estudiante, index) => (
+                <tr key={index}>
+                  <td className="border border-gray-300 px-4 py-2 text-center">
+                    {estudiante.codigo_sis}
+                  </td>
+                  <td className="border border-gray-300 px-4 py-2 text-center">
+                    {`${estudiante.nombre_estudiante} ${estudiante.apellido_estudiante}`}
+                  </td>
+                  <td className="border border-gray-300 px-4 py-2 text-center">
+                    {estudiante.correo_estudiante}
+                  </td>
+                  {fechasAsistencia.map((fecha, fechaIndex) => {
+                    const asistencia = estudiante.asistencia.find(
+                      (item) => item.fecha === fecha
+                    );
+                    return (
+                      <td
+                        key={fechaIndex}
+                        className="border border-gray-300 px-4 py-2 text-center"
+                      >
+                        {asistencia ? asistencia.estadoAsistencia : ""}
+                      </td>
+                    );
+                  })}
+                  <td className="border border-gray-300 px-4 py-2 text-center">
+                    {estudiante.resumenAsistencia.Presente}
+                  </td>
+                  <td className="border border-gray-300 px-4 py-2 text-center">
+                    {estudiante.resumenAsistencia.Retraso}
+                  </td>
+                  <td className="border border-gray-300 px-4 py-2 text-center">
+                    {estudiante.resumenAsistencia["Ausente sin Justificación"]}
+                  </td>
+                  <td className="border border-gray-300 px-4 py-2 text-center">
+                    {estudiante.resumenAsistencia["Ausente con Justificación"]}
+                  </td>
+                  <td className="border border-gray-300 px-4 py-2 text-center">
+                    {estudiante.estado || ""}
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
         </div>
       </div>
     </div>
