@@ -1,8 +1,6 @@
-import React, { useContext } from "react";
-import { UserContext } from "../context/UserContext";
+import React from "react";
 
 function HeaderCurso({ activeTab, setActiveTab }) {
-  const { user } = useContext(UserContext);
 
   return (
     <div className="flex justify-between items-center border-b-2 border-dark-blue px-6 py-2">
@@ -39,19 +37,6 @@ function HeaderCurso({ activeTab, setActiveTab }) {
         >
           Alumnos
         </button>
-
-        {user && user.rol === "docente" && (
-          <button
-            onClick={() => setActiveTab("Reporte")}
-            className={`${
-              activeTab === "Reporte"
-                ? "bg-semi-blue text-white"
-                : "text-dark-blue"
-            } px-4 py-2 rounded-lg font-medium`}
-          >
-            Reporte
-          </button>
-        )}
       </div>
     </div>
   );

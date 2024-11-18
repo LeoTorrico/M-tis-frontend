@@ -3,7 +3,6 @@ import HeaderCurso from "../Components/HeaderCurso";
 import GruposEmpresas from "../Components/GruposEmpresas";
 import Tablon from "../Components/Tablon";
 import Alumnos from "../Components/Alumnos";
-import AsistenciaReporte from "./ReporteAsistencia";
 import ModalRegistroGrupo from "../Components/ModalRegistroGrupo";
 import RegistroHorarioModal from "../Components/RegistroHorarioModal";
 import axios from "axios";
@@ -272,8 +271,6 @@ const VistaCurso = () => {
         return <GruposEmpresas curso={curso} />;
       case "Alumnos":
         return <Alumnos curso={curso} />;
-      case "Reporte":
-        return <AsistenciaReporte curso={curso} />;
       default:
         return null;
     }
