@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { FileText, CheckSquare } from "lucide-react";
+import { useNavigate } from "react-router-dom";
 
 const Reportes = () => {
   const [modalOpen, setModalOpen] = useState(true); // Controla la visibilidad del modal de cursos
@@ -11,6 +12,7 @@ const Reportes = () => {
   const [loading, setLoading] = useState(true); // Indica si los datos están cargando
   const [loadingGroups, setLoadingGroups] = useState(false); // Indica si los grupos están cargando
   const token = localStorage.getItem("token");
+  const navigate = useNavigate();
 
   // Fetch de las clases
   useEffect(() => {
@@ -65,6 +67,10 @@ const Reportes = () => {
   const handleGroupSelection = (group) => {
     setSelectedGroup(group);
     setGroupModalOpen(false); // Cierra el modal de grupos
+  };
+
+  const handleNavigateToAsistencia = () => {
+    navigate(`/Reporte-asistencia/${selectedCourse.cod_clase}/${selectedGroup.cod_grupoempresa}`);
   };
 
   if (modalOpen) {
@@ -197,7 +203,9 @@ const Reportes = () => {
               sin Justificación y Ausentes con Justificación
             </p>
             <div className="flex gap-2 justify-center">
-              <button className="px-4 py-2 bg-semi-blue text-white rounded hover:bg-[#2a3b4f] transition-colors">
+              <button
+                onClick={handleNavigateToAsistencia}
+                className="px-4 py-2 bg-semi-blue text-white rounded hover:bg-[#2a3b4f] transition-colors">
                 Visualizar reporte
               </button>
               <button className="px-4 py-2 border border-semi-blue text-[#1e2a3b] rounded hover:bg-gray-50 transition-colors">
