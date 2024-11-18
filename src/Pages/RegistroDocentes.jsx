@@ -55,11 +55,16 @@ function RegistroDocentes() {
 
   const handleChange = (e) => {
     const { id, value } = e.target;
-    if (id === "nombre" && value.length > 60) {
-      return;
+
+    if (id === "nombre") {
+      if (value.length > 60 || /[^a-zA-ZáéíóúÁÉÍÓÚñÑ\s]/.test(value)) {
+        return;
+      }
     }
-    if (id === "apellido" && value.length > 80) {
-      return;
+    if (id === "apellido") {
+      if (value.length > 80 || /[^a-zA-ZáéíóúÁÉÍÓÚñÑ\s]/.test(value)) {
+        return;
+      }
     }
     if (id === "contraseña" && value.length > 30) {
       return;

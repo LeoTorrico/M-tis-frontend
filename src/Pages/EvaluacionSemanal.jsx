@@ -111,12 +111,30 @@ const EvaluacionSemanal = () => {
 
         console.log("Rúbricas obtenidas:", response.data);
 
-        setRubricas(response.data.rubricas);
+        setRubricas(response.data.rubricas);        
 
-        // Actualiza `integrantes` con los estudiantes que contienen la propiedad `calificacion`
-        if (response.data.rubricas[0]?.estudiantes) {
-          setIntegrantes(response.data.rubricas[0].estudiantes);
-        }
+        // Realizar la sumatoria de las calificaciones al cargar los datos
+        const updatedIntegrantes =
+          response.data.rubricas[0]?.estudiantes?.map((integrante) => {
+            let totalScore = 0;
+
+            response.data.rubricas.forEach((rubrica) => {
+              const studentGrade = rubrica.estudiantes.find(
+                (estudiante) => estudiante.codigo_sis === integrante.codigo_sis
+              )?.calificacion;
+
+              if (studentGrade) {
+                totalScore += studentGrade;
+              }
+            });
+
+            return {
+              ...integrante,
+              score: totalScore,
+            };
+          }) || [];
+
+        setIntegrantes(updatedIntegrantes);
         setRetroalimentacionGrupal(
           response.data.retroalimentacion_grupal || ""
         );
@@ -142,7 +160,7 @@ const EvaluacionSemanal = () => {
 
   const openRubricModal = (index) => {
     setSelectedStudentIndex(index);
-       setErrorComentario("");
+    setErrorComentario("");
   };
 
   const handleRubricChange = (rubricIndex, value) => {
@@ -376,9 +394,11 @@ const EvaluacionSemanal = () => {
                   <input
                     type="text"
                     value={
-                      (fecha || retroalimentacionGrupal.fecha_registro)?.split(
-                        "T"
-                      )[0]
+                      (
+                        fecha ||
+                        retroalimentacionGrupal.fecha_registro ||
+                        "00/00/00"
+                      )?.split("T")[0]
                     }
                     readOnly
                   />

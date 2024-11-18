@@ -47,12 +47,18 @@ function RegistroEstudiante() {
         return;
       }
     }
-    if (id === "nombres" && value.length > 60) {
-      return;
+
+      if (id === "nombres") {
+      if (value.length > 60 || /[^a-zA-ZáéíóúÁÉÍÓÚñÑ\s]/.test(value)) {
+        return;
+      }
     }
-    if (id === "apellidos" && value.length > 80) {
-      return;
+    if (id === "apellidos") {
+      if (value.length > 80 || /[^a-zA-ZáéíóúÁÉÍÓÚñÑ\s]/.test(value)) {
+        return;
+      }
     }
+
     if (id === "contraseña" && value.length > 30) {
       return;
     }
