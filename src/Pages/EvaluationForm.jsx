@@ -119,7 +119,7 @@ export default function EvaluationForm({
       descripcion: formData.descripcion.trim(),
       fechaEntrega: formData.fecha,
       tema: formData.tema,
-      grupos: formData.codigosGrupos,
+      codigosGrupos: [+formData.codigosGrupos],
       tipoEvaluacion: formData.tipoEvaluacion,
       archivo: !isEmpty(archivo)? archivo : null
     };
