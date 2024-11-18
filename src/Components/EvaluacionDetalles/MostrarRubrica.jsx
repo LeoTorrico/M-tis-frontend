@@ -1,4 +1,5 @@
 import React, { useEffect, useState, useContext } from 'react';
+import { useParams } from 'react-router-dom';
 import { UserContext } from "../../context/UserContext";
 import axios from 'axios';
 import { FaChevronDown, FaChevronUp } from 'react-icons/fa';
@@ -9,21 +10,28 @@ const MostrarRubrica = ({ evaluacion }) => {
   const [notaTotal, setNotaTotal] = useState(null);
   const [error, setError] = useState(null);
   const [activeRubricas, setActiveRubricas] = useState({});
+  const { cod_clase } = useParams(); 
 
   useEffect(() => {
     const fetchRubrica = async () => {
       try {
         const response = await axios.get(
-          `http://localhost:3000/evaluaciones/${evaluacion.cod_evaluacion}/nota-total`,
+          `http://localhost:3000/evaluaciones/${evaluacion.cod_evaluacion}/${cod_clase}/nota-total`,
           {
             headers: {
               Authorization: `Bearer ${user.token}`,
             },
           }
         );
-
+    
+        // Verificar si la retroalimentación y el comentario existen antes de almacenarlos en el localStorage
+        if (response.data.retroalimentacion && response.data.retroalimentacion.comentario) {
+          const comentarioKey = `comentario_${evaluacion.cod_evaluacion}`;
+          localStorage.setItem(comentarioKey, response.data.retroalimentacion.comentario);
+        }
+    
         // Verifica y asigna `nota_total` y `rubricas`
-        setNotaTotal(response.data.nota_total); // Asigna la nota total al estado
+        setNotaTotal(response.data.nota_total); 
         if (response.data.rubricas && Array.isArray(response.data.rubricas)) {
           setRubricas(response.data.rubricas);
         } else {
@@ -34,10 +42,10 @@ const MostrarRubrica = ({ evaluacion }) => {
         setError('Error al obtener la rúbrica');
         console.error('Error al obtener la rúbrica:', error);
       }
-    };
+    };    
 
     fetchRubrica();
-  }, [user.token, evaluacion.cod_evaluacion]);
+  }, [user.token, evaluacion.cod_evaluacion, cod_clase]);
 
   const toggleRubricaDetails = (index) => {
     setActiveRubricas((prevState) => ({

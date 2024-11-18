@@ -1,10 +1,24 @@
-import React, { useState } from 'react';
-import { MdLibraryBooks } from 'react-icons/md';
+import React, { useState, useEffect } from 'react';
+import { MdLibraryBooks, MdMoreVert } from 'react-icons/md';
 import { AiOutlinePlus, AiOutlineClose } from 'react-icons/ai';
+import axios from 'axios';
+import { useNavigate, useParams } from 'react-router-dom';
 import MostarRubrica from './MostrarRubrica';
 
 const EvaluacionDetails = ({ evaluacion, user, submitted, retrievedFile, isPastDueDate, handleFileChange, handleSubmit, renderFilePreview, renderRetrievedFile }) => {
     const [selectedFile, setSelectedFile] = useState(null);
+    const [menuOpen, setMenuOpen] = useState(false);
+    const [comentario, setComentario] = useState(null);
+    const { cod_clase } = useParams();  
+    const navigate = useNavigate();
+
+
+    useEffect(() => {
+        // Recuperar el comentario asociado a la evaluación actual
+        const comentarioKey = `comentario_${evaluacion.cod_evaluacion}`;
+        const savedComentario = localStorage.getItem(comentarioKey);
+        setComentario(savedComentario === 'null' ? null : savedComentario);
+    }, [evaluacion.cod_evaluacion]);
 
     const onFileChange = (event) => {
         const file = event.target.files[0];
@@ -16,9 +30,34 @@ const EvaluacionDetails = ({ evaluacion, user, submitted, retrievedFile, isPastD
         setSelectedFile(null);
     };
 
+    const toggleMenu = () => {
+        setMenuOpen(!menuOpen);
+    };
+
+        const handleDelete = async () => {
+            try {
+                if (!user?.token) {
+                    throw new Error('Token de autenticación no disponible');
+                }
+        
+                const response = await axios.delete(`http://localhost:3000/evaluaciones/${evaluacion.cod_evaluacion}`, {
+                    headers: {
+                        Authorization: `Bearer ${user.token}` 
+                    }
+                });
+        
+                console.log('Evaluación eliminada con éxito:', response.data);
+                setMenuOpen(false); 
+                navigate(`/Vista-Curso/${cod_clase}`);
+            } catch (error) {
+                console.error('Error al eliminar la evaluación:', error);
+                alert(`Error al eliminar la evaluación: ${error.response?.data?.message || error.message}`);
+            }
+        };
+        
     return (
         <div className="flex flex-col min-h-[calc(100vh-60px)] h-full">
-            <div className="bg-semi-blue text-white p-6 rounded-lg m-4">
+            <div className="bg-semi-blue text-white p-6 rounded-lg m-4 relative">
                 <div className="flex items-center">
                     <span className="bg-white p-2 rounded-full text-black mr-4">
                         <MdLibraryBooks size={32} />
@@ -28,6 +67,33 @@ const EvaluacionDetails = ({ evaluacion, user, submitted, retrievedFile, isPastD
                         <p className="text-xl font-Montserrat">{evaluacion.tipo_evaluacion}</p>
                     </div>
                 </div>
+
+                {user.rol === 'docente' && (
+                    <div className="absolute top-4 right-4">
+                        <button onClick={toggleMenu} className="text-white">
+                            <MdMoreVert size={24} />
+                        </button>
+                        {menuOpen && (
+                            <div className="absolute right-0 mt-2 w-28 bg-white rounded-lg shadow-lg z-10">
+                                <button
+                                    onClick={() => {
+                                        setMenuOpen(false);
+                                        onEdit(evaluacion);
+                                    }}
+                                    className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 rounded-lg w-full text-left"
+                                >
+                                    Editar
+                                </button>
+                                <button
+                                    onClick={handleDelete}
+                                    className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 rounded-lg w-full text-left"
+                                >
+                                    Eliminar
+                                </button>
+                            </div>
+                        )}
+                    </div>
+                )}
             </div>
 
             <div className="border p-4 rounded-lg mt-0 m-4 flex-grow grid grid-cols-[minmax(0,2fr),minmax(0,1fr)] gap-4">
@@ -36,7 +102,7 @@ const EvaluacionDetails = ({ evaluacion, user, submitted, retrievedFile, isPastD
                     <p className="text-xm font-Montserrat">{evaluacion.descripcion_evaluacion}</p>
 
                     <div className="col-span-2 overflow-y-auto mt-2">
-                        <MostarRubrica evaluacion={evaluacion}/>
+                        <MostarRubrica evaluacion={evaluacion} />
                     </div>
                 </div>
 
@@ -76,11 +142,13 @@ const EvaluacionDetails = ({ evaluacion, user, submitted, retrievedFile, isPastD
                             {selectedFile && renderFilePreview && (
                                 <div className="relative mt-4 flex-grow">
                                     {renderFilePreview()}
-                                    <AiOutlineClose
-                                        className="absolute top-2 right-2 text-gray-500 cursor-pointer hover:text-gray-700"
-                                        onClick={handleRemoveFile}
-                                        size={24}
-                                    />
+                                    {!submitted && (
+                                        <AiOutlineClose
+                                            className="absolute top-2 right-2 text-gray-500 cursor-pointer hover:text-gray-700"
+                                            onClick={handleRemoveFile}
+                                            size={24}
+                                        />
+                                    )}
                                 </div>
                             )}
 
@@ -91,6 +159,12 @@ const EvaluacionDetails = ({ evaluacion, user, submitted, retrievedFile, isPastD
                             >
                                 {submitted ? "Entregado" : isPastDueDate ? "Sin entregar" : "Entregar"}
                             </button>
+
+                            {comentario && (
+                                <div className="mt-4 p-2 border-t border-gray-300 text-sm text-black">
+                                    <strong>Comentario del docente:</strong> {comentario}
+                                </div>
+                            )}
                         </form>
                     ) : (
                         evaluacion.archivo_evaluacion ? (

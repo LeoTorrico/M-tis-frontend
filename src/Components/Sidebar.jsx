@@ -37,26 +37,12 @@ const Sidebar = () => {
           <FaHome className="mr-3" />
           Inicio
         </Link>
-        <a
-          href="#grupo-empresas"
-          className="flex items-center px-4 py-2 hover:bg-light-blue transition-colors"
-        >
-          <FaBuilding className="mr-3" />
-          Grupo Empresas
-        </a>
         <Link
-          to="/"
+          to="/Reportes"
           className="flex items-center px-4 py-2 hover:bg-light-blue transition-colors"
         >
           <FaClipboardList className="mr-3" />
-          Planificación
-        </Link>
-        <Link
-          to="/Rubrica"
-          className="flex items-center px-4 py-2 hover:bg-light-blue transition-colors"
-        >
-          <FaClipboardList className="mr-3" />
-          Evaluaciones
+          Reportes
         </Link>
       </nav>
       <div className="flex flex-col items-center justify-center flex-grow mt-4">
