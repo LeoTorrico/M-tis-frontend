@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useContext } from "react";
+import React, { useState, useEffect, useContext } from "react"; 
 import { useParams } from "react-router-dom";
 import { UserContext } from "../context/UserContext";
 import axios from "axios";
@@ -8,6 +8,8 @@ function AsistenciaReporte() {
   const { user } = useContext(UserContext);
   const [asistenciaData, setAsistenciaData] = useState([]);
   const [nombreClase, setNombreClase] = useState("");
+  const [grupo, setGrupo] = useState("");
+  const [horario, setHorario] = useState({});
   const [loading, setLoading] = useState(true);
 
   const fetchAsistencia = async () => {
@@ -22,6 +24,8 @@ function AsistenciaReporte() {
       );
       setAsistenciaData(response.data.reporteAsistencia);
       setNombreClase(response.data.nombreClase);
+      setGrupo(response.data.grupo);
+      setHorario(response.data.horario);
       console.log("Respuesta del backend:", response.data);
     } catch (error) {
       console.error("Error al obtener el reporte:", error);
@@ -67,6 +71,16 @@ function AsistenciaReporte() {
         <h2 className="text-xl font-bold mb-4 text-center">
           Reporte de Asistencia para Clase: {nombreClase}
         </h2>
+
+        <div className="mb-4">
+          <p className="text-lg font-medium">
+            <strong>Grupo:</strong> {grupo}
+          </p>
+          <p className="text-lg font-medium">
+            <strong>Horario:</strong> {horario.dia_horario} de {horario.hora_inicio} a {horario.hora_fin}
+          </p>
+        </div>
+
         {/* Contenedor con scroll horizontal */}
         <div className="overflow-x-auto" style={{ maxHeight: "60vh" }}>
           <table className="min-w-max border-collapse border border-gray-200">
