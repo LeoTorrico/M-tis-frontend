@@ -378,6 +378,18 @@ const EvaluacionSemanal = () => {
             </div>
           </div>
         </div>
+        <div className="flex justify-end mt-4">
+          <button
+            onClick={() => {
+              // Implementar la lógica para guardar la asistencia
+              console.log("Asistencia guardada:", integrantes);
+              alert("Asistencia guardada correctamente.");
+            }}
+            className="bg-blue-500 text-white rounded-lg px-6 py-2"
+          >
+            Guardar asistencia
+          </button>
+        </div>
         {/*Retroalimentacion grupal*/}
         <div className="mt-6">
           <h2 className="font-bold text-md mb-2">Retroalimentación grupal</h2>
