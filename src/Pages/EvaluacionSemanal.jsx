@@ -28,6 +28,7 @@ const EvaluacionSemanal = () => {
   const [comentario, setComentario] = useState(""); // Estado para el comentario
   const [errorComentario, setErrorComentario] = useState("");
   const [retroalimentacionGrupal, setRetroalimentacionGrupal] = useState("");
+  const [comentariosPorEstudiante, setComentariosPorEstudiante] = useState({});
 
   useEffect(() => {
     // Obtener datos de la clase
@@ -111,7 +112,7 @@ const EvaluacionSemanal = () => {
 
         console.log("Rúbricas obtenidas:", response.data);
 
-        setRubricas(response.data.rubricas);        
+        setRubricas(response.data.rubricas);
 
         // Realizar la sumatoria de las calificaciones al cargar los datos
         const updatedIntegrantes =
@@ -161,6 +162,9 @@ const EvaluacionSemanal = () => {
   const openRubricModal = (index) => {
     setSelectedStudentIndex(index);
     setErrorComentario("");
+    setComentario(
+      comentariosPorEstudiante[integrantes[index].codigo_sis] || ""
+    );
   };
 
   const handleRubricChange = (rubricIndex, value) => {
@@ -185,11 +189,16 @@ const EvaluacionSemanal = () => {
     } else if (wordCount > 100) {
       setErrorComentario("El comentario no debe exceder las 100 palabras.");
     } else {
-      setErrorComentario(""); // No hay errores
+      setErrorComentario("");
     }
 
     setComentario(newComentario);
+    setComentariosPorEstudiante({
+      ...comentariosPorEstudiante,
+      [integrantes[selectedStudentIndex].codigo_sis]: newComentario,
+    });
   };
+
   const saveRubricScores = async () => {
     const selectedStudent = integrantes[selectedStudentIndex];
     const calificaciones = rubricScores[selectedStudentIndex]?.map(
@@ -199,10 +208,8 @@ const EvaluacionSemanal = () => {
       })
     );
 
-    // Calcula la sumatoria de las calificaciones
     const totalScore = calificaciones.reduce((sum, cal) => sum + cal.nota, 0);
 
-    // Determina el estado de asistencia basado en la sumatoria
     let nuevoEstadoAsistencia = selectedStudent.asistencia;
     if (nuevoEstadoAsistencia !== "retraso") {
       if (totalScore >= 1) {
@@ -222,7 +229,8 @@ const EvaluacionSemanal = () => {
           codEvaluacion: cod_evaluacion,
           codigoSis: selectedStudent.codigo_sis,
           notas: calificaciones,
-          comentario,
+          comentario:
+            comentariosPorEstudiante[selectedStudent.codigo_sis] || "",
         },
         {
           headers: {
@@ -234,7 +242,8 @@ const EvaluacionSemanal = () => {
       // Actualizar el estado del estudiante
       const updatedIntegrantes = [...integrantes];
       updatedIntegrantes[selectedStudentIndex].score = totalScore;
-      updatedIntegrantes[selectedStudentIndex].comentario = comentario;
+      updatedIntegrantes[selectedStudentIndex].comentario =
+        comentariosPorEstudiante[selectedStudent.codigo_sis] || "";
       updatedIntegrantes[selectedStudentIndex].asistencia =
         nuevoEstadoAsistencia;
 
