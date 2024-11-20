@@ -117,7 +117,7 @@ const EvaluacionSemanal = () => {
         // Realizar la sumatoria de las calificaciones al cargar los datos
         const updatedIntegrantes =
           response.data.rubricas[0]?.estudiantes?.map((integrante) => {
-            let totalScore = 0;
+            let totalScore = "";
 
             response.data.rubricas.forEach((rubrica) => {
               const studentGrade = rubrica.estudiantes.find(
