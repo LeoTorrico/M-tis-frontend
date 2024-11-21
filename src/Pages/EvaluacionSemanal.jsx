@@ -544,14 +544,20 @@ const EvaluacionSemanal = () => {
 
                       {/* Calificacion input for the selected student */}
                       <input
-                        type="number"
+                        type="text"
+                        onInput={(e) => {
+                          e.target.value = e.target.value.replace(
+                            /[^0-9]/g,
+                            ""
+                          ); 
+                        }}
                         min="0"
                         max={rubrica.peso}
                         value={
                           rubricScores[selectedStudentIndex]?.[rubricIndex] !==
                           undefined
                             ? rubricScores[selectedStudentIndex][rubricIndex]
-                            : studentGrade // Use the found student grade for this rubric
+                            : studentGrade 
                         }
                         onChange={(e) =>
                           handleRubricChange(rubricIndex, e.target.value)
