@@ -167,7 +167,6 @@ const EvaluacionSemanal = () => {
       comentariosPorEstudiante[integrantes[index].codigo_sis] || ""
     );
   };
-  
 
   const handleRubricChange = (rubricIndex, value) => {
     const updatedScores = { ...rubricScores };
@@ -182,14 +181,14 @@ const EvaluacionSemanal = () => {
       value === "" ? "" : Number(value);
 
     if (isNaN(numericValue) || numericValue < 0 || numericValue > 100) {
-    // Si el valor no es un número válido o está fuera de rango, limpiamos el campo
-    updatedScores[selectedStudentIndex][rubricIndex] = "";
-  } else {
-    updatedScores[selectedStudentIndex][rubricIndex] = numericValue;
-  }
+      // Si el valor no es un número válido o está fuera de rango, limpiamos el campo
+      updatedScores[selectedStudentIndex][rubricIndex] = "";
+    } else {
+      updatedScores[selectedStudentIndex][rubricIndex] = numericValue;
+    }
 
-  setRubricScores(updatedScores);
-};
+    setRubricScores(updatedScores);
+  };
 
   const handleComentarioChange = (e) => {
     const newComentario = e.target.value;
@@ -341,6 +340,37 @@ const EvaluacionSemanal = () => {
       alert("Hubo un error al guardar la asistencia");
     }
   };
+
+  // Obtener la fecha actual si no está definida
+  useEffect(() => {
+    const currentFecha = new Date().toLocaleDateString("en-CA"); // Formato 'YYYY-MM-DD'
+    setFecha(currentFecha);
+  }, []);
+
+  // Función para obtener la asistencia dinámica
+  useEffect(() => {
+    if (cod_grupoempresa && fecha) {
+      const fetchAsistencia = async () => {
+        try {
+          const token = localStorage.getItem("token");
+          const response = await axios.get(
+            `http://localhost:3000/asistencia?codGrupo=${cod_grupoempresa}&fecha=${fecha}`,
+            {
+              headers: {
+                Authorization: `Bearer ${token}`,
+              },
+            }
+          );
+          setAsistencia(response.data); // Aquí la respuesta contendrá la asistencia
+          console.log("Asistencia obtenida:", response.data);
+        } catch (error) {
+          console.error("Error al obtener la asistencia:", error);
+        }
+      };
+
+      fetchAsistencia();
+    }
+  }, [cod_grupoempresa, fecha]); // Solo se ejecutará cuando cambien cod_grupoempresa o fecha
 
   return (
     <div className="flex flex-col w-full p-6 bg-white">
@@ -549,7 +579,7 @@ const EvaluacionSemanal = () => {
                           e.target.value = e.target.value.replace(
                             /[^0-9]/g,
                             ""
-                          ); 
+                          );
                         }}
                         min="0"
                         max={rubrica.peso}
@@ -557,7 +587,7 @@ const EvaluacionSemanal = () => {
                           rubricScores[selectedStudentIndex]?.[rubricIndex] !==
                           undefined
                             ? rubricScores[selectedStudentIndex][rubricIndex]
-                            : studentGrade 
+                            : studentGrade
                         }
                         onChange={(e) =>
                           handleRubricChange(rubricIndex, e.target.value)
