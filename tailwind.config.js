@@ -11,8 +11,7 @@ export default {
         "sky-blue": "#3684DB",
         "blue-modal": "#3684DB",
         "blue-table": "#D1DDED",
-        'blue-gray': "#D1DDED",
-
+        "blue-gray": "#D1DDED",
       },
       fontFamily: {
         title: ["Montserrat"],

@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { FileText, CheckSquare } from "lucide-react";
-
+import GradesReportModal from "../Components/Reportes/ModalReportes";
 const Reportes = () => {
   const [modalOpen, setModalOpen] = useState(true); // Controla la visibilidad del modal de cursos
   const [groupModalOpen, setGroupModalOpen] = useState(false); // Controla la visibilidad del modal de grupos
@@ -10,6 +10,7 @@ const Reportes = () => {
   const [groups, setGroups] = useState([]); // Guarda los grupos obtenidos
   const [loading, setLoading] = useState(true); // Indica si los datos están cargando
   const [loadingGroups, setLoadingGroups] = useState(false); // Indica si los grupos están cargando
+  const [showGradesReport, setShowGradesReport] = useState(false);
   const token = localStorage.getItem("token");
 
   // Fetch de las clases
@@ -66,7 +67,24 @@ const Reportes = () => {
     setSelectedGroup(group);
     setGroupModalOpen(false); // Cierra el modal de grupos
   };
-
+  const handleOpenGradesReport = () => {
+    setShowGradesReport(true);
+  };
+  const renderGradesReportButton = () => {
+    return (
+      <button
+        onClick={handleOpenGradesReport}
+        disabled={!selectedGroup}
+        className={`px-4 py-2 ${
+          selectedGroup
+            ? "bg-semi-blue text-white hover:bg-[#2a3b4f]"
+            : "bg-gray-300 text-gray-500 cursor-not-allowed"
+        } rounded transition-colors`}
+      >
+        Visualizar reporte
+      </button>
+    );
+  };
   if (modalOpen) {
     return (
       <div className="fixed inset-0 flex items-center justify-center bg-gray-800 bg-opacity-75 z-50">
@@ -178,9 +196,7 @@ const Reportes = () => {
               y totales.
             </p>
             <div className="flex gap-2 justify-center">
-              <button className="px-4 py-2 bg-semi-blue text-white rounded hover:bg-[#2a3b4f] transition-colors">
-                Visualizar reporte
-              </button>
+              {renderGradesReportButton()}
               <button className="px-4 py-2 border border-semi-blue text-[#1e2a3b] rounded hover:bg-gray-50 transition-colors">
                 Descargar reporte
               </button>
@@ -207,6 +223,12 @@ const Reportes = () => {
           </div>
         </div>
       </div>
+      {showGradesReport && selectedGroup && (
+        <GradesReportModal
+          selectedGroup={selectedGroup}
+          onClose={() => setShowGradesReport(false)}
+        />
+      )}
     </div>
   );
 };
