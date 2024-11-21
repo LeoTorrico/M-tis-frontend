@@ -19,6 +19,9 @@ import Rubrica from "./Pages/Rubrica";
 import EvaluacionDetalles from "./Pages/EvaluacionDetalles";
 import Evaluacion from "./Pages/Evaluacion";
 import VistaEvaluacion from "./Pages/VistaEvaluacion";
+import Reportes from "./Pages/Reportes";
+import ReporteAsistencia from "./Pages/ReporteAsistencia";
+
 Modal.setAppElement("#root");
 
 function App() {
@@ -56,6 +59,8 @@ function App() {
               element={<EvaluacionSemanal />}
             />
             <Route path="/Asistencia" element={<Asistencia />} />
+            <Route path="/Reportes" element={<Reportes />} />
+            <Route path="/Reporte-asistencia/:cod_clase/:cod_grupoempresa" element={<ReporteAsistencia />} />
           </Routes>
         </AnimatePresence>
       </Layout>
@@ -78,6 +83,8 @@ function Layout({ children }) {
     (location.pathname.startsWith("/Vista-Curso/") &&
       location.pathname.includes("evaluacion-semanal")) ||
     location.pathname === "/Asistencia" ||
+    location.pathname === "/Reportes" ||
+    location.pathname.match(/^\/Reporte-asistencia\/[^/]+\/[^/]+$/) ||
     location.pathname.match(/^\/Rubrica\/.+$/) ||
     location.pathname.match(/^\/Evaluacion\/.+$/);
   return (

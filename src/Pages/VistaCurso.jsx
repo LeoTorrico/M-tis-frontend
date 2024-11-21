@@ -7,7 +7,7 @@ import ModalRegistroGrupo from "../Components/ModalRegistroGrupo";
 import RegistroHorarioModal from "../Components/RegistroHorarioModal";
 import axios from "axios";
 import Swal from "sweetalert2";
-import { useParams,useNavigate  } from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom";
 import getDetailsFromToken from "./Utils";
 import { UserContext } from "../context/UserContext";
 
@@ -335,12 +335,12 @@ const VistaCurso = () => {
         handleRemoveIntegrante={handleRemoveIntegrante}
         handleHorarioChange={handleHorarioChange}
         cod_clase={cod_clase}
-      /> 
-      <RegistroHorarioModal 
-        isHorarioModalOpen={isHorarioModalOpen} 
+      />
+      <RegistroHorarioModal
+        isHorarioModalOpen={isHorarioModalOpen}
         onClose={closeHorarioModal}
-        codClase = {cod_clase} 
-      /> 
+        codClase={cod_clase}
+      />
     </div>
   );
 };

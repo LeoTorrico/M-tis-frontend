@@ -1,12 +1,11 @@
 import React from "react";
 
 function HeaderCurso({ activeTab, setActiveTab }) {
+
   return (
     <div className="flex justify-between items-center border-b-2 border-dark-blue px-6 py-2">
-      {/* Contenedor vacío para mantener el ícono de usuario en la derecha */}
       <div className="w-20"></div>
 
-      {/* Pestañas centradas */}
       <div className="flex justify-center space-x-8 flex-grow">
         <button
           onClick={() => setActiveTab("Tablon")}
