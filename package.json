@@ -29,6 +29,7 @@
     "react-router-dom": "^6.26.2",
     "react-spinners": "^0.14.1",
     "react-tooltip": "^5.28.0",
+    "selenium-webdriver": "^4.26.0",
     "sweetalert2": "^11.14.1",
     "uuid": "^10.0.0"
   },
@@ -46,5 +47,10 @@
     "postcss": "^8.4.45",
     "tailwindcss": "^3.4.10",
     "vite": "^5.4.1"
-  }
+  },
+  "description": "Primero hacen CLONE \r luego npm install\r y para correrlo npm run dev",
+  "main": "eslint.config.js",
+  "keywords": [],
+  "author": "",
+  "license": "ISC"
 }

@@ -117,7 +117,7 @@ const EvaluacionSemanal = () => {
         // Realizar la sumatoria de las calificaciones al cargar los datos
         const updatedIntegrantes =
           response.data.rubricas[0]?.estudiantes?.map((integrante) => {
-            let totalScore = "";
+            let totalScore = 0;
 
             response.data.rubricas.forEach((rubrica) => {
               const studentGrade = rubrica.estudiantes.find(
@@ -213,7 +213,7 @@ const EvaluacionSemanal = () => {
     let nuevoEstadoAsistencia = selectedStudent.asistencia;
     if (nuevoEstadoAsistencia !== "retraso") {
       if (totalScore >= 1) {
-        nuevoEstadoAsistencia = "presente";
+        nuevoEstadoAsistencia = "Presente";
       } else {
         nuevoEstadoAsistencia = "ausente_sin_justificacion";
       }
@@ -295,6 +295,42 @@ const EvaluacionSemanal = () => {
     }
   };
 
+ const saveAsistencia = async () => {
+   try {
+     const token = localStorage.getItem("token");
+
+     // Preparar los datos de asistencia
+     const listaAsistencia = integrantes.map((integrante) => ({
+       codigoSis: integrante.codigo_sis,
+       estado: integrante.asistencia || "Presente",
+     }));
+
+     // Imprimir en consola la lista de asistencia
+     console.log(
+       "Lista de asistencia que se envía al backend:",
+       listaAsistencia
+     );
+
+     // Enviar la solicitud al backend
+     await axios.post(
+       `http://localhost:3000/asistencia/registrar/${cod_clase}`, // Usar `codClase` correctamente
+       {
+         listaAsistencia, // Enviar la lista completa al backend
+       },
+       {
+         headers: {
+           Authorization: `Bearer ${token}`,
+         },
+       }
+     );
+
+     alert("Asistencia guardada correctamente");
+   } catch (error) {
+     console.error("Error al guardar asistencia:", error);
+     alert("Hubo un error al guardar la asistencia");
+   }
+ };
+
   return (
     <div className="flex flex-col w-full p-6 bg-white">
       <div className="bg-semi-blue text-white p-6 mb-6 rounded-lg">
@@ -363,7 +399,7 @@ const EvaluacionSemanal = () => {
                 integrantes.map((integrante, index) => (
                   <select
                     key={index}
-                    value={integrante.asistencia || "presente"}
+                    value={integrante.asistencia || "Presente"}
                     onChange={(e) => {
                       const updatedIntegrantes = [...integrantes];
                       updatedIntegrantes[index].asistencia = e.target.value;
@@ -371,9 +407,9 @@ const EvaluacionSemanal = () => {
                     }}
                     className="bg-[#D1DDED] border border-gray-300 rounded-lg p-1 w-full h-10 text-center"
                   >
-                    <option value="presente">Presente</option>
-                    <option value="retraso">Retraso</option>
-                    <option value="ausente_con_justificacion">
+                    <option value="Presente">Presente</option>
+                    <option value="Retraso">Retraso</option>
+                    <option value="Ausente con Justificación">
                       Ausente con justificación
                     </option>
                     <option value="ausente_sin_justificacion">
@@ -389,16 +425,13 @@ const EvaluacionSemanal = () => {
         </div>
         <div className="flex justify-end mt-4">
           <button
-            onClick={() => {
-              // Implementar la lógica para guardar la asistencia
-              console.log("Asistencia guardada:", integrantes);
-              alert("Asistencia guardada correctamente.");
-            }}
+            onClick={saveAsistencia} // Llamar correctamente al método
             className="bg-blue-500 text-white rounded-lg px-6 py-2"
           >
             Guardar asistencia
           </button>
         </div>
+        
         {/*Retroalimentacion grupal*/}
         <div className="mt-6">
           <h2 className="font-bold text-md mb-2">Retroalimentación grupal</h2>
