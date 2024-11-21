@@ -29,6 +29,7 @@ const EvaluacionSemanal = () => {
   const [errorComentario, setErrorComentario] = useState("");
   const [retroalimentacionGrupal, setRetroalimentacionGrupal] = useState("");
   const [comentariosPorEstudiante, setComentariosPorEstudiante] = useState({});
+  const [asistencia, setAsistencia] = useState([]);
 
   useEffect(() => {
     // Obtener datos de la clase
@@ -166,6 +167,7 @@ const EvaluacionSemanal = () => {
       comentariosPorEstudiante[integrantes[index].codigo_sis] || ""
     );
   };
+  
 
   const handleRubricChange = (rubricIndex, value) => {
     const updatedScores = { ...rubricScores };
@@ -174,11 +176,20 @@ const EvaluacionSemanal = () => {
       updatedScores[selectedStudentIndex] = Array(rubricas.length).fill(null);
     }
 
+    const numericValue = parseFloat(value);
+
     updatedScores[selectedStudentIndex][rubricIndex] =
       value === "" ? "" : Number(value);
 
-    setRubricScores(updatedScores);
-  };
+    if (isNaN(numericValue) || numericValue < 0 || numericValue > 100) {
+    // Si el valor no es un número válido o está fuera de rango, limpiamos el campo
+    updatedScores[selectedStudentIndex][rubricIndex] = "";
+  } else {
+    updatedScores[selectedStudentIndex][rubricIndex] = numericValue;
+  }
+
+  setRubricScores(updatedScores);
+};
 
   const handleComentarioChange = (e) => {
     const newComentario = e.target.value;
@@ -295,41 +306,41 @@ const EvaluacionSemanal = () => {
     }
   };
 
- const saveAsistencia = async () => {
-   try {
-     const token = localStorage.getItem("token");
+  const saveAsistencia = async () => {
+    try {
+      const token = localStorage.getItem("token");
 
-     // Preparar los datos de asistencia
-     const listaAsistencia = integrantes.map((integrante) => ({
-       codigoSis: integrante.codigo_sis,
-       estado: integrante.asistencia || "Presente",
-     }));
+      // Preparar los datos de asistencia
+      const listaAsistencia = integrantes.map((integrante) => ({
+        codigoSis: integrante.codigo_sis,
+        estado: integrante.asistencia || "Presente",
+      }));
 
-     // Imprimir en consola la lista de asistencia
-     console.log(
-       "Lista de asistencia que se envía al backend:",
-       listaAsistencia
-     );
+      // Imprimir en consola la lista de asistencia
+      console.log(
+        "Lista de asistencia que se envía al backend:",
+        listaAsistencia
+      );
 
-     // Enviar la solicitud al backend
-     await axios.post(
-       `http://localhost:3000/asistencia/registrar/${cod_clase}`, // Usar `codClase` correctamente
-       {
-         listaAsistencia, // Enviar la lista completa al backend
-       },
-       {
-         headers: {
-           Authorization: `Bearer ${token}`,
-         },
-       }
-     );
+      // Enviar la solicitud al backend
+      await axios.post(
+        `http://localhost:3000/asistencia/registrar/${cod_clase}`, // Usar `codClase` correctamente
+        {
+          listaAsistencia, // Enviar la lista completa al backend
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
 
-     alert("Asistencia guardada correctamente");
-   } catch (error) {
-     console.error("Error al guardar asistencia:", error);
-     alert("Hubo un error al guardar la asistencia");
-   }
- };
+      alert("Asistencia guardada correctamente");
+    } catch (error) {
+      console.error("Error al guardar asistencia:", error);
+      alert("Hubo un error al guardar la asistencia");
+    }
+  };
 
   return (
     <div className="flex flex-col w-full p-6 bg-white">
@@ -431,7 +442,6 @@ const EvaluacionSemanal = () => {
             Guardar asistencia
           </button>
         </div>
-        
         {/*Retroalimentacion grupal*/}
         <div className="mt-6">
           <h2 className="font-bold text-md mb-2">Retroalimentación grupal</h2>
