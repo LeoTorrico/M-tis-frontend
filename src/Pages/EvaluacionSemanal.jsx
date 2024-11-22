@@ -225,7 +225,7 @@ const EvaluacionSemanal = () => {
       if (totalScore >= 1) {
         nuevoEstadoAsistencia = "Presente";
       } else {
-        nuevoEstadoAsistencia = "ausente_sin_justificacion";
+        nuevoEstadoAsistencia = "Ausente sin Justificación";
       }
     }
 
@@ -453,7 +453,7 @@ const EvaluacionSemanal = () => {
                     <option value="Ausente con Justificación">
                       Ausente con justificación
                     </option>
-                    <option value="ausente_sin_justificacion">
+                    <option value="Ausente sin Justificación">
                       Ausente sin justificación
                     </option>
                   </select>
