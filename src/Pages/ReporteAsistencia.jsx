@@ -1,7 +1,9 @@
-import React, { useState, useEffect, useContext } from "react"; 
+import React, { useState, useEffect, useContext } from "react";
 import { useParams } from "react-router-dom";
 import { UserContext } from "../context/UserContext";
 import axios from "axios";
+import jsPDF from "jspdf";
+import "jspdf-autotable";
 
 function AsistenciaReporte() {
   const { cod_clase, cod_grupoempresa } = useParams();
@@ -38,6 +40,53 @@ function AsistenciaReporte() {
     fetchAsistencia();
   }, [cod_clase, user.token]);
 
+  const generarPDF = () => {
+    const doc = new jsPDF();
+    doc.setFontSize(14);
+    doc.text(`Reporte de Asistencia - Clase: ${nombreClase}`, 10, 10);
+    doc.text(`Grupo: ${grupo}`, 10, 20);
+    doc.text(
+      `Horario: ${horario.dia_horario || ""} de ${horario.hora_inicio || ""} a ${
+        horario.hora_fin || ""
+      }`,
+      10,
+      30
+    );
+  
+    // Modifica las columnas del reporte eliminando "Código SIS" y "Fecha Asistencia"
+    const tableColumn = [
+      "Nombre Estudiante",
+      "Correo",
+      "Presente",
+      "Retraso",
+      "Ausente sin Justificación",
+      "Ausente con Justificación",
+      "Estado Final",
+    ];
+  
+    const tableRows = asistenciaData.map((estudiante) => {
+      // Elimina la fecha y el código SIS de las filas
+      return [
+        `${estudiante.nombre_estudiante} ${estudiante.apellido_estudiante}`,
+        estudiante.correo_estudiante,
+        estudiante.resumenAsistencia.Presente,
+        estudiante.resumenAsistencia.Retraso,
+        estudiante.resumenAsistencia["Ausente sin Justificación"],
+        estudiante.resumenAsistencia["Ausente con Justificación"],
+        estudiante.estado || "",
+      ];
+    });
+  
+    // Genera la tabla en el PDF sin las fechas ni el código SIS
+    doc.autoTable({
+      head: [tableColumn],
+      body: tableRows,
+      startY: 40,
+    });
+  
+    doc.save(`Reporte_Asistencia_${nombreClase}.pdf`);
+  };
+  
   if (loading) {
     return <div>Cargando...</div>;
   }
@@ -77,11 +126,18 @@ function AsistenciaReporte() {
             <strong>Grupo:</strong> {grupo}
           </p>
           <p className="text-lg font-medium">
-            <strong>Horario:</strong> {horario.dia_horario} de {horario.hora_inicio} a {horario.hora_fin}
+            <strong>Horario:</strong> {horario.dia_horario} de{" "}
+            {horario.hora_inicio} a {horario.hora_fin}
           </p>
         </div>
 
-        {/* Contenedor con scroll horizontal */}
+        <button
+          onClick={generarPDF}
+          className="mb-4 bg-blue-500 text-white py-2 px-4 rounded-lg hover:bg-blue-600"
+        >
+          Generar PDF
+        </button>
+
         <div className="overflow-x-auto" style={{ maxHeight: "60vh" }}>
           <table className="min-w-max border-collapse border border-gray-200">
             <thead className="bg-gray-200">
