@@ -30,6 +30,7 @@ const EvaluacionSemanal = () => {
   const [retroalimentacionGrupal, setRetroalimentacionGrupal] = useState("");
   const [comentariosPorEstudiante, setComentariosPorEstudiante] = useState({});
   const [asistencia, setAsistencia] = useState([]);
+  const [asistenciaDisponible, setAsistenciaDisponible] = useState(false);
 
   useEffect(() => {
     // Obtener datos de la clase
@@ -348,45 +349,47 @@ const EvaluacionSemanal = () => {
   }, []);
 
   // Función para obtener la asistencia dinámica
-useEffect(() => {
-  if (cod_grupoempresa && fecha) {
-    const fetchAsistencia = async () => {
-      try {
-        const token = localStorage.getItem("token");
-        const response = await axios.get(
-          `http://localhost:3000/asistencia?codGrupo=${cod_grupoempresa}&fecha=${fecha}`,
-          {
-            headers: {
-              Authorization: `Bearer ${token}`,
-            },
-          }
-        );
-
-        const asistenciaData = response.data.asistencia || [];
-        console.log("Asistencia obtenida:", asistenciaData);
-
-        const updatedIntegrantes = integrantes.map((integrante) => {
-          const asistenciaIntegrante = asistenciaData.find(
-            (a) => a.codigo_sis === integrante.codigo_sis
+  useEffect(() => {
+    if (cod_grupoempresa && fecha) {
+      const fetchAsistencia = async () => {
+        try {
+          const token = localStorage.getItem("token");
+          const response = await axios.get(
+            `http://localhost:3000/asistencia?codGrupo=${cod_grupoempresa}&fecha=${fecha}`,
+            {
+              headers: {
+                Authorization: `Bearer ${token}`,
+              },
+            }
           );
-          return {
-            ...integrante,
-            asistencia: asistenciaIntegrante
-              ? asistenciaIntegrante.tipo_asistencia
-              : integrante.asistencia || "Presente",
-          };
-        });
 
-        setIntegrantes(updatedIntegrantes);
-      } catch (error) {
-        console.error("Error al obtener la asistencia:", error);
-      }
-    };
+          const asistenciaData = response.data.asistencia || [];
+          console.log("Asistencia obtenida:", asistenciaData);
 
-    fetchAsistencia();
-  }
-}, [cod_grupoempresa, fecha, integrantes]);
+          // Actualizar el estado de asistenciaDisponible
+          setAsistenciaDisponible(asistenciaData.length > 0);
 
+          const updatedIntegrantes = integrantes.map((integrante) => {
+            const asistenciaIntegrante = asistenciaData.find(
+              (a) => a.codigo_sis === integrante.codigo_sis
+            );
+            return {
+              ...integrante,
+              asistencia: asistenciaIntegrante
+                ? asistenciaIntegrante.tipo_asistencia
+                : integrante.asistencia || "Presente",
+            };
+          });
+
+          setIntegrantes(updatedIntegrantes);
+        } catch (error) {
+          console.error("Error al obtener la asistencia:", error);
+        }
+      };
+
+      fetchAsistencia();
+    }
+  }, [cod_grupoempresa, fecha, integrantes]);
 
   return (
     <div className="flex flex-col w-full p-6 bg-white">
@@ -482,8 +485,11 @@ useEffect(() => {
         </div>
         <div className="flex justify-end mt-4">
           <button
-            onClick={saveAsistencia} // Llamar correctamente al método
-            className="bg-blue-500 text-white rounded-lg px-6 py-2"
+            onClick={saveAsistencia}
+            className={`bg-blue-500 text-white rounded-lg px-6 py-2 ${
+              asistenciaDisponible ? "opacity-50 cursor-not-allowed" : ""
+            }`}
+            disabled={asistenciaDisponible} // Deshabilitar si hay asistencia
           >
             Guardar asistencia
           </button>
