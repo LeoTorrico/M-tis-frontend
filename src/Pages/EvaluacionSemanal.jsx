@@ -31,6 +31,10 @@ const EvaluacionSemanal = () => {
   const [comentariosPorEstudiante, setComentariosPorEstudiante] = useState({});
   const [asistencia, setAsistencia] = useState([]);
   const [asistenciaDisponible, setAsistenciaDisponible] = useState(false);
+  const [retroalimentacionDisponible, setRetroalimentacionDisponible] =
+    useState(false);
+    const [notaDisponible, setNotaDisponible] = useState(false);
+
 
   useEffect(() => {
     // Obtener datos de la clase
@@ -138,9 +142,14 @@ const EvaluacionSemanal = () => {
           }) || [];
 
         setIntegrantes(updatedIntegrantes);
-        setRetroalimentacionGrupal(
-          response.data.retroalimentacion_grupal || ""
-        );
+
+        // Actualiza retroalimentación grupal
+        const retroalimentacionGrupal =
+          response.data.retroalimentacion_grupal || "";
+        setRetroalimentacionGrupal(retroalimentacionGrupal);
+
+        // Si hay retroalimentación grupal, deshabilitar el botón
+        setRetroalimentacionDisponible(!!retroalimentacionGrupal); // true si hay retroalimentación grupal
       } catch (error) {
         console.error("Error al obtener las rúbricas:", error);
       }
@@ -538,7 +547,10 @@ const EvaluacionSemanal = () => {
         <div className="flex justify-end mt-4">
           <button
             onClick={saveRetroalimentacionGrupal}
-            className="bg-blue-500 text-white rounded-lg px-6 py-2"
+            className={`bg-blue-500 text-white rounded-lg px-6 py-2 ${
+              retroalimentacionDisponible ? "opacity-50 cursor-not-allowed" : ""
+            }`}
+            disabled={retroalimentacionDisponible} 
           >
             Guardar retroalimentación grupal
           </button>
