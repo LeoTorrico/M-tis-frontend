@@ -10,8 +10,6 @@ const EvaluacionSemanal = () => {
   useEffect(() => {
     console.log("Parámetros:", { cod_grupoempresa, cod_clase, cod_evaluacion });
   }, [cod_grupoempresa, cod_clase, cod_evaluacion]);
-
-  // Estado para la información del curso
   const [curso, setCurso] = useState({
     nombre: "",
     gestion: "",
@@ -23,20 +21,17 @@ const EvaluacionSemanal = () => {
   const [fecha, setFecha] = useState("");
   const [retroalimentacion, setRetroalimentacion] = useState("");
   const [rubricScores, setRubricScores] = useState({});
-  const [rubricas, setRubricas] = useState([]); // Para las rúbricas obtenidas del backend
+  const [rubricas, setRubricas] = useState([]);
   const [selectedStudentIndex, setSelectedStudentIndex] = useState(null);
-  const [comentario, setComentario] = useState(""); // Estado para el comentario
+  const [comentario, setComentario] = useState("");
   const [errorComentario, setErrorComentario] = useState("");
   const [retroalimentacionGrupal, setRetroalimentacionGrupal] = useState("");
   const [comentariosPorEstudiante, setComentariosPorEstudiante] = useState({});
-  const [asistencia, setAsistencia] = useState([]);
   const [asistenciaDisponible, setAsistenciaDisponible] = useState(false);
   const [retroalimentacionDisponible, setRetroalimentacionDisponible] =
     useState(false);
-    const [mensajeCalificacion, setMensajeCalificacion] = useState("");
 
   useEffect(() => {
-    // Obtener datos de la clase
     const fetchClaseData = async () => {
       try {
         const token = localStorage.getItem("token");
@@ -70,7 +65,6 @@ const EvaluacionSemanal = () => {
   }, [cod_clase]);
 
   useEffect(() => {
-    // Obtener estudiantes del grupo
     const fetchGrupoData = async () => {
       if (!cod_grupoempresa) {
         console.error("El cod_grupo no está definido");
@@ -119,7 +113,6 @@ const EvaluacionSemanal = () => {
 
         setRubricas(response.data.rubricas);
 
-        // Realizar la sumatoria de las calificaciones al cargar los datos
         const updatedIntegrantes =
           response.data.rubricas[0]?.estudiantes?.map((integrante) => {
             let totalScore = 0;
@@ -142,13 +135,11 @@ const EvaluacionSemanal = () => {
 
         setIntegrantes(updatedIntegrantes);
 
-        // Actualiza retroalimentación grupal
         const retroalimentacionGrupal =
           response.data.retroalimentacion_grupal || "";
         setRetroalimentacionGrupal(retroalimentacionGrupal);
 
-        // Si hay retroalimentación grupal, deshabilitar el botón
-        setRetroalimentacionDisponible(!!retroalimentacionGrupal); // true si hay retroalimentación grupal
+        setRetroalimentacionDisponible(!!retroalimentacionGrupal);
       } catch (error) {
         console.error("Error al obtener las rúbricas:", error);
       }
@@ -190,7 +181,6 @@ const EvaluacionSemanal = () => {
       value === "" ? "" : Number(value);
 
     if (isNaN(numericValue) || numericValue < 0 || numericValue > 100) {
-      // Si el valor no es un número válido o está fuera de rango, limpiamos el campo
       updatedScores[selectedStudentIndex][rubricIndex] = "";
     } else {
       updatedScores[selectedStudentIndex][rubricIndex] = numericValue;
@@ -240,8 +230,6 @@ const EvaluacionSemanal = () => {
 
     try {
       const token = localStorage.getItem("token");
-
-      // Enviar calificaciones individuales junto con comentario individual
       await axios.post(
         "http://localhost:3000/evaluacion/calificar",
         {
@@ -257,8 +245,6 @@ const EvaluacionSemanal = () => {
           },
         }
       );
-
-      // Actualizar el estado del estudiante
       const updatedIntegrantes = [...integrantes];
       updatedIntegrantes[selectedStudentIndex].score = totalScore;
       updatedIntegrantes[selectedStudentIndex].comentario =
@@ -317,24 +303,19 @@ const EvaluacionSemanal = () => {
   const saveAsistencia = async () => {
     try {
       const token = localStorage.getItem("token");
-
-      // Preparar los datos de asistencia
       const listaAsistencia = integrantes.map((integrante) => ({
         codigoSis: integrante.codigo_sis,
         estado: integrante.asistencia || "Presente",
       }));
-
-      // Imprimir en consola la lista de asistencia
       console.log(
         "Lista de asistencia que se envía al backend:",
         listaAsistencia
       );
 
-      // Enviar la solicitud al backend
       await axios.post(
-        `http://localhost:3000/asistencia/registrar/${cod_clase}`, // Usar `codClase` correctamente
+        `http://localhost:3000/asistencia/registrar/${cod_clase}`,
         {
-          listaAsistencia, // Enviar la lista completa al backend
+          listaAsistencia,
         },
         {
           headers: {
@@ -350,13 +331,11 @@ const EvaluacionSemanal = () => {
     }
   };
 
-  // Obtener la fecha actual si no está definida
   useEffect(() => {
-    const currentFecha = new Date().toLocaleDateString("en-CA"); // Formato 'YYYY-MM-DD'
+    const currentFecha = new Date().toLocaleDateString("en-CA");
     setFecha(currentFecha);
   }, []);
 
-  // Función para obtener la asistencia dinámica
   useEffect(() => {
     if (cod_grupoempresa && fecha) {
       const fetchAsistencia = async () => {
@@ -374,7 +353,6 @@ const EvaluacionSemanal = () => {
           const asistenciaData = response.data.asistencia || [];
           console.log("Asistencia obtenida:", asistenciaData);
 
-          // Actualizar el estado de asistenciaDisponible
           setAsistenciaDisponible(asistenciaData.length > 0);
 
           const updatedIntegrantes = integrantes.map((integrante) => {
@@ -401,17 +379,13 @@ const EvaluacionSemanal = () => {
   const handleCalificarClick = () => {
     const estudiante = integrantes[selectedStudentIndex];
 
-    // Verificamos si ya tiene una calificación
     if (estudiante.score !== undefined && estudiante.score > 0) {
-      // Muestra un mensaje de alerta si ya tiene una calificación
       alert("Ya se calificó a este estudiante.");
-      return; // Si ya tiene calificación, no hacemos nada más
+      return;
     }
 
-    // Si no tiene calificación, procedemos a calificar
     saveRubricScores();
   };
-
 
   return (
     <div className="flex flex-col w-full p-6 bg-white">
@@ -511,7 +485,7 @@ const EvaluacionSemanal = () => {
             className={`bg-blue-500 text-white rounded-lg px-6 py-2 ${
               asistenciaDisponible ? "opacity-50 cursor-not-allowed" : ""
             }`}
-            disabled={asistenciaDisponible} // Deshabilitar si hay asistencia
+            disabled={asistenciaDisponible}
           >
             Guardar asistencia
           </button>
@@ -581,13 +555,12 @@ const EvaluacionSemanal = () => {
             <div className="mb-4">
               {rubricas.length > 0 ? (
                 rubricas.map((rubrica, rubricIndex) => {
-                  // Find the student's grade within this rubric's estudiantes
                   const studentGrade =
                     rubrica.estudiantes.find(
                       (estudiante) =>
                         estudiante.codigo_sis ===
                         integrantes[selectedStudentIndex]?.codigo_sis
-                    )?.calificacion || ""; // default to empty if not found
+                    )?.calificacion || "";
 
                   return (
                     <div
@@ -668,8 +641,6 @@ const EvaluacionSemanal = () => {
                 )}
               </div>
             </div>
-
-            {/* Footer con el mismo color del header */}
             <div className="bg-[#3684DB] p-4 rounded-b-lg flex justify-end">
               <button
                 className="bg-white text-[#3684DB] py-2 px-4 rounded-lg mr-2 border border-[#3684DB]"
