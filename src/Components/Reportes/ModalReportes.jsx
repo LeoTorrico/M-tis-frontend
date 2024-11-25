@@ -1,5 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { X } from "lucide-react";
+import jsPDF from "jspdf";
+import "jspdf-autotable";
 
 const GradesReportModal = ({ selectedGroup, onClose }) => {
   const [reportData, setReportData] = useState(null);
@@ -38,7 +40,6 @@ const GradesReportModal = ({ selectedGroup, onClose }) => {
     fetchGradesReport();
   }, [selectedGroup, token]);
 
-  // Helper function to get all unique evaluations across all students
   const getAllEvaluations = () => {
     if (!reportData || !reportData.estudiantes) return [];
     const evaluationsSet = new Set();
@@ -50,10 +51,55 @@ const GradesReportModal = ({ selectedGroup, onClose }) => {
     return Array.from(evaluationsSet);
   };
 
-  // Helper function to find grade for a specific student and evaluation
   const findGrade = (student, evaluationName) => {
     const nota = student.notas.find((n) => n.evaluacion === evaluationName);
     return nota ? nota.calificacion : "-";
+  };
+
+  const generatePDF = () => {
+    const doc = new jsPDF();
+    const evaluations = getAllEvaluations();
+
+    // Título del reporte
+    doc.setFontSize(16);
+    doc.text(`Reporte de Notas - ${selectedGroup.nombre_largo}`, 10, 10);
+
+    // Preparar datos para la tabla
+    const tableData = reportData.estudiantes.map((student) => {
+      const grades = evaluations.map((evaluation) =>
+        findGrade(student, evaluation)
+      );
+      const total = student.notas.reduce(
+        (total, nota) => total + nota.calificacion,
+        0
+      );
+      return [
+        student.estudiante.codigo_sis,
+        `${student.estudiante.nombre_estudiante} ${student.estudiante.apellido_estudiante}`,
+        student.estudiante.rol,
+        ...grades,
+        total,
+      ];
+    });
+
+    // Encabezados de la tabla
+    const tableHeaders = [
+      "Código SIS",
+      "Nombre Estudiante",
+      "Rol",
+      ...evaluations,
+      "Total",
+    ];
+
+    // Crear tabla con jsPDF
+    doc.autoTable({
+      head: [tableHeaders],
+      body: tableData,
+      startY: 20,
+    });
+
+    // Descargar el archivo
+    doc.save(`Reporte_Notas_${selectedGroup.nombre_largo}.pdf`);
   };
 
   if (loading) {
@@ -142,6 +188,21 @@ const GradesReportModal = ({ selectedGroup, onClose }) => {
               ))}
             </tbody>
           </table>
+        </div>
+
+        <div className="mt-4 flex justify-end">
+          <button
+            onClick={generatePDF}
+            className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600 mr-2"
+          >
+            Descargar PDF
+          </button>
+          <button
+            onClick={onClose}
+            className="px-4 py-2 bg-gray-300 text-gray-800 rounded hover:bg-gray-400"
+          >
+            Cerrar
+          </button>
         </div>
       </div>
     </div>
