@@ -348,29 +348,45 @@ const EvaluacionSemanal = () => {
   }, []);
 
   // Función para obtener la asistencia dinámica
-  useEffect(() => {
-    if (cod_grupoempresa && fecha) {
-      const fetchAsistencia = async () => {
-        try {
-          const token = localStorage.getItem("token");
-          const response = await axios.get(
-            `http://localhost:3000/asistencia?codGrupo=${cod_grupoempresa}&fecha=${fecha}`,
-            {
-              headers: {
-                Authorization: `Bearer ${token}`,
-              },
-            }
-          );
-          setAsistencia(response.data); // Aquí la respuesta contendrá la asistencia
-          console.log("Asistencia obtenida:", response.data);
-        } catch (error) {
-          console.error("Error al obtener la asistencia:", error);
-        }
-      };
+useEffect(() => {
+  if (cod_grupoempresa && fecha) {
+    const fetchAsistencia = async () => {
+      try {
+        const token = localStorage.getItem("token");
+        const response = await axios.get(
+          `http://localhost:3000/asistencia?codGrupo=${cod_grupoempresa}&fecha=${fecha}`,
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        );
 
-      fetchAsistencia();
-    }
-  }, [cod_grupoempresa, fecha]); // Solo se ejecutará cuando cambien cod_grupoempresa o fecha
+        const asistenciaData = response.data.asistencia || [];
+        console.log("Asistencia obtenida:", asistenciaData);
+
+        const updatedIntegrantes = integrantes.map((integrante) => {
+          const asistenciaIntegrante = asistenciaData.find(
+            (a) => a.codigo_sis === integrante.codigo_sis
+          );
+          return {
+            ...integrante,
+            asistencia: asistenciaIntegrante
+              ? asistenciaIntegrante.tipo_asistencia
+              : integrante.asistencia || "Presente",
+          };
+        });
+
+        setIntegrantes(updatedIntegrantes);
+      } catch (error) {
+        console.error("Error al obtener la asistencia:", error);
+      }
+    };
+
+    fetchAsistencia();
+  }
+}, [cod_grupoempresa, fecha, integrantes]);
+
 
   return (
     <div className="flex flex-col w-full p-6 bg-white">
