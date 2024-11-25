@@ -33,7 +33,8 @@ const EvaluacionSemanal = () => {
   const [asistenciaDisponible, setAsistenciaDisponible] = useState(false);
   const [retroalimentacionDisponible, setRetroalimentacionDisponible] =
     useState(false);
-    
+    const [mensajeCalificacion, setMensajeCalificacion] = useState("");
+
   useEffect(() => {
     // Obtener datos de la clase
     const fetchClaseData = async () => {
@@ -397,6 +398,20 @@ const EvaluacionSemanal = () => {
       fetchAsistencia();
     }
   }, [cod_grupoempresa, fecha, integrantes]);
+  const handleCalificarClick = () => {
+    const estudiante = integrantes[selectedStudentIndex];
+
+    // Verificamos si ya tiene una calificación
+    if (estudiante.score !== undefined && estudiante.score > 0) {
+      // Muestra un mensaje de alerta si ya tiene una calificación
+      alert("Ya se calificó a este estudiante.");
+      return; // Si ya tiene calificación, no hacemos nada más
+    }
+
+    // Si no tiene calificación, procedemos a calificar
+    saveRubricScores();
+  };
+
 
   return (
     <div className="flex flex-col w-full p-6 bg-white">
@@ -548,7 +563,7 @@ const EvaluacionSemanal = () => {
             className={`bg-blue-500 text-white rounded-lg px-6 py-2 ${
               retroalimentacionDisponible ? "opacity-50 cursor-not-allowed" : ""
             }`}
-            disabled={retroalimentacionDisponible} 
+            disabled={retroalimentacionDisponible}
           >
             Guardar retroalimentación grupal
           </button>
@@ -663,8 +678,8 @@ const EvaluacionSemanal = () => {
                 Cancelar
               </button>
               <button
+                onClick={handleCalificarClick}
                 className="bg-white text-[#3684DB] py-2 px-4 rounded-lg border border-[#3684DB]"
-                onClick={saveRubricScores}
                 disabled={
                   !!errorComentario || comentario.trim().split(/\s+/).length < 1
                 }
