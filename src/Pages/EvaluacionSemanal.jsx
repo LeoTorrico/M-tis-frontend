@@ -33,9 +33,7 @@ const EvaluacionSemanal = () => {
   const [asistenciaDisponible, setAsistenciaDisponible] = useState(false);
   const [retroalimentacionDisponible, setRetroalimentacionDisponible] =
     useState(false);
-    const [notaDisponible, setNotaDisponible] = useState(false);
-
-
+    
   useEffect(() => {
     // Obtener datos de la clase
     const fetchClaseData = async () => {
