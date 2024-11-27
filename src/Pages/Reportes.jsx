@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { FileText, CheckSquare } from "lucide-react";
 import GradesReportModal from "../Components/Reportes/ModalReportes";
+
 const Reportes = () => {
   const [modalOpen, setModalOpen] = useState(true); // Controla la visibilidad del modal de cursos
   const [groupModalOpen, setGroupModalOpen] = useState(false); // Controla la visibilidad del modal de grupos
@@ -149,7 +150,6 @@ const Reportes = () => {
     <div className="min-h-screen p-6">
       <div className="bg-semi-blue text-white p-6 rounded-lg">
         <div className="flex justify-between items-center">
-          {/* Lado izquierdo - Información del curso */}
           <div className="flex-1">
             <h1 className="text-2xl font-semibold">
               {selectedCourse?.nombre_clase || "Curso no seleccionado"}
@@ -158,8 +158,6 @@ const Reportes = () => {
               Gestión: {selectedCourse?.gestion || "No especificada"}
             </p>
           </div>
-
-          {/* Lado derecho - Información del grupo y logotipo */}
           <div className="flex-1 flex items-center justify-end gap-4">
             <div className="text-right">
               <h2 className="text-xl font-semibold">
@@ -184,7 +182,6 @@ const Reportes = () => {
 
       <div className="p-6">
         <h2 className="text-xl font-semibold mb-6">Reportes</h2>
-
         <div className="grid md:grid-cols-2 gap-6">
           <div className="bg-white p-6 rounded-lg shadow-sm border">
             <div className="flex justify-center mb-4">
@@ -195,11 +192,8 @@ const Reportes = () => {
               separadas por los tipos de evaluaciones, con resultados parciales
               y totales.
             </p>
-            <div className="flex gap-2 justify-center">
+            <div className="flex justify-center">
               {renderGradesReportButton()}
-              <button className="px-4 py-2 border border-semi-blue text-[#1e2a3b] rounded hover:bg-gray-50 transition-colors">
-                Descargar reporte
-              </button>
             </div>
           </div>
 
@@ -212,12 +206,9 @@ const Reportes = () => {
               porcentajes de los que estuvieron: Presentes, Retrasos, Ausentes
               sin Justificación y Ausentes con Justificación
             </p>
-            <div className="flex gap-2 justify-center">
+            <div className="flex justify-center">
               <button className="px-4 py-2 bg-semi-blue text-white rounded hover:bg-[#2a3b4f] transition-colors">
                 Visualizar reporte
-              </button>
-              <button className="px-4 py-2 border border-semi-blue text-[#1e2a3b] rounded hover:bg-gray-50 transition-colors">
-                Descargar reporte
               </button>
             </div>
           </div>
