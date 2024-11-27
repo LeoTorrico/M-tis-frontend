@@ -82,6 +82,19 @@ function AsistenciaReporte() {
       head: [tableColumn],
       body: tableRows,
       startY: 40,
+      styles: {
+        fillColor: [3, 25, 48], // RGB del color #031930
+        textColor: [255, 255, 255], // Blanco para el texto
+        halign: "center", // Centrar el texto en las celdas
+      },
+      headStyles: {
+        fillColor: [3, 25, 48], // Fondo de la cabecera
+        textColor: [255, 255, 255], // Texto blanco
+      },
+      bodyStyles: {
+        fillColor: [255, 255, 255], // Fondo blanco para las filas
+        textColor: [0, 0, 0], // Texto negro para las filas
+      },
     });
   
     doc.save(`Reporte_Asistencia_${nombreClase}.pdf`);
@@ -120,7 +133,7 @@ function AsistenciaReporte() {
         <h2 className="text-xl font-bold mb-4 text-center">
           Reporte de Asistencia para Clase: {nombreClase}
         </h2>
-
+  
         <div className="mb-4">
           <p className="text-lg font-medium">
             <strong>Grupo:</strong> {grupo}
@@ -130,14 +143,7 @@ function AsistenciaReporte() {
             {horario.hora_inicio} a {horario.hora_fin}
           </p>
         </div>
-
-        <button
-          onClick={generarPDF}
-          className="mb-4 bg-blue-500 text-white py-2 px-4 rounded-lg hover:bg-blue-600"
-        >
-          Generar PDF
-        </button>
-
+  
         <div className="overflow-x-auto" style={{ maxHeight: "60vh" }}>
           <table className="min-w-max border-collapse border border-gray-200">
             <thead className="bg-gray-200">
@@ -221,9 +227,19 @@ function AsistenciaReporte() {
             </tbody>
           </table>
         </div>
+  
+        <div className="mt-4 flex justify-end">
+          <button
+            onClick={generarPDF}
+           className="bg-[#031930] text-white py-2 px-4 rounded-lg hover:opacity-80"
+          >
+            Descargar en PDF
+          </button>
+        </div>
       </div>
     </div>
   );
+  
 }
 
 export default AsistenciaReporte;
