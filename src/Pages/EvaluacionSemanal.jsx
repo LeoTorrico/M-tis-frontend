@@ -336,46 +336,47 @@ const EvaluacionSemanal = () => {
     setFecha(currentFecha);
   }, []);
 
+  // >>>>> REVISARR
+  const [updatedIntegrantes, setUpdatedIntegrantes] = useState([])
   useEffect(() => {
-    if (cod_grupoempresa && fecha) {
-      const fetchAsistencia = async () => {
-        try {
-          const token = localStorage.getItem("token");
-          const response = await axios.get(
-            `http://localhost:3000/asistencia?codGrupo=${cod_grupoempresa}&fecha=${fecha}`,
-            {
-              headers: {
-                Authorization: `Bearer ${token}`,
-              },
-            }
+    if (!cod_grupoempresa && !fecha)  return;
+
+    const fetchAsistencia = async () => {
+      try {
+        const token = localStorage.getItem("token");
+        const response = await axios.get(
+          `http://localhost:3000/asistencia?codGrupo=${cod_grupoempresa}&fecha=${fecha}`,
+          {headers: {Authorization: `Bearer ${token}`}}
+        );
+
+        const asistenciaData = response.data.asistencia || [];
+        // console.log("Asistencia obtenida:", asistenciaData);
+
+        setAsistenciaDisponible(asistenciaData.length > 0);
+
+        const updatedIntegrantes = integrantes.map((integrante) => {
+          const asistenciaIntegrante = asistenciaData.find(
+            (a) => a.codigo_sis === integrante.codigo_sis
           );
+          return {
+            ...integrante,
+            asistencia: asistenciaIntegrante
+              ? asistenciaIntegrante.tipo_asistencia
+              : integrante.asistencia || "Presente",
+          };
+        });
 
-          const asistenciaData = response.data.asistencia || [];
-          console.log("Asistencia obtenida:", asistenciaData);
+        setUpdatedIntegrantes(updatedIntegrantes)
+        console.log(">>>> updatedIntegrantes", updatedIntegrantes)
+        // setIntegrantes(updatedIntegrantes);
+      } catch (error) {
+        console.error("Error al obtener la asistencia:", error);
+      }
+    };
 
-          setAsistenciaDisponible(asistenciaData.length > 0);
-
-          const updatedIntegrantes = integrantes.map((integrante) => {
-            const asistenciaIntegrante = asistenciaData.find(
-              (a) => a.codigo_sis === integrante.codigo_sis
-            );
-            return {
-              ...integrante,
-              asistencia: asistenciaIntegrante
-                ? asistenciaIntegrante.tipo_asistencia
-                : integrante.asistencia || "Presente",
-            };
-          });
-
-          setIntegrantes(updatedIntegrantes);
-        } catch (error) {
-          console.error("Error al obtener la asistencia:", error);
-        }
-      };
-
-      fetchAsistencia();
-    }
+    fetchAsistencia();
   }, [cod_grupoempresa, fecha, integrantes]);
+
   const handleCalificarClick = () => {
     const estudiante = integrantes[selectedStudentIndex];
 
@@ -386,6 +387,9 @@ const EvaluacionSemanal = () => {
 
     saveRubricScores();
   };
+
+
+  const integrantesList = updatedIntegrantes.length > 0 ? updatedIntegrantes : integrantes
 
   return (
     <div className="flex flex-col w-full p-6 bg-white">
@@ -405,8 +409,8 @@ const EvaluacionSemanal = () => {
         <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
           <div className="col-span-2">
             <h2 className="font-bold text-md mb-2">Integrantes</h2>
-            {integrantes.length > 0 ? (
-              integrantes.map((integrante, index) => (
+            {integrantesList.length > 0 ? (
+              integrantesList.map((integrante, index) => (
                 <input
                   key={index}
                   type="text"
@@ -423,8 +427,8 @@ const EvaluacionSemanal = () => {
           <div className="col-span-1">
             <h2 className="font-bold text-md mb-2 text-center">Nota</h2>
             <div className="flex flex-col space-y-2">
-              {integrantes.length > 0 ? (
-                integrantes.map((integrante, index) => (
+              {integrantesList.length > 0 ? (
+                integrantesList.map((integrante, index) => (
                   <div
                     key={index}
                     className="relative"
@@ -451,8 +455,8 @@ const EvaluacionSemanal = () => {
           <div className="col-span-1">
             <h2 className="font-bold text-md mb-2 text-center">Asistencia</h2>
             <div className="flex flex-col space-y-2">
-              {integrantes.length > 0 ? (
-                integrantes.map((integrante, index) => (
+              {integrantesList.length > 0 ? (
+                integrantesList.map((integrante, index) => (
                   <select
                     key={index}
                     value={integrante.asistencia || "Presente"}
