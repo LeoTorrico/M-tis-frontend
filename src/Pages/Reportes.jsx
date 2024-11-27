@@ -1,20 +1,19 @@
 import React, { useState, useEffect } from "react";
 import { FileText, CheckSquare } from "lucide-react";
-import { useNavigate } from "react-router-dom";
+import GradesReportModal from "../Components/Reportes/ModalReportes";
 
 const Reportes = () => {
-  const [modalOpen, setModalOpen] = useState(true); // Controla la visibilidad del modal de cursos
-  const [groupModalOpen, setGroupModalOpen] = useState(false); // Controla la visibilidad del modal de grupos
-  const [selectedCourse, setSelectedCourse] = useState(null); // Guarda el curso seleccionado
-  const [selectedGroup, setSelectedGroup] = useState(null); // Guarda el grupo seleccionado
-  const [courses, setCourses] = useState([]); // Guarda las clases obtenidas
-  const [groups, setGroups] = useState([]); // Guarda los grupos obtenidos
-  const [loading, setLoading] = useState(true); // Indica si los datos están cargando
-  const [loadingGroups, setLoadingGroups] = useState(false); // Indica si los grupos están cargando
+  const [modalOpen, setModalOpen] = useState(true);
+  const [groupModalOpen, setGroupModalOpen] = useState(false);
+  const [selectedCourse, setSelectedCourse] = useState(null);
+  const [selectedGroup, setSelectedGroup] = useState(null);
+  const [courses, setCourses] = useState([]);
+  const [groups, setGroups] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [loadingGroups, setLoadingGroups] = useState(false);
+  const [showGradesReport, setShowGradesReport] = useState(false);
   const token = localStorage.getItem("token");
-  const navigate = useNavigate();
 
-  // Fetch de las clases
   useEffect(() => {
     const fetchCourses = async () => {
       try {
@@ -36,15 +35,13 @@ const Reportes = () => {
 
   const handleCourseSelection = (course) => {
     setSelectedCourse(course);
-    console.log("Curso seleccionado:", course);
-    setModalOpen(false); // Cierra el modal de cursos
-    setGroupModalOpen(true); // Abre el modal de grupos
-    fetchGroups(course.cod_clase); // Obtiene los grupos del curso seleccionado
+    setModalOpen(false);
+    setGroupModalOpen(true);
+    fetchGroups(course.cod_clase);
   };
 
   const fetchGroups = async (cod_clase) => {
     setLoadingGroups(true);
-    console.log(cod_clase);
     try {
       const response = await fetch(
         `http://localhost:3000/api/grupos/${cod_clase}`,
@@ -55,7 +52,6 @@ const Reportes = () => {
         }
       );
       const data = await response.json();
-      console.log(data);
       setGroups(data);
     } catch (error) {
       console.error("Error al obtener los grupos:", error);
@@ -66,11 +62,27 @@ const Reportes = () => {
 
   const handleGroupSelection = (group) => {
     setSelectedGroup(group);
-    setGroupModalOpen(false); // Cierra el modal de grupos
+    setGroupModalOpen(false);
   };
 
-  const handleNavigateToAsistencia = () => {
-    navigate(`/Reporte-asistencia/${selectedCourse.cod_clase}/${selectedGroup.cod_grupoempresa}`);
+  const handleOpenGradesReport = () => {
+    setShowGradesReport(true);
+  };
+
+  const renderGradesReportButton = () => {
+    return (
+      <button
+        onClick={handleOpenGradesReport}
+        disabled={!selectedGroup}
+        className={`px-4 py-2 ${
+          selectedGroup
+            ? "bg-semi-blue text-white hover:bg-[#2a3b4f]"
+            : "bg-gray-300 text-gray-500 cursor-not-allowed"
+        } rounded transition-colors`}
+      >
+        Visualizar reporte
+      </button>
+    );
   };
 
   if (modalOpen) {
@@ -137,7 +149,6 @@ const Reportes = () => {
     <div className="min-h-screen p-6">
       <div className="bg-semi-blue text-white p-6 rounded-lg">
         <div className="flex justify-between items-center">
-          {/* Lado izquierdo - Información del curso */}
           <div className="flex-1">
             <h1 className="text-2xl font-semibold">
               {selectedCourse?.nombre_clase || "Curso no seleccionado"}
@@ -146,8 +157,6 @@ const Reportes = () => {
               Gestión: {selectedCourse?.gestion || "No especificada"}
             </p>
           </div>
-
-          {/* Lado derecho - Información del grupo y logotipo */}
           <div className="flex-1 flex items-center justify-end gap-4">
             <div className="text-right">
               <h2 className="text-xl font-semibold">
@@ -172,7 +181,6 @@ const Reportes = () => {
 
       <div className="p-6">
         <h2 className="text-xl font-semibold mb-6">Reportes</h2>
-
         <div className="grid md:grid-cols-2 gap-6">
           <div className="bg-white p-6 rounded-lg shadow-sm border">
             <div className="flex justify-center mb-4">
@@ -183,13 +191,8 @@ const Reportes = () => {
               separadas por los tipos de evaluaciones, con resultados parciales
               y totales.
             </p>
-            <div className="flex gap-2 justify-center">
-              <button className="px-4 py-2 bg-semi-blue text-white rounded hover:bg-[#2a3b4f] transition-colors">
-                Visualizar reporte
-              </button>
-              <button className="px-4 py-2 border border-semi-blue text-[#1e2a3b] rounded hover:bg-gray-50 transition-colors">
-                Descargar reporte
-              </button>
+            <div className="flex justify-center">
+              {renderGradesReportButton()}
             </div>
           </div>
 
@@ -202,19 +205,20 @@ const Reportes = () => {
               porcentajes de los que estuvieron: Presentes, Retrasos, Ausentes
               sin Justificación y Ausentes con Justificación
             </p>
-            <div className="flex gap-2 justify-center">
-              <button
-                onClick={handleNavigateToAsistencia}
-                className="px-4 py-2 bg-semi-blue text-white rounded hover:bg-[#2a3b4f] transition-colors">
+            <div className="flex justify-center">
+              <button className="px-4 py-2 bg-semi-blue text-white rounded hover:bg-[#2a3b4f] transition-colors">
                 Visualizar reporte
-              </button>
-              <button className="px-4 py-2 border border-semi-blue text-[#1e2a3b] rounded hover:bg-gray-50 transition-colors">
-                Descargar reporte
               </button>
             </div>
           </div>
         </div>
       </div>
+      {showGradesReport && selectedGroup && (
+        <GradesReportModal
+          selectedGroup={selectedGroup}
+          onClose={() => setShowGradesReport(false)}
+        />
+      )}
     </div>
   );
 };
