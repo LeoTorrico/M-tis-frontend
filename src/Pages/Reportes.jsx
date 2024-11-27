@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { FileText, CheckSquare } from "lucide-react";
 import GradesReportModal from "../Components/Reportes/ModalReportes";
+import { useNavigate } from "react-router-dom";
 
 const Reportes = () => {
   const [modalOpen, setModalOpen] = useState(true);
@@ -13,6 +14,7 @@ const Reportes = () => {
   const [loadingGroups, setLoadingGroups] = useState(false);
   const [showGradesReport, setShowGradesReport] = useState(false);
   const token = localStorage.getItem("token");
+  const navigate = useNavigate();
 
   useEffect(() => {
     const fetchCourses = async () => {
@@ -68,7 +70,9 @@ const Reportes = () => {
   const handleOpenGradesReport = () => {
     setShowGradesReport(true);
   };
-
+  const handleNavigateToAsistencia = () => {
+    navigate(`/Reporte-asistencia/${selectedCourse.cod_clase}/${selectedGroup.cod_grupoempresa}`);
+  };
   const renderGradesReportButton = () => {
     return (
       <button
@@ -206,7 +210,9 @@ const Reportes = () => {
               sin Justificación y Ausentes con Justificación
             </p>
             <div className="flex justify-center">
-              <button className="px-4 py-2 bg-semi-blue text-white rounded hover:bg-[#2a3b4f] transition-colors">
+              <button
+                onClick={handleNavigateToAsistencia}
+                className="px-4 py-2 bg-semi-blue text-white rounded hover:bg-[#2a3b4f] transition-colors">
                 Visualizar reporte
               </button>
             </div>
