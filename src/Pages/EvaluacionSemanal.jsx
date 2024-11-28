@@ -8,7 +8,7 @@ const EvaluacionSemanal = () => {
   const { cod_grupoempresa, cod_clase, cod_evaluacion } = useParams();
 
   useEffect(() => {
-    console.log("Parámetros:", { cod_grupoempresa, cod_clase, cod_evaluacion });
+    // console.log("Parámetros:", { cod_grupoempresa, cod_clase, cod_evaluacion });
   }, [cod_grupoempresa, cod_clase, cod_evaluacion]);
   const [curso, setCurso] = useState({
     nombre: "",
@@ -30,6 +30,7 @@ const EvaluacionSemanal = () => {
   const [asistenciaDisponible, setAsistenciaDisponible] = useState(false);
   const [retroalimentacionDisponible, setRetroalimentacionDisponible] =
     useState(false);
+  const [updatedIntegrantes, setUpdatedIntegrantes] = useState([]);
 
   useEffect(() => {
     const fetchClaseData = async () => {
@@ -82,7 +83,7 @@ const EvaluacionSemanal = () => {
           }
         );
 
-        console.log("Rúbricas obtenidas:", response.data);
+        // console.log("Rúbricas obtenidas:", response.data);
 
         setRubricas(response.data.rubricas);
 
@@ -236,9 +237,9 @@ const EvaluacionSemanal = () => {
     const token = localStorage.getItem("token");
 
     if (token) {
-      console.log("Token obtenido:", token);
+      // console.log("Token obtenido:", token);
     } else {
-      console.log("No se obtuvo el token");
+      // console.log("No se obtuvo el token");
     }
   }
 
@@ -264,6 +265,7 @@ const EvaluacionSemanal = () => {
         );
 
         alert("Retroalimentación grupal guardada con éxito.");
+        setRetroalimentacionDisponible(true);
       } else {
         alert("Por favor, ingrese retroalimentación antes de guardar.");
       }
@@ -280,10 +282,10 @@ const EvaluacionSemanal = () => {
         codigoSis: integrante.codigo_sis,
         estado: integrante.asistencia || "Presente",
       }));
-      console.log(
-        "Lista de asistencia que se envía al backend:",
-        listaAsistencia
-      );
+      // console.log(
+      //   "Lista de asistencia que se envía al backend:",
+      //   listaAsistencia
+      // );
 
       await axios.post(
         `http://localhost:3000/asistencia/registrar/${cod_clase}`,
@@ -298,6 +300,7 @@ const EvaluacionSemanal = () => {
       );
 
       alert("Asistencia guardada correctamente");
+      setAsistenciaDisponible(true);
     } catch (error) {
       console.error("Error al guardar asistencia:", error);
       alert("Hubo un error al guardar la asistencia");
@@ -309,21 +312,21 @@ const EvaluacionSemanal = () => {
     setFecha(currentFecha);
   }, []);
 
-  // >>>>> REVISARR
-  const [updatedIntegrantes, setUpdatedIntegrantes] = useState([]);
   useEffect(() => {
-    if (!cod_grupoempresa && !fecha) return;
+    if (!cod_grupoempresa || !fecha) return;
+    if (fecha === "") return;
 
     const fetchAsistencia = async () => {
       try {
         const token = localStorage.getItem("token");
+        console.log({ fecha });
         const response = await axios.get(
           `http://localhost:3000/asistencia?codGrupo=${cod_grupoempresa}&fecha=${fecha}`,
           { headers: { Authorization: `Bearer ${token}` } }
         );
 
-        const asistenciaData = response.data.asistencia || [];
-        // console.log("Asistencia obtenida:", asistenciaData);
+        const asistenciaData = response.data.data || [];
+        console.log("Asistencia obtenida:", asistenciaData);
 
         setAsistenciaDisponible(asistenciaData.length > 0);
 
@@ -340,7 +343,7 @@ const EvaluacionSemanal = () => {
         });
 
         setUpdatedIntegrantes(updatedIntegrantes);
-        console.log(">>>> updatedIntegrantes", updatedIntegrantes);
+        // console.log(">>>> updatedIntegrantes", updatedIntegrantes);
         // setIntegrantes(updatedIntegrantes);
       } catch (error) {
         console.error("Error al obtener la asistencia:", error);
@@ -459,7 +462,7 @@ const EvaluacionSemanal = () => {
         <div className="flex justify-end mt-4">
           <button
             onClick={saveAsistencia}
-            className={`bg-blue-500 text-white rounded-lg px-6 py-2 ${
+            className={`bg-[#031930] text-white rounded-lg px-6 py-2 ${
               asistenciaDisponible ? "opacity-50 cursor-not-allowed" : ""
             }`}
             disabled={asistenciaDisponible}
@@ -511,7 +514,7 @@ const EvaluacionSemanal = () => {
         <div className="flex justify-end mt-4">
           <button
             onClick={saveRetroalimentacionGrupal}
-            className={`bg-blue-500 text-white rounded-lg px-6 py-2 ${
+            className={`bg-[#031930] text-white rounded-lg px-6 py-2 ${
               retroalimentacionDisponible ? "opacity-50 cursor-not-allowed" : ""
             }`}
             disabled={retroalimentacionDisponible}
