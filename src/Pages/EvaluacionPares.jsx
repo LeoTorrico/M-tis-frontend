@@ -17,7 +17,7 @@ const EvaluacionPares = () => {
       try {
         const token = localStorage.getItem("token");
         const response = await axios.get(
-          `http://localhost:3000/eval-pares/${cod_clase}`,
+          `https://backend-tis-silk.vercel.app/eval-pares/${cod_clase}`,
           {
             headers: {
               Authorization: `Bearer ${token}`,
@@ -66,7 +66,8 @@ const EvaluacionPares = () => {
 
   const saveRubricScores = () => {
     const updatedEstudiantes = [...grupoData.estudiantes];
-    updatedEstudiantes[selectedStudentIndex].score = rubricScores[selectedStudentIndex];
+    updatedEstudiantes[selectedStudentIndex].score =
+      rubricScores[selectedStudentIndex];
     updatedEstudiantes[selectedStudentIndex].comentario = comentario;
 
     setGrupoData((prev) => ({
@@ -92,37 +93,41 @@ const EvaluacionPares = () => {
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <div>
             <h2 className="font-bold text-md mb-2">Integrantes</h2>
-            {grupoData.estudiantes && grupoData.estudiantes.map((integrante, index) => (
-              <div key={index} className="mb-2">
-                <input
-                  type="text"
-                  value={`${integrante.nombre_estudiante} ${integrante.apellido_estudiante} (${integrante.rol})`}
-                  readOnly
-                  className="bg-[#D1DDED] rounded-lg p-2 w-full"
-                />
-              </div>
-            ))}
+            {grupoData.estudiantes &&
+              grupoData.estudiantes.map((integrante, index) => (
+                <div key={index} className="mb-2">
+                  <input
+                    type="text"
+                    value={`${integrante.nombre_estudiante} ${integrante.apellido_estudiante} (${integrante.rol})`}
+                    readOnly
+                    className="bg-[#D1DDED] rounded-lg p-2 w-full"
+                  />
+                </div>
+              ))}
           </div>
 
           <div>
             <h2 className="font-bold text-md mb-2 text-center">Nota</h2>
             <div className="flex flex-col space-y-2">
-              {grupoData.estudiantes && grupoData.estudiantes.map((integrante, index) => (
-                <div
-                  key={index}
-                  className="relative"
-                  onClick={() => openRubricModal(index)}
-                >
-                  <input
-                    type="text"
-                    value={
-                      integrante.score !== undefined ? integrante.score : "/..."
-                    }
-                    readOnly
-                    className="bg-[#D1DDED] border border-gray-300 rounded-lg p-1 w-full h-10 text-center cursor-pointer"
-                  />
-                </div>
-              ))}
+              {grupoData.estudiantes &&
+                grupoData.estudiantes.map((integrante, index) => (
+                  <div
+                    key={index}
+                    className="relative"
+                    onClick={() => openRubricModal(index)}
+                  >
+                    <input
+                      type="text"
+                      value={
+                        integrante.score !== undefined
+                          ? integrante.score
+                          : "/..."
+                      }
+                      readOnly
+                      className="bg-[#D1DDED] border border-gray-300 rounded-lg p-1 w-full h-10 text-center cursor-pointer"
+                    />
+                  </div>
+                ))}
             </div>
           </div>
         </div>
@@ -135,7 +140,10 @@ const EvaluacionPares = () => {
               <h2 className="bg-[#3684DB] p-4 rounded-t-lg text-white font-bold w-full text-center">
                 Evaluar a{" "}
                 {grupoData.estudiantes[selectedStudentIndex]?.nombre_estudiante}{" "}
-                {grupoData.estudiantes[selectedStudentIndex]?.apellido_estudiante}
+                {
+                  grupoData.estudiantes[selectedStudentIndex]
+                    ?.apellido_estudiante
+                }
               </h2>
 
               <div className="mb-4 p-4">

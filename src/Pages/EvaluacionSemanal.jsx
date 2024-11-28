@@ -36,7 +36,7 @@ const EvaluacionSemanal = () => {
       try {
         const token = localStorage.getItem("token");
         const response = await axios.get(
-          "http://localhost:3000/clases/obtener",
+          "https://backend-tis-silk.vercel.app/clases/obtener",
           {
             headers: {
               Authorization: `Bearer ${token}`,
@@ -74,7 +74,7 @@ const EvaluacionSemanal = () => {
       try {
         const token = localStorage.getItem("token");
         const response = await axios.get(
-          `http://localhost:3000/api/grupos/${cod_grupoempresa}/estudiantes`,
+          `https://backend-tis-silk.vercel.app/api/grupos/${cod_grupoempresa}/estudiantes`,
           {
             headers: {
               Authorization: `Bearer ${token}`,
@@ -101,7 +101,7 @@ const EvaluacionSemanal = () => {
         }
 
         const response = await axios.get(
-          `http://localhost:3000/rubricas/${cod_evaluacion}/grupos/${cod_grupoempresa}/calificaciones`,
+          `https://backend-tis-silk.vercel.app/rubricas/${cod_evaluacion}/grupos/${cod_grupoempresa}/calificaciones`,
           {
             headers: {
               Authorization: `Bearer ${token}`,
@@ -231,7 +231,7 @@ const EvaluacionSemanal = () => {
     try {
       const token = localStorage.getItem("token");
       await axios.post(
-        "http://localhost:3000/evaluacion/calificar",
+        "https://backend-tis-silk.vercel.app/evaluacion/calificar",
         {
           codEvaluacion: cod_evaluacion,
           codigoSis: selectedStudent.codigo_sis,
@@ -276,7 +276,7 @@ const EvaluacionSemanal = () => {
 
       if (retroalimentacion.trim()) {
         await axios.post(
-          "http://localhost:3000/evaluacion/retroalimentacion",
+          "https://backend-tis-silk.vercel.app/evaluacion/retroalimentacion",
           {
             codEvaluacion: cod_evaluacion,
             codClase: cod_clase,
@@ -313,7 +313,7 @@ const EvaluacionSemanal = () => {
       );
 
       await axios.post(
-        `http://localhost:3000/asistencia/registrar/${cod_clase}`,
+        `https://backend-tis-silk.vercel.app/asistencia/registrar/${cod_clase}`,
         {
           listaAsistencia,
         },
@@ -337,16 +337,16 @@ const EvaluacionSemanal = () => {
   }, []);
 
   // >>>>> REVISARR
-  const [updatedIntegrantes, setUpdatedIntegrantes] = useState([])
+  const [updatedIntegrantes, setUpdatedIntegrantes] = useState([]);
   useEffect(() => {
-    if (!cod_grupoempresa && !fecha)  return;
+    if (!cod_grupoempresa && !fecha) return;
 
     const fetchAsistencia = async () => {
       try {
         const token = localStorage.getItem("token");
         const response = await axios.get(
-          `http://localhost:3000/asistencia?codGrupo=${cod_grupoempresa}&fecha=${fecha}`,
-          {headers: {Authorization: `Bearer ${token}`}}
+          `https://backend-tis-silk.vercel.app/asistencia?codGrupo=${cod_grupoempresa}&fecha=${fecha}`,
+          { headers: { Authorization: `Bearer ${token}` } }
         );
 
         const asistenciaData = response.data.asistencia || [];
@@ -366,8 +366,8 @@ const EvaluacionSemanal = () => {
           };
         });
 
-        setUpdatedIntegrantes(updatedIntegrantes)
-        console.log(">>>> updatedIntegrantes", updatedIntegrantes)
+        setUpdatedIntegrantes(updatedIntegrantes);
+        console.log(">>>> updatedIntegrantes", updatedIntegrantes);
         // setIntegrantes(updatedIntegrantes);
       } catch (error) {
         console.error("Error al obtener la asistencia:", error);
@@ -388,8 +388,8 @@ const EvaluacionSemanal = () => {
     saveRubricScores();
   };
 
-
-  const integrantesList = updatedIntegrantes.length > 0 ? updatedIntegrantes : integrantes
+  const integrantesList =
+    updatedIntegrantes.length > 0 ? updatedIntegrantes : integrantes;
 
   return (
     <div className="flex flex-col w-full p-6 bg-white">
