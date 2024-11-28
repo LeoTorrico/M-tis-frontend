@@ -1,13 +1,16 @@
 import React, { useState } from "react";
 import Criterio from "../Components/RubricaDetalles/Criterio";
+import { useNavigate, useParams } from "react-router-dom";
 import Swal from "sweetalert2";
 import axios from "axios";
 
 const Rubrica = () => {
+  const { cod_evaluacion } = useParams();
+  const navigate = useNavigate();
   const [criterios, setCriterios] = useState([]);
   const [errors, setErrors] = useState({});
   const token = localStorage.getItem("token");
-
+  console.log(cod_evaluacion);
   const agregarCriterio = () => {
     setCriterios([
       ...criterios,
@@ -96,7 +99,7 @@ const Rubrica = () => {
     }
 
     const rubrica = {
-      codEvaluacion: 9,
+      codEvaluacion: cod_evaluacion,
       rubricas: criterios.map((criterio) => {
         const pesoRubrica = Math.max(
           ...criterio.niveles.map((nivel) => parseFloat(nivel.puntos) || 0)
@@ -137,6 +140,7 @@ const Rubrica = () => {
               "text-white bg-blue-modal hover:bg-semi-blue px-4 py-2 rounded",
           },
         });
+        navigate(`/`);
       }
     } catch (error) {
       console.error("Error al registrar la rúbrica:", error);

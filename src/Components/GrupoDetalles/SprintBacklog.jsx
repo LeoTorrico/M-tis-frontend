@@ -1,10 +1,12 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import Modal from "react-modal";
 import { IoMdClose } from "react-icons/io";
 import axios from "axios";
 import { useParams } from "react-router-dom";
 import Swal from "sweetalert2";
 import RequerimientosModal from "./RequerimientosModal";
+import { UserContext } from "../../context/UserContext";
+
 const SprintBacklog = () => {
   const [sprints, setSprints] = useState([]); // Nuevo estado para almacenar los sprints
   const [requerimientos, setRequerimientos] = useState([]);
@@ -20,7 +22,8 @@ const SprintBacklog = () => {
   });
   const { cod_grupoempresa } = useParams();
   const [error, setError] = useState("");
-  // Obtener el product backlog
+  const { user } = useContext(UserContext);
+
   useEffect(() => {
     const fetchTasks = async () => {
       try {
@@ -85,7 +88,7 @@ const SprintBacklog = () => {
     if (!isValidateObjetivo) return;
 
     const sprintPayload = {
-      cod_grupoempresa, // Lo pasamos desde las props
+      codigoGrupo: cod_grupoempresa, // Lo pasamos desde las props
       sprint: sprintData.numero,
       fechaInicio: sprintData.fechaInicio,
       fechaFin: sprintData.fechaFin,
@@ -216,12 +219,14 @@ const SprintBacklog = () => {
       <div className="p-6 bg-light-blue rounded-lg shadow-md w-full">
         <h2 className="text-xl font-semibold text-dark-blue">Sprint Backlog</h2>
 
-        <button
-          onClick={openModal}
-          className="mt-4 bg-semi-blue text-white p-2 px-4 py-2 rounded-lg"
-        >
-          Registrar Sprint
-        </button>
+        {user.rol === "estudiante" && (
+          <button
+            onClick={openModal}
+            className="mt-4 bg-semi-blue text-white p-2 px-4 py-2 rounded-lg"
+          >
+            Registrar Sprint
+          </button>
+        )}
 
         {/* Mostrar lista de sprints */}
         <div className="mt-6">
@@ -236,12 +241,14 @@ const SprintBacklog = () => {
                     Sprint {sprintItem.sprint.sprint} - Objetivo:{" "}
                     {sprintItem.sprint.objetivo_sprint}
                   </h3>
-                  <button
-                    onClick={() => openRequerimientosModal(sprintItem.sprint)}
-                    className="mt-4 bg-semi-blue text-white p-2 px-4 py-2 rounded-lg"
-                  >
-                    Registrar Requerimientos
-                  </button>
+                  {user.rol === "estudiante" && (
+                    <button
+                      onClick={() => openRequerimientosModal(sprintItem.sprint)}
+                      className="mt-4 bg-semi-blue text-white p-2 px-4 py-2 rounded-lg"
+                    >
+                      Registrar Requerimientos
+                    </button>
+                  )}
                 </div>
                 <p>
                   Fecha de inicio:{" "}

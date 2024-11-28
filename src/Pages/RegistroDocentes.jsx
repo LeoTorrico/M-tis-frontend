@@ -55,11 +55,16 @@ function RegistroDocentes() {
 
   const handleChange = (e) => {
     const { id, value } = e.target;
-    if (id === "nombre" && value.length > 60) {
-      return;
+
+    if (id === "nombre") {
+      if (value.length > 60 || /[^a-zA-ZáéíóúÁÉÍÓÚñÑ\s]/.test(value)) {
+        return;
+      }
     }
-    if (id === "apellido" && value.length > 80) {
-      return;
+    if (id === "apellido") {
+      if (value.length > 80 || /[^a-zA-ZáéíóúÁÉÍÓÚñÑ\s]/.test(value)) {
+        return;
+      }
     }
     if (id === "contraseña" && value.length > 30) {
       return;
@@ -80,7 +85,7 @@ function RegistroDocentes() {
       !formData.nombre ||
       formData.nombre.length < 3 ||
       formData.nombre.length > 60 ||
-      /[^a-zA-Z\s']/.test(formData.nombre)
+      /[^a-zA-ZáéíóúÁÉÍÓÚñÑ\s']/.test(formData.nombre)
     ) {
       newErrors.nombre = errorMessages.nombre;
     }
@@ -88,7 +93,7 @@ function RegistroDocentes() {
       !formData.apellido ||
       formData.apellido.length < 3 ||
       formData.apellido.length > 80 ||
-      /[^a-zA-Z\s']/.test(formData.apellido)
+      /[^a-zA-ZáéíóúÁÉÍÓÚñÑ\s']/.test(formData.apellido)
     ) {
       newErrors.apellido = errorMessages.apellido;
     }
@@ -284,7 +289,7 @@ function RegistroDocentes() {
               <div className="flex flex-col items-center">
                 <button
                   type="submit"
-                  className="p-2 md:p-3 bg-[#00204A] text-white rounded-lg text-sm md:text-base w-2/3 md:w-1/3 mt-4 md:mt-6 transition-transform duration-200 hover:bg-[#001737]"
+                  className="p-2 md:p-3 bg-[#031930] text-white rounded-lg text-sm md:text-base w-2/3 md:w-1/3 mt-4 md:mt-6 transition-transform duration-200 hover:bg-[#001737]"
                 >
                   Registrarse
                 </button>

@@ -13,8 +13,15 @@ import RestablecerContrasenia from "./Pages/RestablecerContrasenia";
 import LoginDocentes from "./Pages/LoginDocentes";
 import { AnimatePresence } from "framer-motion";
 import GrupoDetalles from "./Pages/GrupoDetalles";
+import EvaluacionSemanal from "./Pages/EvaluacionSemanal";
+import Asistencia from "./Pages/Asistencia";
 import Rubrica from "./Pages/Rubrica";
 import EvaluacionDetalles from "./Pages/EvaluacionDetalles";
+import Evaluacion from "./Pages/Evaluacion";
+import VistaEvaluacion from "./Pages/VistaEvaluacion";
+import Reportes from "./Pages/Reportes";
+import ReporteAsistencia from "./Pages/ReporteAsistencia";
+
 Modal.setAppElement("#root");
 
 function App() {
@@ -23,7 +30,7 @@ function App() {
       <Layout>
         <AnimatePresence>
           <Routes>
-            <Route path="/" element={<ClasesPrueba />} />{" "}
+            <Route path="/" element={<ClasesPrueba />} />
             <Route path="/Vista-Curso/:cod_clase" element={<VistaCurso />} />
             <Route
               path="/Vista-Curso/:cod_clase/grupo/:cod_grupoempresa"
@@ -31,9 +38,10 @@ function App() {
             />
             <Route
               path="/Vista-Curso/:cod_clase/evaluacion/:cod_evaluacion"
-              element={<EvaluacionDetalles />}
+              element={<VistaEvaluacion />}
             />
             <Route path="/RegistroDocentes" element={<RegistroDocentes />} />
+            <Route path="/Evaluacion/:cod_clase" element={<Evaluacion />} />
             <Route
               path="/RegistroEstudiante"
               element={<RegistroEstudiante />}
@@ -43,9 +51,16 @@ function App() {
               path="/reset-password/:token"
               element={<RestablecerContrasenia />}
             />
-            <Route path="/Rubrica" element={<Rubrica />} />
+            <Route path="/Rubrica/:cod_evaluacion" element={<Rubrica />} />
             <Route path="/LoginEstudiantes" element={<LoginEstudiantes />} />
             <Route path="/LoginDocentes" element={<LoginDocentes />} />
+            <Route
+              path="/Vista-Curso/:cod_clase/evaluacion-semanal/:cod_grupoempresa/:cod_evaluacion"
+              element={<EvaluacionSemanal />}
+            />
+            <Route path="/Asistencia" element={<Asistencia />} />
+            <Route path="/Reportes" element={<Reportes />} />
+            <Route path="/Reporte-asistencia/:cod_clase/:cod_grupoempresa" element={<ReporteAsistencia />} />
           </Routes>
         </AnimatePresence>
       </Layout>
@@ -55,6 +70,7 @@ function App() {
 
 function Layout({ children }) {
   const location = useLocation();
+
   const isLoginPage =
     location.pathname === "/LoginEstudiantes" ||
     location.pathname === "/LoginDocentes" ||
@@ -64,8 +80,13 @@ function Layout({ children }) {
   const isSidebarPage =
     location.pathname === "/" ||
     location.pathname.match(/^\/Vista-Curso\/.+$/) ||
-    location.pathname === "/Rubrica";
-
+    (location.pathname.startsWith("/Vista-Curso/") &&
+      location.pathname.includes("evaluacion-semanal")) ||
+    location.pathname === "/Asistencia" ||
+    location.pathname === "/Reportes" ||
+    location.pathname.match(/^\/Reporte-asistencia\/[^/]+\/[^/]+$/) ||
+    location.pathname.match(/^\/Rubrica\/.+$/) ||
+    location.pathname.match(/^\/Evaluacion\/.+$/);
   return (
     <div className="flex flex-grow">
       {isSidebarPage && <Sidebar />}
