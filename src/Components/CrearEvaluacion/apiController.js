@@ -1,6 +1,6 @@
 import axios from "axios";
 
-const API_URL = "https://backend-tis-silk.vercel.app/";
+const API_URL = "https://backend-tis-silk.vercel.app";
 
 axios.defaults.headers.common["Authorization"] = `Bearer ${localStorage.getItem(
   "token"
