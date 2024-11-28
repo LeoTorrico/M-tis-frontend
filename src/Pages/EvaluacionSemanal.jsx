@@ -516,7 +516,7 @@ const EvaluacionSemanal = () => {
         <div className="flex justify-between mt-4">
           <button
             onClick={() => handleViewClass(cod_clase)}
-            className="bg-[#031930] text-white rounded-lg px-6 py-2"
+            className="bg-[#031930] text-white px-4 py-2 rounded-lg hover:bg-red-500 hover:text-white"
           >
             Cerrar
           </button>
