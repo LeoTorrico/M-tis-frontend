@@ -31,7 +31,7 @@ const EvaluacionSemanal = () => {
   // const [retroalimentacionDisponible, setRetroalimentacionDisponible] =
   //  useState(false);
   const [updatedIntegrantes, setUpdatedIntegrantes] = useState([]);
-   useEffect(() => {
+  useEffect(() => {
     const fetchClaseData = async () => {
       try {
         const token = localStorage.getItem("token");
@@ -366,7 +366,9 @@ const EvaluacionSemanal = () => {
 
   const integrantesList =
     updatedIntegrantes.length > 0 ? updatedIntegrantes : integrantes;
-
+  const handleViewClass = (codClase) => {
+    navigate(`/Vista-Curso/${codClase}`);
+  };
   return (
     <div className="flex flex-col w-full p-6 bg-white">
       <div className="bg-semi-blue text-white p-6 mb-6 rounded-lg">
@@ -513,8 +515,8 @@ const EvaluacionSemanal = () => {
         {/* Botón alineado a la derecha */}
         <div className="flex justify-between mt-4">
           <button
-            onClick={() => navigate(`/path/to/page/${cod_clase}`)} // Cambia '/path/to/page/' por la ruta deseada
-            className="bg-gray-300 text-black rounded-lg px-6 py-2"
+            onClick={() => handleViewClass(cod_clase)}
+            className="bg-[#031930] text-white rounded-lg px-6 py-2"
           >
             Cerrar
           </button>
