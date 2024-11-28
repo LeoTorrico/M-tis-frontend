@@ -28,11 +28,10 @@ const EvaluacionSemanal = () => {
   const [retroalimentacionGrupal, setRetroalimentacionGrupal] = useState("");
   const [comentariosPorEstudiante, setComentariosPorEstudiante] = useState({});
   const [asistenciaDisponible, setAsistenciaDisponible] = useState(false);
-  const [retroalimentacionDisponible, setRetroalimentacionDisponible] =
-    useState(false);
+  // const [retroalimentacionDisponible, setRetroalimentacionDisponible] =
+  //  useState(false);
   const [updatedIntegrantes, setUpdatedIntegrantes] = useState([]);
-
-  useEffect(() => {
+   useEffect(() => {
     const fetchClaseData = async () => {
       try {
         const token = localStorage.getItem("token");
@@ -113,7 +112,7 @@ const EvaluacionSemanal = () => {
           response.data.retroalimentacion_grupal || "";
         setRetroalimentacionGrupal(retroalimentacionGrupal);
 
-        setRetroalimentacionDisponible(!!retroalimentacionGrupal);
+        // setRetroalimentacionDisponible(!!retroalimentacionGrupal);
       } catch (error) {
         console.error("Error al obtener las rúbricas:", error);
       }
@@ -244,6 +243,7 @@ const EvaluacionSemanal = () => {
   }
 
   verificarToken();
+
   const saveRetroalimentacionGrupal = async () => {
     try {
       const token = localStorage.getItem("token");
@@ -265,7 +265,7 @@ const EvaluacionSemanal = () => {
         );
 
         alert("Retroalimentación grupal guardada con éxito.");
-        setRetroalimentacionDisponible(true);
+        //  setRetroalimentacionDisponible(true);
       } else {
         alert("Por favor, ingrese retroalimentación antes de guardar.");
       }
@@ -511,13 +511,16 @@ const EvaluacionSemanal = () => {
           </table>
         </div>{" "}
         {/* Botón alineado a la derecha */}
-        <div className="flex justify-end mt-4">
+        <div className="flex justify-between mt-4">
+          <button
+            onClick={() => navigate(`/path/to/page/${cod_clase}`)} // Cambia '/path/to/page/' por la ruta deseada
+            className="bg-gray-300 text-black rounded-lg px-6 py-2"
+          >
+            Cerrar
+          </button>
           <button
             onClick={saveRetroalimentacionGrupal}
-            className={`bg-[#031930] text-white rounded-lg px-6 py-2 ${
-              retroalimentacionDisponible ? "opacity-50 cursor-not-allowed" : ""
-            }`}
-            disabled={retroalimentacionDisponible}
+            className="bg-[#031930] text-white rounded-lg px-6 py-2"
           >
             Guardar retroalimentación grupal
           </button>
