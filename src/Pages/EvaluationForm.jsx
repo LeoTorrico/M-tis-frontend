@@ -35,6 +35,7 @@ export default function EvaluationForm({
   const [formData, setFormData] = useState(initialFormData);
   const [archivo, setArchivo] = useState({});
   const [formDataError, setFormDataError] = useState(initialFormDataError);
+  const [isDisabledDropDown, setIsDisabledDropDown] = useState(false);
 
   useEffect(() => {
     if (formData.tipoEvaluacion === "Evaluación cruzada" && grupos.length > 0) {
@@ -43,8 +44,12 @@ export default function EvaluationForm({
         ...prevData,
         codigosGrupos: "0"
       }));
+      setIsDisabledDropDown (true);
       const dataAux = { ...formDataError, codigosGrupos: true };
       setFormDataError(dataAux);
+    }
+    else {
+      setIsDisabledDropDown (false);
     }
   }, [formData.tipoEvaluacion, grupos]);  // Dependencias: formData.tipoEvaluacion y grupos
   
@@ -195,6 +200,7 @@ export default function EvaluationForm({
               }))}
               onChange={handleChange}
               required={true}
+              isEnable={isDisabledDropDown}
               validation={[VType.isRequired]}
               allowCreate={false}
             />
