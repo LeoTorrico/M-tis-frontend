@@ -65,33 +65,6 @@ const EvaluacionSemanal = () => {
   }, [cod_clase]);
 
   useEffect(() => {
-    const fetchGrupoData = async () => {
-      if (!cod_grupoempresa) {
-        console.error("El cod_grupo no está definido");
-        return;
-      }
-
-      try {
-        const token = localStorage.getItem("token");
-        const response = await axios.get(
-          `http://localhost:3000/api/grupos/${cod_grupoempresa}/estudiantes`,
-          {
-            headers: {
-              Authorization: `Bearer ${token}`,
-            },
-          }
-        );
-
-        setIntegrantes(Array.isArray(response.data) ? response.data : []);
-      } catch (error) {
-        console.error("Error al obtener los datos del grupo:", error);
-      }
-    };
-
-    fetchGrupoData();
-  }, [cod_grupoempresa]);
-
-  useEffect(() => {
     const fetchRubricas = async () => {
       try {
         const token = localStorage.getItem("token");
@@ -337,16 +310,16 @@ const EvaluacionSemanal = () => {
   }, []);
 
   // >>>>> REVISARR
-  const [updatedIntegrantes, setUpdatedIntegrantes] = useState([])
+  const [updatedIntegrantes, setUpdatedIntegrantes] = useState([]);
   useEffect(() => {
-    if (!cod_grupoempresa && !fecha)  return;
+    if (!cod_grupoempresa && !fecha) return;
 
     const fetchAsistencia = async () => {
       try {
         const token = localStorage.getItem("token");
         const response = await axios.get(
           `http://localhost:3000/asistencia?codGrupo=${cod_grupoempresa}&fecha=${fecha}`,
-          {headers: {Authorization: `Bearer ${token}`}}
+          { headers: { Authorization: `Bearer ${token}` } }
         );
 
         const asistenciaData = response.data.asistencia || [];
@@ -366,8 +339,8 @@ const EvaluacionSemanal = () => {
           };
         });
 
-        setUpdatedIntegrantes(updatedIntegrantes)
-        console.log(">>>> updatedIntegrantes", updatedIntegrantes)
+        setUpdatedIntegrantes(updatedIntegrantes);
+        console.log(">>>> updatedIntegrantes", updatedIntegrantes);
         // setIntegrantes(updatedIntegrantes);
       } catch (error) {
         console.error("Error al obtener la asistencia:", error);
@@ -388,8 +361,8 @@ const EvaluacionSemanal = () => {
     saveRubricScores();
   };
 
-
-  const integrantesList = updatedIntegrantes.length > 0 ? updatedIntegrantes : integrantes
+  const integrantesList =
+    updatedIntegrantes.length > 0 ? updatedIntegrantes : integrantes;
 
   return (
     <div className="flex flex-col w-full p-6 bg-white">
