@@ -153,11 +153,19 @@ const EvaluacionSemanal = () => {
     updatedScores[selectedStudentIndex][rubricIndex] =
       value === "" ? "" : Number(value);
 
-    if (isNaN(numericValue) || numericValue < 0 || numericValue > 100) {
-      updatedScores[selectedStudentIndex][rubricIndex] = "";
-    } else {
-      updatedScores[selectedStudentIndex][rubricIndex] = numericValue;
-    }
+   if (
+     isNaN(numericValue) ||
+     numericValue < 0 ||
+     numericValue > rubricas[rubricIndex].peso
+   ) {
+     alert(
+       `La calificación debe estar entre 0 y ${rubricas[rubricIndex].peso}.`
+     );
+     updatedScores[selectedStudentIndex][rubricIndex] = "";
+   } else {
+     updatedScores[selectedStudentIndex][rubricIndex] = numericValue;
+   }
+
 
     setRubricScores(updatedScores);
   };
