@@ -9,11 +9,12 @@ const EvaluacionDetails = ({ evaluacion, user, submitted, retrievedFile, isPastD
     const [selectedFile, setSelectedFile] = useState(null);
     const [menuOpen, setMenuOpen] = useState(false);
     const [comentario, setComentario] = useState(null);
+    const [comentarioIndividual, setComentarioIndividual] = useState(null);
     const { cod_clase } = useParams();
     const navigate = useNavigate();
 
     useEffect(() => {
-        const fetchComentario = async () => {
+        const fetchComentarios = async () => {
             try {
                 const response = await axios.get(`http://localhost:3000/evaluaciones/${evaluacion.cod_evaluacion}/${cod_clase}/nota-total`, {
                     headers: {
@@ -22,19 +23,28 @@ const EvaluacionDetails = ({ evaluacion, user, submitted, retrievedFile, isPastD
                 });
                 console.log('Respuesta del backend:', response.data);
 
-                if (response.data && response.data.retroalimentacion && response.data.retroalimentacion.comentario) {
-                    setComentario(response.data.retroalimentacion.comentario);
-                } else {
-                    setComentario(null); // No establecer comentario si no existe
+                if (response.data) {
+                    if (response.data.retroalimentacion && response.data.retroalimentacion.comentario) {
+                        setComentario(response.data.retroalimentacion.comentario);
+                    } else {
+                        setComentario(null); 
+                    }
+
+                    if (response.data.comentario_individual) {
+                        setComentarioIndividual(response.data.comentario_individual);
+                    } else {
+                        setComentarioIndividual(null);
+                    }
                 }
             } catch (error) {
-                console.error('Error al obtener el comentario:', error);
+                console.error('Error al obtener los comentarios:', error);
                 setComentario(null);
+                setComentarioIndividual(null);
             }
         };
 
         if (evaluacion.cod_evaluacion && cod_clase) {
-            fetchComentario();
+            fetchComentarios();
         }
     }, [evaluacion.cod_evaluacion, cod_clase, user.token]);
 
@@ -177,10 +187,15 @@ const EvaluacionDetails = ({ evaluacion, user, submitted, retrievedFile, isPastD
                                 {submitted ? "Entregado" : isPastDueDate ? "Sin entregar" : "Entregar"}
                             </button>
 
-                            {/* Solo muestra el comentario si existe */}
                             {comentario && (
                                 <p className="mt-2 text-sm text-black font-Montserrat">
-                                    <strong>Comentario de retroalimentación:</strong> {comentario}
+                                    <strong>Comentario grupal:</strong> {comentario}
+                                </p>
+                            )}
+
+                            {comentarioIndividual && (
+                                <p className="mt-2 text-sm text-black font-Montserrat">
+                                    <strong>Comentario individual:</strong> {comentarioIndividual}
                                 </p>
                             )}
                         </form>
@@ -200,22 +215,13 @@ const EvaluacionDetails = ({ evaluacion, user, submitted, retrievedFile, isPastD
                                         src={`data:application/pdf;base64,${evaluacion.archivo_evaluacion}`}
                                         title="Previsualización de PDF"
                                         className="flex flex-col h-full"
-                                        style={{ border: "none" }}
-                                    />
-                                ) : evaluacion.archivo_evaluacion.startsWith("/9j/") ||
-                                    evaluacion.archivo_evaluacion.startsWith("iVBORw0KGgo") ? (
-                                    <img
-                                        src={`data:image/jpeg;base64,${evaluacion.archivo_evaluacion}`}
-                                        alt="Previsualización del archivo"
-                                        className="mt-4"
-                                        style={{ maxWidth: "100%", maxHeight: "400px" }}
                                     />
                                 ) : (
-                                    <p className="text-red-500">Formato de archivo no soportado para previsualización</p>
+                                    <div>Vista previa no disponible para este tipo de archivo.</div>
                                 )}
                             </>
                         ) : (
-                            <p>No se ha subido ningún archivo.</p>
+                            <div>No se ha subido un archivo de evaluación.</div>
                         )
                     )}
                 </div>
