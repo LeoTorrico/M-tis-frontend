@@ -30,6 +30,34 @@ const EvaluacionSemanal = () => {
   const [asistenciaDisponible, setAsistenciaDisponible] = useState(false);
   // const [retroalimentacionDisponible, setRetroalimentacionDisponible] =
   //  useState(false);
+  const [selectedCriteria, setSelectedCriteria] = useState({});
+const handleCriteriaClick = (rubricIndex, value) => {
+  const updatedCriteria = { ...selectedCriteria };
+
+  // Permitir solo una selección por rúbrica
+  if (updatedCriteria[selectedStudentIndex]?.[rubricIndex]) {
+    alert("Solo puedes seleccionar un criterio por rúbrica.");
+    return;
+  }
+
+  if (!updatedCriteria[selectedStudentIndex]) {
+    updatedCriteria[selectedStudentIndex] = {};
+  }
+
+  updatedCriteria[selectedStudentIndex][rubricIndex] = value;
+
+  // Actualizar el input automáticamente con la calificación seleccionada
+  const updatedScores = { ...rubricScores };
+  if (!updatedScores[selectedStudentIndex]) {
+    updatedScores[selectedStudentIndex] = Array(rubricas.length).fill(null);
+  }
+
+  updatedScores[selectedStudentIndex][rubricIndex] = value;
+
+  setSelectedCriteria(updatedCriteria);
+  setRubricScores(updatedScores);
+};
+
   const [updatedIntegrantes, setUpdatedIntegrantes] = useState([]);
   useEffect(() => {
     const fetchClaseData = async () => {
@@ -573,15 +601,27 @@ const EvaluacionSemanal = () => {
                       {/* Display rubric details */}
                       <div className="flex mb-2 space-x-4">
                         {rubrica.detalles.map((detalle) => (
-                          <div
+                          <button
                             key={detalle.cod_detalle}
-                            className="border border-gray-300 rounded-md p-2"
+                            className={`border border-gray-300 rounded-md p-2 ${
+                              selectedCriteria[selectedStudentIndex]?.[
+                                rubricIndex
+                              ] === detalle.peso_rubrica
+                                ? "bg-blue-300"
+                                : "bg-white"
+                            }`}
+                            onClick={() =>
+                              handleCriteriaClick(
+                                rubricIndex,
+                                detalle.peso_rubrica
+                              )
+                            }
                           >
                             <span className="text-sm">
                               {detalle.clasificacion_rubrica} :{" "}
                               {detalle.peso_rubrica}
                             </span>
-                          </div>
+                          </button>
                         ))}
                       </div>
 
