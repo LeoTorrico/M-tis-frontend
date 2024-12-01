@@ -423,6 +423,7 @@ const handleCriteriaClick = (rubricIndex, value) => {
         <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
           <div className="col-span-2">
             <h2 className="font-bold text-md mb-2">Integrantes</h2>
+
             {integrantesList.length > 0 ? (
               integrantesList.map((integrante, index) => (
                 <input
@@ -498,6 +499,15 @@ const handleCriteriaClick = (rubricIndex, value) => {
           </div>
         </div>
         <div className="flex justify-end mt-4">
+          {/* Botón "Ver evaluación subida" con margen derecho */}
+          <button
+            onClick={() => console.log("Redirigir a la evaluación subida")}
+            className="bg-[#031930] text-white px-4 py-2 rounded-lg mr-4"
+          >
+            Ver evaluación subida
+          </button>
+
+          {/* Botón "Guardar asistencia" */}
           <button
             onClick={saveAsistencia}
             className={`bg-[#031930] text-white rounded-lg px-6 py-2 ${
