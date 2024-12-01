@@ -31,32 +31,32 @@ const EvaluacionSemanal = () => {
   // const [retroalimentacionDisponible, setRetroalimentacionDisponible] =
   //  useState(false);
   const [selectedCriteria, setSelectedCriteria] = useState({});
-const handleCriteriaClick = (rubricIndex, value) => {
-  const updatedCriteria = { ...selectedCriteria };
+  const handleCriteriaClick = (rubricIndex, value) => {
+    const updatedCriteria = { ...selectedCriteria };
 
-  // Permitir solo una selección por rúbrica
-  if (updatedCriteria[selectedStudentIndex]?.[rubricIndex]) {
-    alert("Solo puedes seleccionar un criterio por rúbrica.");
-    return;
-  }
+    // Permitir solo una selección por rúbrica
+    if (updatedCriteria[selectedStudentIndex]?.[rubricIndex]) {
+      alert("Solo puedes seleccionar un criterio por rúbrica.");
+      return;
+    }
 
-  if (!updatedCriteria[selectedStudentIndex]) {
-    updatedCriteria[selectedStudentIndex] = {};
-  }
+    if (!updatedCriteria[selectedStudentIndex]) {
+      updatedCriteria[selectedStudentIndex] = {};
+    }
 
-  updatedCriteria[selectedStudentIndex][rubricIndex] = value;
+    updatedCriteria[selectedStudentIndex][rubricIndex] = value;
 
-  // Actualizar el input automáticamente con la calificación seleccionada
-  const updatedScores = { ...rubricScores };
-  if (!updatedScores[selectedStudentIndex]) {
-    updatedScores[selectedStudentIndex] = Array(rubricas.length).fill(null);
-  }
+    // Actualizar el input automáticamente con la calificación seleccionada
+    const updatedScores = { ...rubricScores };
+    if (!updatedScores[selectedStudentIndex]) {
+      updatedScores[selectedStudentIndex] = Array(rubricas.length).fill(null);
+    }
 
-  updatedScores[selectedStudentIndex][rubricIndex] = value;
+    updatedScores[selectedStudentIndex][rubricIndex] = value;
 
-  setSelectedCriteria(updatedCriteria);
-  setRubricScores(updatedScores);
-};
+    setSelectedCriteria(updatedCriteria);
+    setRubricScores(updatedScores);
+  };
 
   const [updatedIntegrantes, setUpdatedIntegrantes] = useState([]);
   useEffect(() => {
@@ -181,19 +181,18 @@ const handleCriteriaClick = (rubricIndex, value) => {
     updatedScores[selectedStudentIndex][rubricIndex] =
       value === "" ? "" : Number(value);
 
-   if (
-     isNaN(numericValue) ||
-     numericValue < 0 ||
-     numericValue > rubricas[rubricIndex].peso
-   ) {
-     alert(
-       `La calificación debe estar entre 0 y ${rubricas[rubricIndex].peso}.`
-     );
-     updatedScores[selectedStudentIndex][rubricIndex] = "";
-   } else {
-     updatedScores[selectedStudentIndex][rubricIndex] = numericValue;
-   }
-
+    if (
+      isNaN(numericValue) ||
+      numericValue < 0 ||
+      numericValue > rubricas[rubricIndex].peso
+    ) {
+      alert(
+        `La calificación debe estar entre 0 y ${rubricas[rubricIndex].peso}.`
+      );
+      updatedScores[selectedStudentIndex][rubricIndex] = "";
+    } else {
+      updatedScores[selectedStudentIndex][rubricIndex] = numericValue;
+    }
 
     setRubricScores(updatedScores);
   };
@@ -405,6 +404,13 @@ const handleCriteriaClick = (rubricIndex, value) => {
   const handleViewClass = (codClase) => {
     navigate(`/Vista-Curso/${codClase}`);
   };
+  const [isViewEvaluationOpen, setIsViewEvaluationOpen] = useState(false);
+
+  // Función para abrir/cerrar el modal "Ver evaluación subida"
+  const toggleViewEvaluationModal = () => {
+    setIsViewEvaluationOpen(!isViewEvaluationOpen);
+  };
+
   return (
     <div className="flex flex-col w-full p-6 bg-white">
       <div className="bg-semi-blue text-white p-6 mb-6 rounded-lg">
@@ -569,137 +575,161 @@ const handleCriteriaClick = (rubricIndex, value) => {
 
       {selectedStudentIndex !== null && integrantes[selectedStudentIndex] && (
         <div className="fixed inset-0 flex items-center justify-center z-50 bg-black bg-opacity-50">
-          <div className="bg-white p-4 rounded-lg shadow-lg max-w-4xl w-full mx-4 lg:mx-auto max-h-[90vh] overflow-y-auto">
-            <h2 className="bg-[#3684DB] p-4 rounded-t-lg text-white font-bold w-full text-center">
-              Evaluar a {integrantes[selectedStudentIndex]?.nombre_estudiante}{" "}
-              {integrantes[selectedStudentIndex]?.apellido_estudiante}
-            </h2>
+          <div className="flex gap-4">
+            <div className="bg-white p-4 rounded-lg shadow-lg max-w-4xl w-full mx-4 lg:mx-auto max-h-[90vh] overflow-y-auto">
+              <h2 className="bg-[#3684DB] p-4 rounded-t-lg text-white font-bold w-full text-center">
+                Evaluar a {integrantes[selectedStudentIndex]?.nombre_estudiante}{" "}
+                {integrantes[selectedStudentIndex]?.apellido_estudiante}
+              </h2>
 
-            <div className="mb-4">
-              {rubricas.length > 0 ? (
-                rubricas.map((rubrica, rubricIndex) => {
-                  const studentGrade =
-                    rubrica.estudiantes.find(
-                      (estudiante) =>
-                        estudiante.codigo_sis ===
-                        integrantes[selectedStudentIndex]?.codigo_sis
-                    )?.calificacion || "";
-
-                  return (
-                    <div
-                      key={`${rubrica.nombre_rubrica}-${rubricIndex}`}
-                      className="mb-4"
-                    >
-                      <div className="flex justify-between items-center">
-                        <label className="font-bold mb-2">
-                          {rubrica.nombre_rubrica}
-                        </label>
-                        <span className="text-sm">{rubrica.peso} Punto/s</span>
-                      </div>
-                      <p className="mb-2 text-sm">
-                        {rubrica.descripcion_rubrica}
-                      </p>
-
-                      {/* Display rubric details */}
-                      <div className="flex mb-2 space-x-4">
-                        {rubrica.detalles.map((detalle) => (
-                          <button
-                            key={detalle.cod_detalle}
-                            className={`border border-gray-300 rounded-md p-2 ${
-                              selectedCriteria[selectedStudentIndex]?.[
-                                rubricIndex
-                              ] === detalle.peso_rubrica
-                                ? "bg-blue-300"
-                                : "bg-white"
-                            }`}
-                            onClick={() =>
-                              handleCriteriaClick(
-                                rubricIndex,
-                                detalle.peso_rubrica
-                              )
-                            }
-                          >
-                            <span className="text-sm">
-                              {detalle.clasificacion_rubrica} :{" "}
-                              {detalle.peso_rubrica}
-                            </span>
-                          </button>
-                        ))}
-                      </div>
-
-                      {/* Calificacion input for the selected student */}
-                      <input
-                        type="text"
-                        onInput={(e) => {
-                          e.target.value = e.target.value.replace(
-                            /[^0-9]/g,
-                            ""
-                          );
-                        }}
-                        min="0"
-                        max={rubrica.peso}
-                        value={
-                          rubricScores[selectedStudentIndex]?.[rubricIndex] !==
-                          undefined
-                            ? rubricScores[selectedStudentIndex][rubricIndex]
-                            : studentGrade
-                        }
-                        onChange={(e) =>
-                          handleRubricChange(rubricIndex, e.target.value)
-                        }
-                        className="border border-gray-300 p-2 w-full bg-[#B3D6FF] rounded-xl"
-                        placeholder={`Peso máximo: ${rubrica.peso}`}
-                      />
-                    </div>
-                  );
-                })
-              ) : (
-                <p>No hay rúbricas disponibles</p>
-              )}
-
-              {/* Campo de comentarios */}
               <div className="mb-4">
-                <label className="font-bold mb-2">Comentarios</label>
-                <textarea
-                  value={
-                    comentario !== undefined && comentario !== ""
-                      ? comentario
-                      : integrantes[selectedStudentIndex]
-                          ?.retroalimentacion_individual || ""
-                  }
-                  onChange={handleComentarioChange}
-                  placeholder="Ingrese un comentario..."
-                  className="border border-gray-300 p-2 w-full rounded-lg"
-                />
-                {errorComentario && (
-                  <p className="text-red-500 mt-2">{errorComentario}</p>
+                {rubricas.length > 0 ? (
+                  rubricas.map((rubrica, rubricIndex) => {
+                    const studentGrade =
+                      rubrica.estudiantes.find(
+                        (estudiante) =>
+                          estudiante.codigo_sis ===
+                          integrantes[selectedStudentIndex]?.codigo_sis
+                      )?.calificacion || "";
+
+                    return (
+                      <div
+                        key={`${rubrica.nombre_rubrica}-${rubricIndex}`}
+                        className="mb-4"
+                      >
+                        <div className="flex justify-between items-center">
+                          <label className="font-bold mb-2">
+                            {rubrica.nombre_rubrica}
+                          </label>
+                          <span className="text-sm">
+                            {rubrica.peso} Punto/s
+                          </span>
+                        </div>
+                        <p className="mb-2 text-sm">
+                          {rubrica.descripcion_rubrica}
+                        </p>
+
+                        {/* Display rubric details */}
+                        <div className="flex mb-2 space-x-4">
+                          {rubrica.detalles.map((detalle) => (
+                            <button
+                              key={detalle.cod_detalle}
+                              className={`border border-gray-300 rounded-md p-2 ${
+                                selectedCriteria[selectedStudentIndex]?.[
+                                  rubricIndex
+                                ] === detalle.peso_rubrica
+                                  ? "bg-blue-300"
+                                  : "bg-white"
+                              }`}
+                              onClick={() =>
+                                handleCriteriaClick(
+                                  rubricIndex,
+                                  detalle.peso_rubrica
+                                )
+                              }
+                            >
+                              <span className="text-sm">
+                                {detalle.clasificacion_rubrica} :{" "}
+                                {detalle.peso_rubrica}
+                              </span>
+                            </button>
+                          ))}
+                        </div>
+
+                        {/* Calificacion input for the selected student */}
+                        <input
+                          type="text"
+                          onInput={(e) => {
+                            e.target.value = e.target.value.replace(
+                              /[^0-9]/g,
+                              ""
+                            );
+                          }}
+                          min="0"
+                          max={rubrica.peso}
+                          value={
+                            rubricScores[selectedStudentIndex]?.[
+                              rubricIndex
+                            ] !== undefined
+                              ? rubricScores[selectedStudentIndex][rubricIndex]
+                              : studentGrade
+                          }
+                          onChange={(e) =>
+                            handleRubricChange(rubricIndex, e.target.value)
+                          }
+                          className="border border-gray-300 p-2 w-full bg-[#B3D6FF] rounded-xl"
+                          placeholder={`Peso máximo: ${rubrica.peso}`}
+                        />
+                      </div>
+                    );
+                  })
+                ) : (
+                  <p>No hay rúbricas disponibles</p>
                 )}
+
+                {/* Campo de comentarios */}
+                <div className="mb-4">
+                  <label className="font-bold mb-2">Comentarios</label>
+                  <textarea
+                    value={
+                      comentario !== undefined && comentario !== ""
+                        ? comentario
+                        : integrantes[selectedStudentIndex]
+                            ?.retroalimentacion_individual || ""
+                    }
+                    onChange={handleComentarioChange}
+                    placeholder="Ingrese un comentario..."
+                    className="border border-gray-300 p-2 w-full rounded-lg"
+                  />
+                  {errorComentario && (
+                    <p className="text-red-500 mt-2">{errorComentario}</p>
+                  )}
+                </div>
+              </div>
+              <div className="bg-[#3684DB] p-4 rounded-b-lg flex justify-end">
+                <button
+                  className="bg-white text-[#3684DB] py-2 px-4 rounded-lg mr-2 border border-[#3684DB]"
+                  onClick={() => setSelectedStudentIndex(null)}
+                >
+                  Cancelar
+                </button>
+                <button
+                  onClick={handleCalificarClick}
+                  className="bg-white text-[#3684DB] py-2 px-4 rounded-lg border border-[#3684DB]"
+                  disabled={
+                    !!errorComentario ||
+                    comentario.trim().split(/\s+/).length < 1
+                  }
+                >
+                  Calificar
+                </button>
+                {/* Botón "Ver evaluación subida" con margen derecho */}
+                <button
+                  className="bg-white text-[#3684DB] py-2 px-4 rounded-lg border border-[#3684DB]"
+                  onClick={toggleViewEvaluationModal}
+                >
+                  Ver evaluación subida
+                </button>
               </div>
             </div>
-            <div className="bg-[#3684DB] p-4 rounded-b-lg flex justify-end">
-              <button
-                className="bg-white text-[#3684DB] py-2 px-4 rounded-lg mr-2 border border-[#3684DB]"
-                onClick={() => setSelectedStudentIndex(null)}
-              >
-                Cancelar
-              </button>
-              <button
-                onClick={handleCalificarClick}
-                className="bg-white text-[#3684DB] py-2 px-4 rounded-lg border border-[#3684DB]"
-                disabled={
-                  !!errorComentario || comentario.trim().split(/\s+/).length < 1
-                }
-              >
-                Calificar
-              </button>
-              {/* Botón "Ver evaluación subida" con margen derecho */}
-              <button
-                onClick={() => console.log("Redirigir a la evaluación subida")}
-                className="bg-white text-[#3684DB] py-2 px-4 rounded-lg border border-[#3684DB]"
-              >
-                Ver evaluación subida
-              </button>
-            </div>
+            {/* Modal "Ver evaluación subida" */}
+            {isViewEvaluationOpen && (
+              <div className="bg-white p-4 rounded-lg shadow-lg max-w-lg w-full mx-4 max-h-[90vh] overflow-y-auto">
+                <h2 className="bg-[#3684DB] p-4 rounded-t-lg text-white font-bold text-center">
+                  Evaluación subida
+                </h2>
+                {/* Contenido del nuevo modal */}
+                <p>Aquí puedes mostrar la evaluación subida...</p>
+                <div className="bg-[#3684DB] p-4 rounded-b-lg flex justify-end">
+                  <button
+                    className="bg-white text-[#3684DB] py-2 px-4 rounded-lg border border-[#3684DB]"
+                    onClick={toggleViewEvaluationModal}
+                  >
+                    Cerrar
+                  </button>
+                </div>
+              </div>
+            )}
           </div>
         </div>
       )}
