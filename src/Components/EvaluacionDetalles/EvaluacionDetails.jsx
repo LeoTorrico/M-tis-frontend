@@ -27,7 +27,7 @@ const EvaluacionDetails = ({ evaluacion, user, submitted, retrievedFile, isPastD
                     if (response.data.retroalimentacion && response.data.retroalimentacion.comentario) {
                         setComentario(response.data.retroalimentacion.comentario);
                     } else {
-                        setComentario(null); 
+                        setComentario(null);
                     }
 
                     if (response.data.comentario_individual) {
@@ -70,12 +70,12 @@ const EvaluacionDetails = ({ evaluacion, user, submitted, retrievedFile, isPastD
 
             const response = await axios.delete(`http://localhost:3000/evaluaciones/${evaluacion.cod_evaluacion}`, {
                 headers: {
-                    Authorization: `Bearer ${user.token}` 
+                    Authorization: `Bearer ${user.token}`
                 }
             });
 
             console.log('Evaluación eliminada con éxito:', response.data);
-            setMenuOpen(false); 
+            setMenuOpen(false);
             navigate(`/Vista-Curso/${cod_clase}`);
         } catch (error) {
             console.error('Error al eliminar la evaluación:', error);
@@ -188,15 +188,19 @@ const EvaluacionDetails = ({ evaluacion, user, submitted, retrievedFile, isPastD
                             </button>
 
                             {comentario && (
-                                <p className="mt-2 text-sm text-black font-Montserrat">
-                                    <strong>Comentario grupal:</strong> {comentario}
-                                </p>
+                                <div className="mt-2 p-3 bg-white rounded-lg shadow">
+                                    <p className="text-sm text-black font-Montserrat">
+                                        <strong>Comentario grupal:</strong> {comentario}
+                                    </p>
+                                </div>
                             )}
 
                             {comentarioIndividual && (
-                                <p className="mt-2 text-sm text-black font-Montserrat">
-                                    <strong>Comentario individual:</strong> {comentarioIndividual}
-                                </p>
+                                <div className="mt-2 p-3 bg-white rounded-lg shadow">
+                                    <p className="text-sm text-black font-Montserrat">
+                                        <strong>Comentario individual:</strong> {comentarioIndividual}
+                                    </p>
+                                </div>
                             )}
                         </form>
                     ) : (
