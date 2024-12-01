@@ -9,16 +9,34 @@ const EvaluacionDetails = ({ evaluacion, user, submitted, retrievedFile, isPastD
     const [selectedFile, setSelectedFile] = useState(null);
     const [menuOpen, setMenuOpen] = useState(false);
     const [comentario, setComentario] = useState(null);
-    const { cod_clase } = useParams();  
+    const { cod_clase } = useParams();
     const navigate = useNavigate();
 
-
     useEffect(() => {
-        // Recuperar el comentario asociado a la evaluación actual
-        const comentarioKey = `comentario_${evaluacion.cod_evaluacion}`;
-        const savedComentario = localStorage.getItem(comentarioKey);
-        setComentario(savedComentario === 'null' ? null : savedComentario);
-    }, [evaluacion.cod_evaluacion]);
+        const fetchComentario = async () => {
+            try {
+                const response = await axios.get(`http://localhost:3000/evaluaciones/${evaluacion.cod_evaluacion}/${cod_clase}/nota-total`, {
+                    headers: {
+                        Authorization: `Bearer ${user.token}`
+                    }
+                });
+                console.log('Respuesta del backend:', response.data);
+
+                if (response.data && response.data.retroalimentacion && response.data.retroalimentacion.comentario) {
+                    setComentario(response.data.retroalimentacion.comentario);
+                } else {
+                    setComentario(null); // No establecer comentario si no existe
+                }
+            } catch (error) {
+                console.error('Error al obtener el comentario:', error);
+                setComentario(null);
+            }
+        };
+
+        if (evaluacion.cod_evaluacion && cod_clase) {
+            fetchComentario();
+        }
+    }, [evaluacion.cod_evaluacion, cod_clase, user.token]);
 
     const onFileChange = (event) => {
         const file = event.target.files[0];
@@ -34,27 +52,27 @@ const EvaluacionDetails = ({ evaluacion, user, submitted, retrievedFile, isPastD
         setMenuOpen(!menuOpen);
     };
 
-        const handleDelete = async () => {
-            try {
-                if (!user?.token) {
-                    throw new Error('Token de autenticación no disponible');
-                }
-        
-                const response = await axios.delete(`http://localhost:3000/evaluaciones/${evaluacion.cod_evaluacion}`, {
-                    headers: {
-                        Authorization: `Bearer ${user.token}` 
-                    }
-                });
-        
-                console.log('Evaluación eliminada con éxito:', response.data);
-                setMenuOpen(false); 
-                navigate(`/Vista-Curso/${cod_clase}`);
-            } catch (error) {
-                console.error('Error al eliminar la evaluación:', error);
-                alert(`Error al eliminar la evaluación: ${error.response?.data?.message || error.message}`);
+    const handleDelete = async () => {
+        try {
+            if (!user?.token) {
+                throw new Error('Token de autenticación no disponible');
             }
-        };
-        
+
+            const response = await axios.delete(`http://localhost:3000/evaluaciones/${evaluacion.cod_evaluacion}`, {
+                headers: {
+                    Authorization: `Bearer ${user.token}` 
+                }
+            });
+
+            console.log('Evaluación eliminada con éxito:', response.data);
+            setMenuOpen(false); 
+            navigate(`/Vista-Curso/${cod_clase}`);
+        } catch (error) {
+            console.error('Error al eliminar la evaluación:', error);
+            alert(`Error al eliminar la evaluación: ${error.response?.data?.message || error.message}`);
+        }
+    };
+
     return (
         <div className="flex flex-col min-h-[calc(100vh-60px)] h-full">
             <div className="bg-semi-blue text-white p-6 rounded-lg m-4 relative">
@@ -78,7 +96,6 @@ const EvaluacionDetails = ({ evaluacion, user, submitted, retrievedFile, isPastD
                                 <button
                                     onClick={() => {
                                         setMenuOpen(false);
-                                        onEdit(evaluacion);
                                     }}
                                     className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 rounded-lg w-full text-left"
                                 >
@@ -160,10 +177,11 @@ const EvaluacionDetails = ({ evaluacion, user, submitted, retrievedFile, isPastD
                                 {submitted ? "Entregado" : isPastDueDate ? "Sin entregar" : "Entregar"}
                             </button>
 
+                            {/* Solo muestra el comentario si existe */}
                             {comentario && (
-                                <div className="mt-4 p-2 border-t border-gray-300 text-sm text-black">
-                                    <strong>Comentario del docente:</strong> {comentario}
-                                </div>
+                                <p className="mt-2 text-sm text-black font-Montserrat">
+                                    <strong>Comentario de retroalimentación:</strong> {comentario}
+                                </p>
                             )}
                         </form>
                     ) : (
@@ -193,11 +211,11 @@ const EvaluacionDetails = ({ evaluacion, user, submitted, retrievedFile, isPastD
                                         style={{ maxWidth: "100%", maxHeight: "400px" }}
                                     />
                                 ) : (
-                                    <p className="mt-4">Este tipo de archivo no se puede previsualizar.</p>
+                                    <p className="text-red-500">Formato de archivo no soportado para previsualización</p>
                                 )}
                             </>
                         ) : (
-                            <p>No hay archivo adjunto.</p>
+                            <p>No se ha subido ningún archivo.</p>
                         )
                     )}
                 </div>
