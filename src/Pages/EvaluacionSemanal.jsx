@@ -407,9 +407,37 @@ const EvaluacionSemanal = () => {
   const [isViewEvaluationOpen, setIsViewEvaluationOpen] = useState(false);
 
   // Función para abrir/cerrar el modal "Ver evaluación subida"
-  const toggleViewEvaluationModal = () => {
-    setIsViewEvaluationOpen(!isViewEvaluationOpen);
-  };
+  const toggleViewEvaluationModal = async () => {
+  setIsViewEvaluationOpen(!isViewEvaluationOpen);
+
+  const [entregable, setEntregable] = useState(null);
+  const [loadingEntregable, setLoadingEntregable] = useState(false);
+  const [errorEntregable, setErrorEntregable] = useState(null);
+  if (!isViewEvaluationOpen) {
+    try {
+      setLoadingEntregable(true);
+      setErrorEntregable(null);
+      const token = localStorage.getItem("token");
+      const response = await axios.get(
+        `http://localhost:3000/evaluaciones/${cod_evaluacion}/entregado`,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+      setEntregable(response.data);
+    } catch (error) {
+      setErrorEntregable("No se pudo obtener el entregable.");
+      console.error("Error obteniendo entregable:", error);
+    } finally {
+      setLoadingEntregable(false);
+    }
+  } else {
+    setEntregable(null); // Limpia el estado al cerrar el modal
+  }
+};
+
 
   return (
     <div className="flex flex-col w-full p-6 bg-white">
