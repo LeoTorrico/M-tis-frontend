@@ -499,14 +499,6 @@ const handleCriteriaClick = (rubricIndex, value) => {
           </div>
         </div>
         <div className="flex justify-end mt-4">
-          {/* Botón "Ver evaluación subida" con margen derecho */}
-          <button
-            onClick={() => console.log("Redirigir a la evaluación subida")}
-            className="bg-[#031930] text-white px-4 py-2 rounded-lg mr-4"
-          >
-            Ver evaluación subida
-          </button>
-
           {/* Botón "Guardar asistencia" */}
           <button
             onClick={saveAsistencia}
@@ -699,6 +691,13 @@ const handleCriteriaClick = (rubricIndex, value) => {
                 }
               >
                 Calificar
+              </button>
+              {/* Botón "Ver evaluación subida" con margen derecho */}
+              <button
+                onClick={() => console.log("Redirigir a la evaluación subida")}
+                className="bg-white text-[#3684DB] py-2 px-4 rounded-lg border border-[#3684DB]"
+              >
+                Ver evaluación subida
               </button>
             </div>
           </div>
