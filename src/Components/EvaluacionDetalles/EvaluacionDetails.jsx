@@ -6,6 +6,7 @@ import axios from "axios";
 import { useNavigate, useParams } from "react-router-dom";
 import MostarRubrica from "./MostrarRubrica";
 import ArchivoAdjunto from "./ArchivoAdjunto";
+import EditarEvaluacion from "./EditarEvaluacion"
 
 const EvaluacionDetails = ({
   evaluacion,
@@ -22,6 +23,7 @@ const EvaluacionDetails = ({
 }) => {
   const [selectedFile, setSelectedFile] = useState(null);
   const [menuOpen, setMenuOpen] = useState(false);
+  const [isModalOpen, setIsModalOpen] = useState(false);
   const [comentario, setComentario] = useState(null);
   const [comentarioIndividual, setComentarioIndividual] = useState(null);
   const { cod_clase } = useParams();
@@ -54,6 +56,13 @@ const EvaluacionDetails = ({
     }
   }, [evaluacion.cod_evaluacion, cod_clase, user.token]);
 
+  useEffect(() => {
+    // Recuperar el comentario asociado a la evaluación actual
+    const comentarioKey = `comentario_${evaluacion.cod_evaluacion}`;
+    const savedComentario = localStorage.getItem(comentarioKey);
+    setComentario(savedComentario === 'null' ? null : savedComentario);
+  }, [evaluacion.cod_evaluacion]);
+
   const onFileChange = (event) => {
     const file = event.target.files[0];
     setSelectedFile(file);
@@ -67,6 +76,16 @@ const EvaluacionDetails = ({
   const toggleMenu = () => {
     setMenuOpen((prev) => !prev);
   };
+
+   // Función para abrir el modal de edición
+   const onEdit = () => {
+    setIsModalOpen(true);  // Abre el modal
+   };
+
+    // Función para cerrar el modal
+    const closeModal = () => {
+      setIsModalOpen(false);  // Cierra el modal
+    };
 
   const handleDelete = async () => {
     try {
@@ -121,7 +140,7 @@ const EvaluacionDetails = ({
             {menuOpen && (
               <div className="absolute right-0 mt-2 w-28 bg-white rounded-lg shadow-lg z-10">
                 <button
-                  onClick={() => setMenuOpen(false)}
+                  onClick={onEdit}
                   className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 rounded-lg w-full text-left"
                 >
                   Editar
@@ -304,6 +323,13 @@ const EvaluacionDetails = ({
           </div>
         )}
       </div>
+      {/* Modal de edición */}
+      {isModalOpen && (
+            <EditarEvaluacion
+                evaluacion={evaluacion}
+                closeModal={closeModal}
+            />
+        )}
     </div>
   );
 };
