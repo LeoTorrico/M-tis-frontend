@@ -119,6 +119,8 @@ const Instrucciones = ({ evaluacion }) => {
             icon: "success",
             title: "Éxito",
             text: "Archivo subido con éxito.",
+            iconColor: "#3684DB", 
+            confirmButtonColor: "#3085d6", 
           });
           setSubmitted(true);
         }
@@ -127,7 +129,9 @@ const Instrucciones = ({ evaluacion }) => {
         Swal.fire({
           icon: "error",
           title: "Error",
-          text: "Hubo un problema al subir el archivo. Inténtalo de nuevo.",
+          text: "Por favor selecciona un archivo.",
+          iconColor: "#d33",
+          confirmButtonColor: "#d33", 
         });
       }
     } else {
@@ -135,6 +139,8 @@ const Instrucciones = ({ evaluacion }) => {
         icon: "warning",
         title: "Advertencia",
         text: "Por favor selecciona un archivo o introduce un enlace antes de entregar.",
+        iconColor: "#3684DB", 
+        confirmButtonColor: "#3085d6", 
       });
     }
   };
@@ -183,14 +189,14 @@ const Instrucciones = ({ evaluacion }) => {
             <div className="flex flex-col items-start w-full">
               <div className="flex items-center w-full">
                 <div className="flex-shrink-0">
-                  <FaLink className="text-black-600 mr-2" size={16} /> 
+                  <FaLink className="text-black-600 mr-2" size={16} />
                 </div>
                 <a
                   href={retrievedLink}
                   target="_blank"
                   rel="noopener noreferrer"
                   className="text-gray-600 underline font-semibold break-words w-full"
-                  title={retrievedLink} 
+                  title={retrievedLink}
                 >
                   {retrievedLink}
                 </a>
