@@ -23,13 +23,6 @@ const MostrarRubrica = ({ evaluacion }) => {
             },
           }
         );
-    
-        // Verificar si la retroalimentación y el comentario existen antes de almacenarlos en el localStorage
-        if (response.data.retroalimentacion && response.data.retroalimentacion.comentario) {
-          const comentarioKey = `comentario_${evaluacion.cod_evaluacion}`;
-          localStorage.setItem(comentarioKey, response.data.retroalimentacion.comentario);
-        }
-    
         // Verifica y asigna `nota_total` y `rubricas`
         setNotaTotal(response.data.nota_total); 
         if (response.data.rubricas && Array.isArray(response.data.rubricas)) {
@@ -66,7 +59,7 @@ const MostrarRubrica = ({ evaluacion }) => {
     <div className="overflow-x-auto p-0">
       {user.rol === 'estudiante' && (
         <h3 className="text-sm font-bold p-4 text-right">
-          Calificación: {notaTotal}
+          Calificación: {notaTotal} puntos
         </h3>
       )}
       <div className="space-y-1">
@@ -77,7 +70,7 @@ const MostrarRubrica = ({ evaluacion }) => {
                 <h3 className="text-sm font-semibold">{rubrica.nombre_rubrica}</h3>
               </div>
               <div className="flex items-center">
-                <span className="ml-4 text-sm text-gray-600">/{rubrica.peso}</span>
+                <span className="ml-4 text-sm text-gray-600">{rubrica.calificacion}/{rubrica.peso}</span>
                 <div className="ml-2">
                   {activeRubricas[index] ? (
                     <FaChevronUp className="text-gray-500" />
@@ -96,7 +89,7 @@ const MostrarRubrica = ({ evaluacion }) => {
                     <div key={i} className="bg-gray-100 border border-gray-300 rounded-lg shadow-md p-2 flex-1 min-w-[250px]">
                       <div className="flex items-center space-x-1">
                         <div className="w-3/4 bg-gray-100 text-sm p-2 rounded font-medium">{detalle.clasificacion_rubrica}</div>
-                        <div className="w-1/4 text-gray-600 text-sm font-medium">{detalle.peso_rubrica} puntos</div>
+                        <div className="w-1/4 text-gray-600 text-sm font-medium">Puntos: {detalle.peso_rubrica}</div>
                       </div>
                       <div className="bg-gray-100 text-sm p-2 rounded">
                         {detalle.descripcion}
