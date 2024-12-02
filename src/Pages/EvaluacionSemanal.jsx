@@ -1,9 +1,12 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useContext } from "react";
 import { PiNewspaper } from "react-icons/pi";
 import { useNavigate, useParams } from "react-router-dom";
 import axios from "axios";
+import { UserContext } from "../context/UserContext";
 
 const EvaluacionSemanal = () => {
+  const { user } = useContext(UserContext);
+
   const navigate = useNavigate();
   const { cod_grupoempresa, cod_clase, cod_evaluacion } = useParams();
 
@@ -406,38 +409,107 @@ const EvaluacionSemanal = () => {
   };
   const [isViewEvaluationOpen, setIsViewEvaluationOpen] = useState(false);
 
-  // Función para abrir/cerrar el modal "Ver evaluación subida"
-  const toggleViewEvaluationModal = async () => {
-  setIsViewEvaluationOpen(!isViewEvaluationOpen);
-
   const [entregable, setEntregable] = useState(null);
   const [loadingEntregable, setLoadingEntregable] = useState(false);
   const [errorEntregable, setErrorEntregable] = useState(null);
-  if (!isViewEvaluationOpen) {
-    try {
-      setLoadingEntregable(true);
-      setErrorEntregable(null);
-      const token = localStorage.getItem("token");
-      const response = await axios.get(
-        `http://localhost:3000/evaluaciones/${cod_evaluacion}/entregado`,
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
-      setEntregable(response.data);
-    } catch (error) {
-      setErrorEntregable("No se pudo obtener el entregable.");
-      console.error("Error obteniendo entregable:", error);
-    } finally {
-      setLoadingEntregable(false);
-    }
-  } else {
-    setEntregable(null); // Limpia el estado al cerrar el modal
-  }
-};
+  const toggleViewEvaluationModal = async () => {
+    setIsViewEvaluationOpen(!isViewEvaluationOpen);
 
+    if (!isViewEvaluationOpen) {
+      try {
+        setLoadingEntregable(true);
+        setErrorEntregable(null);
+
+        console.log("cod_evaluacion:", cod_evaluacion);
+        console.log("cod_grupoempresa:", cod_grupoempresa);
+        console.log("user.token:", user?.token);
+
+        if (!cod_evaluacion || !cod_grupoempresa) {
+          throw new Error(
+            "Datos insuficientes: cod_evaluacion o cod_grupoempresa no válidos."
+          );
+        }
+
+        if (!user || !user.token) {
+          throw new Error("Token no encontrado. Inicie sesión nuevamente.");
+        }
+
+        const response = await axios.get(
+          `http://localhost:3000/evaluaciones/${cod_evaluacion}/entregas/${cod_grupoempresa}`,
+          {
+            headers: {
+              Authorization: `Bearer ${user.token}`,
+            },
+          }
+        );
+
+        console.log("Respuesta del backend:", response);
+
+        // Asegurarse de que la propiedad 'archivo' exista
+        if (response.data && response.data.archivo) {
+          const archivoBase64 = response.data.archivo;
+
+          // Detectar tipo MIME desde el Base64
+          const fileType = archivoBase64.startsWith("JVBERi0")
+            ? "application/pdf"
+            : archivoBase64.startsWith("/9j/") ||
+              archivoBase64.startsWith("iVBORw0KGgo")
+            ? "image/jpeg"
+            : "unknown";
+
+          if (fileType === "unknown") {
+            throw new Error(
+              "El archivo recibido no tiene un tipo MIME reconocido."
+            );
+          }
+
+          // Decodificar el archivo Base64 a un Blob
+          const byteCharacters = atob(archivoBase64);
+          const byteNumbers = new Uint8Array(byteCharacters.length);
+          for (let i = 0; i < byteCharacters.length; i++) {
+            byteNumbers[i] = byteCharacters.charCodeAt(i);
+          }
+          const blob = new Blob([byteNumbers], { type: fileType });
+
+          // Crear URL para el Blob
+          const archivoURL = URL.createObjectURL(blob);
+
+          setEntregable({
+            archivoURL,
+            fileType,
+          });
+        } else if (response.data && response.data.linkEntregable) {
+          // Si hay un enlace al archivo, abrirlo en una nueva pestaña
+          window.open(response.data.linkEntregable, "_blank");
+        } else {
+          throw new Error(
+            "No se encontró un archivo entregable ni un enlace válido."
+          );
+        }
+      } catch (error) {
+        console.error("Error al obtener el entregable:", error);
+
+        // Mostrar mensaje de error claro
+        if (error.response && error.response.data) {
+          console.log("Detalles del error del servidor:", error.response.data);
+          const serverError =
+            error.response.data.detalle || "Error desconocido en el servidor.";
+          setErrorEntregable(serverError);
+
+          // Alertar al usuario
+          alert(`Error del servidor: ${serverError}`);
+        } else if (error.request) {
+          setErrorEntregable("No se pudo contactar con el servidor.");
+        } else {
+          setErrorEntregable(error.message || "Error desconocido.");
+        }
+      } finally {
+        setLoadingEntregable(false);
+      }
+    } else {
+      setEntregable(null);
+    }
+  };
 
   return (
     <div className="flex flex-col w-full p-6 bg-white">
@@ -746,8 +818,34 @@ const EvaluacionSemanal = () => {
                 <h2 className="bg-[#3684DB] p-4 rounded-t-lg text-white font-bold text-center">
                   Evaluación subida
                 </h2>
-                {/* Contenido del nuevo modal */}
-                <p>Aquí puedes mostrar la evaluación subida...</p>
+                <div className="p-4">
+                  {loadingEntregable ? (
+                    <p>Cargando...</p>
+                  ) : errorEntregable ? (
+                    <p className="text-red-500">{errorEntregable}</p>
+                  ) : (
+                    entregable && (
+                      <div>
+                                              {entregable.fileType === "application/pdf" ? (
+                          <iframe
+                            src={entregable.archivoURL}
+                            width="100%"
+                            height="500px"
+                            title="Vista previa del PDF"
+                          />
+                        ) : entregable.fileType === "image/jpeg" ? (
+                          <img
+                            src={entregable.archivoURL}
+                            alt="Vista previa del archivo"
+                            className="max-w-full h-auto"
+                          />
+                        ) : (
+                          <p>Tipo de archivo no compatible para mostrar.</p>
+                        )}
+                      </div>
+                    )
+                  )}
+                </div>
                 <div className="bg-[#3684DB] p-4 rounded-b-lg flex justify-end">
                   <button
                     className="bg-white text-[#3684DB] py-2 px-4 rounded-lg border border-[#3684DB]"
