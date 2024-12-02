@@ -5,6 +5,7 @@ import axios from 'axios';
 import { useNavigate, useParams } from 'react-router-dom';
 import MostarRubrica from './MostrarRubrica';
 import { FaLink } from 'react-icons/fa';
+import ArchivoAdjunto from "./ArchivoAdjunto";
 
 const EvaluacionDetails = ({ evaluacion, user, submitted, retrievedFile, isPastDueDate, handleFileChange, handleSubmit, linkInput, handleLinkChange, renderFilePreview, renderRetrievedFile }) => {
     const [selectedFile, setSelectedFile] = useState(null);
@@ -128,7 +129,9 @@ const EvaluacionDetails = ({ evaluacion, user, submitted, retrievedFile, isPastD
                 <div className="bg-blue-gray p-4 rounded-lg flex flex-col h-full">
                     <p className="text-xm font-semibold font-Montserrat">Descripción de la evaluación:</p>
                     <p className="text-xm font-Montserrat">{evaluacion.descripcion_evaluacion}</p>
-
+                    <div className="col-span-2 overflow-y-auto mt-2">
+                        <ArchivoAdjunto evaluacion={evaluacion} />
+                    </div>
                     <div className="col-span-2 overflow-y-auto mt-2">
                         <MostarRubrica evaluacion={evaluacion} />
                     </div>
