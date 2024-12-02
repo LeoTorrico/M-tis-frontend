@@ -23,8 +23,7 @@ const MostrarRubrica = ({ evaluacion }) => {
             },
           }
         );
-        // Verifica y asigna `nota_total` y `rubricas`
-        setNotaTotal(response.data.nota_total); 
+        setNotaTotal(response.data.nota_total || null); // Nota total o null si no existe
         if (response.data.rubricas && Array.isArray(response.data.rubricas)) {
           setRubricas(response.data.rubricas);
         } else {
@@ -59,13 +58,16 @@ const MostrarRubrica = ({ evaluacion }) => {
     <div className="overflow-x-auto p-0">
       {user.rol === 'estudiante' && (
         <h3 className="text-sm font-bold p-4 text-right">
-          Calificación: {notaTotal} puntos
+          {notaTotal !== null ? `Calificación: ${notaTotal} puntos` : 'Sin calificar'}
         </h3>
       )}
       <div className="space-y-1">
         {rubricas.map((rubrica, index) => (
           <div key={index} className="border-b bg-gray-100 rounded-lg">
-            <div className="flex items-center text-gray p-4 py-2 justify-between cursor-pointer" onClick={() => toggleRubricaDetails(index)}>
+            <div
+              className="flex items-center text-gray p-4 py-2 justify-between cursor-pointer"
+              onClick={() => toggleRubricaDetails(index)}
+            >
               <div className="flex items-center">
                 <h3 className="text-sm font-semibold">{rubrica.nombre_rubrica}</h3>
               </div>
