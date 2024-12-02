@@ -179,16 +179,23 @@ const Instrucciones = ({ evaluacion }) => {
         </div>
 
         {retrievedLink && (
-          <div className="mt-2 bg-white p-2 border rounded-lg flex items-center">
-            <FaLink className="text-black-600 mr-2" />
-            <a
-              href={retrievedLink}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="text-gray-600 underline font-semibold"
-            >
-              {retrievedLink}
-            </a>
+          <div className="mt-2 bg-white p-2 border rounded-lg flex flex-col items-start">
+            <div className="flex flex-col items-start w-full">
+              <div className="flex items-center w-full">
+                <div className="flex-shrink-0">
+                  <FaLink className="text-black-600 mr-2" size={16} /> 
+                </div>
+                <a
+                  href={retrievedLink}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-gray-600 underline font-semibold break-words w-full"
+                  title={retrievedLink} 
+                >
+                  {retrievedLink}
+                </a>
+              </div>
+            </div>
           </div>
         )}
       </>
