@@ -80,6 +80,10 @@ const ArchivoAdjunto = ({ evaluacion }) => {
     }
   };
 
+  if (!retrievedFile) {
+    return null; // No renderizar el componente si no hay archivo
+  }
+
   return (
     <div className="archivo-adjunto p-4 border rounded-lg bg-gray-50">
       {retrievedFile ? (
@@ -98,18 +102,18 @@ const ArchivoAdjunto = ({ evaluacion }) => {
           </div>
         </>
       ) : (
-        <p className="text-gray-400 italic">No se ha subido un archivo de evaluación.</p>
+        <p className="text-gray-400 italic">No se ha subido un archivo de apoyo para la evaluación.</p>
       )}
 
-      {/* Modal de previsualización */}
+
       {isModalOpen && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
           <div className="bg-white p-4 rounded-lg max-w-4xl w-full relative h-[90vh]">
-            {/* Botón de cierre (X) */}
+
             <button className="absolute top-4 right-4 text-black font-bold text-xl hover:text-gray-600" onClick={handleCloseModal}>
               X
             </button>
-            {/* Botones de descarga y abrir en nueva ventana */}
+
             <div className="absolute top-4 left-4 flex items-center space-x-4">
               <button onClick={handleDownload} className="text-gray-600 flex items-center space-x-1">
                 <FaDownload />
