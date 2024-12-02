@@ -38,7 +38,6 @@ const EvaluacionDetails = ({
                         }
                     }
                 );
-                console.log('Respuesta del backend:', response.data);
 
                 const { retroalimentacion, comentario_individual } = response.data;
                 setComentario(retroalimentacion?.comentario || null);

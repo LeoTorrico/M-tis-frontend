@@ -33,7 +33,7 @@ const Instrucciones = ({ evaluacion }) => {
               },
             }
           );
-          console.log(response.data);
+
           if (response.data && response.data.archivo) {
             const archivoBase64 = response.data.archivo;
 
@@ -101,7 +101,6 @@ const Instrucciones = ({ evaluacion }) => {
           archivo_grupo: base64File,
           link_entregable: linkInput,
         };
-        console.log("Datos enviados:", requestData);
 
         const response = await axios.post(
           `http://localhost:3000/evaluaciones/${evaluacion.cod_evaluacion}/entregables`,
