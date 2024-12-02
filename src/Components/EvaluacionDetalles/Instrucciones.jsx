@@ -4,18 +4,24 @@ import Swal from "sweetalert2";
 import { UserContext } from "../../context/UserContext";
 import EvaluacionDetails from "./EvaluacionDetails";
 import FilePreview from "./FilePreview";
+import { FaLink } from 'react-icons/fa';
 
 const Instrucciones = ({ evaluacion }) => {
   const [selectedFile, setSelectedFile] = useState(null);
   const [filePreview, setFilePreview] = useState(null);
   const [submitted, setSubmitted] = useState(false);
   const [retrievedFile, setRetrievedFile] = useState(null);
+  const [linkInput, setLinkInput] = useState("");
+  const [retrievedLink, setRetrievedLink] = useState("");
   const { user } = useContext(UserContext);
 
   const isPastDueDate = new Date(evaluacion.fecha_fin) < new Date();
 
+  const handleLinkChange = (newLink) => {
+    setLinkInput(newLink);
+  };
+
   useEffect(() => {
-    // Solo se ejecuta si el rol es estudiante
     const fetchSubmittedFile = async () => {
       if (user.rol === "estudiante") {
         try {
@@ -53,8 +59,8 @@ const Instrucciones = ({ evaluacion }) => {
             }
             const blob = new Blob([byteNumbers], { type: fileType });
             setFilePreview(URL.createObjectURL(blob));
-          } else {
-            console.error("No se encontró el archivo entregado.");
+          } if (response.data && response.data.link_entregable) {
+            setRetrievedLink(response.data.link_entregable); // Guardar el enlace recuperado
           }
         } catch (error) {
           console.error("Error al cargar el archivo entregado:", error);
@@ -85,15 +91,20 @@ const Instrucciones = ({ evaluacion }) => {
 
   const handleSubmit = async (event) => {
     event.preventDefault();
-    if (selectedFile) {
+
+    if (selectedFile || linkInput.trim() !== "") {
       try {
-        const base64File = await handleFileToBase64(selectedFile);
+        // Convertir el archivo a base64 solo si hay un archivo seleccionado
+        const base64File = selectedFile ? await handleFileToBase64(selectedFile) : null;
+
+        const requestData = {
+          archivo_grupo: base64File,
+          link_entregable: linkInput,
+        };
 
         const response = await axios.post(
           `http://localhost:3000/evaluaciones/${evaluacion.cod_evaluacion}/entregables`,
-          {
-            archivo_grupo: base64File,
-          },
+          requestData,
           {
             headers: {
               "Content-Type": "application/json",
@@ -101,12 +112,14 @@ const Instrucciones = ({ evaluacion }) => {
             },
           }
         );
-        
+
         if (response.data.message === "Archivo del entregable actualizado exitosamente") {
           Swal.fire({
             icon: "success",
             title: "Éxito",
             text: "Archivo subido con éxito.",
+            iconColor: "#3684DB", 
+            confirmButtonColor: "#3085d6", 
           });
           setSubmitted(true);
         }
@@ -115,18 +128,21 @@ const Instrucciones = ({ evaluacion }) => {
         Swal.fire({
           icon: "error",
           title: "Error",
-          text: "Hubo un problema al subir el archivo. Inténtalo de nuevo.",
+          text: "Por favor selecciona un archivo.",
+          iconColor: "#d33",
+          confirmButtonColor: "#d33", 
         });
       }
     } else {
       Swal.fire({
         icon: "warning",
         title: "Advertencia",
-        text: "Por favor selecciona un archivo antes de entregar.",
+        text: "Por favor selecciona un archivo o introduce un enlace antes de entregar.",
+        iconColor: "#3684DB", 
+        confirmButtonColor: "#3085d6", 
       });
     }
   };
-
 
   const renderRetrievedFile = () => {
     if (!retrievedFile || !retrievedFile.base64) return null;
@@ -141,30 +157,53 @@ const Instrucciones = ({ evaluacion }) => {
     const fileURL = URL.createObjectURL(blob);
 
     return (
-      <div className="flex flex-col border border-gray-300 bg-white rounded-lg p-2 shadow-sm relative h-full">
-        <a
-          href={fileURL}
-          target="_blank"
-          rel="noopener noreferrer"
-          className="font-medium text-blue-600 hover:underline block truncate"
-        >
-          {retrievedFile.name}
-        </a>
-        {retrievedFile.type === "application/pdf" ? (
-          <iframe
-            src={fileURL}
-            title="Vista previa de PDF"
-            className="w-full h-full rounded"
-            style={{ border: "none", minHeight: "200px" }}
-          />
-        ) : (
-          <img
-            src={fileURL}
-            alt="Vista previa"
-            className="w-full h-auto max-h-64 object-contain rounded"
-          />
+      <>
+        <div className="flex flex-col border border-gray-300 bg-white rounded-lg p-2 shadow-sm relative h-full">
+          <a
+            href={fileURL}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="font-medium text-blue-600 hover:underline block truncate"
+          >
+            {retrievedFile.name}
+          </a>
+          {retrievedFile.type === "application/pdf" ? (
+            <iframe
+              src={fileURL}
+              title="Vista previa de PDF"
+              className="w-full h-full rounded"
+              style={{ border: "none", minHeight: "200px" }}
+            />
+          ) : (
+            <img
+              src={fileURL}
+              alt="Vista previa"
+              className="w-full h-auto max-h-64 object-contain rounded"
+            />
+          )}
+        </div>
+
+        {retrievedLink && (
+          <div className="mt-2 bg-white p-2 border rounded-lg flex flex-col items-start">
+            <div className="flex flex-col items-start w-full">
+              <div className="flex items-center w-full">
+                <div className="flex-shrink-0">
+                  <FaLink className="text-black-600 mr-2" size={16} />
+                </div>
+                <a
+                  href={retrievedLink}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-gray-600 underline font-semibold break-words w-full"
+                  title={retrievedLink}
+                >
+                  {retrievedLink}
+                </a>
+              </div>
+            </div>
+          </div>
         )}
-      </div>
+      </>
     );
   };
 
@@ -177,6 +216,8 @@ const Instrucciones = ({ evaluacion }) => {
       isPastDueDate={isPastDueDate}
       handleFileChange={handleFileChange}
       handleSubmit={handleSubmit}
+      linkInput={linkInput}
+      handleLinkChange={handleLinkChange}
       renderFilePreview={() => (
         <FilePreview
           file={selectedFile}
