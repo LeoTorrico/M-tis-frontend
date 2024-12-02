@@ -4,8 +4,9 @@ import { AiOutlinePlus, AiOutlineClose } from 'react-icons/ai';
 import axios from 'axios';
 import { useNavigate, useParams } from 'react-router-dom';
 import MostarRubrica from './MostrarRubrica';
+import { FaLink } from 'react-icons/fa';
 
-const EvaluacionDetails = ({ evaluacion, user, submitted, retrievedFile, isPastDueDate, handleFileChange, handleSubmit, renderFilePreview, renderRetrievedFile }) => {
+const EvaluacionDetails = ({ evaluacion, user, submitted, retrievedFile, isPastDueDate, handleFileChange, handleSubmit, linkInput, handleLinkChange, renderFilePreview, renderRetrievedFile }) => {
     const [selectedFile, setSelectedFile] = useState(null);
     const [menuOpen, setMenuOpen] = useState(false);
     const [comentario, setComentario] = useState(null);
@@ -176,6 +177,33 @@ const EvaluacionDetails = ({ evaluacion, user, submitted, retrievedFile, isPastD
                                             size={24}
                                         />
                                     )}
+                                </div>
+                            )}
+
+                            {!submitted && (
+                                <label className="inline-block w-full mt-2">
+                                    <span className="block font-semibold font-Montserrat">Enlace de entrega:</span>
+                                    <input
+                                        type="text"
+                                        value={linkInput}
+                                        onChange={(e) => handleLinkChange(e.target.value)}
+                                        className="border border-gray-300 p-2 rounded-lg w-full"
+                                        placeholder="Ingresa el enlace aquí (Opcional)"
+                                    />
+                                </label>
+                            )}
+
+                            {submitted && linkInput && (
+                                <div className="mt-2 bg-white p-2 border rounded-lg flex items-center">
+                                    <FaLink className="text-black-600 mr-2" />
+                                    <a
+                                        href={linkInput}
+                                        target="_blank"
+                                        rel="noopener noreferrer"
+                                        className="text-gray-600 underline font-semibold"
+                                    >
+                                        {linkInput}
+                                    </a>
                                 </div>
                             )}
 
