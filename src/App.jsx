@@ -21,7 +21,7 @@ import Evaluacion from "./Pages/Evaluacion";
 import VistaEvaluacion from "./Pages/VistaEvaluacion";
 import Reportes from "./Pages/Reportes";
 import ReporteAsistencia from "./Pages/ReporteAsistencia";
-
+import EditarRubrica from "./Pages/EditarRubrica";
 Modal.setAppElement("#root");
 
 function App() {
@@ -39,6 +39,10 @@ function App() {
             <Route
               path="/Vista-Curso/:cod_clase/evaluacion/:cod_evaluacion"
               element={<VistaEvaluacion />}
+            />
+            <Route
+              path="/Vista-Curso/:cod_clase/evaluacion/:cod_evaluacion/editar-rubrica"
+              element={<EditarRubrica />}
             />
             <Route path="/RegistroDocentes" element={<RegistroDocentes />} />
             <Route path="/Evaluacion/:cod_clase" element={<Evaluacion />} />
@@ -60,7 +64,10 @@ function App() {
             />
             <Route path="/Asistencia" element={<Asistencia />} />
             <Route path="/Reportes" element={<Reportes />} />
-            <Route path="/Reporte-asistencia/:cod_clase/:cod_grupoempresa" element={<ReporteAsistencia />} />
+            <Route
+              path="/Reporte-asistencia/:cod_clase/:cod_grupoempresa"
+              element={<ReporteAsistencia />}
+            />
           </Routes>
         </AnimatePresence>
       </Layout>
