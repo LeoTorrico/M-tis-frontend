@@ -15,7 +15,7 @@ const Instrucciones = ({ evaluacion }) => {
   const [retrievedLink, setRetrievedLink] = useState("");
   const { user } = useContext(UserContext);
 
-  const isPastDueDate = new Date(evaluacion.fecha_fin) < new Date();
+  const isPastDueDate = new Date(evaluacion.fecha_fin).setHours(23, 59, 59, 999) < new Date();
 
   const handleLinkChange = (newLink) => {
     setLinkInput(newLink);
