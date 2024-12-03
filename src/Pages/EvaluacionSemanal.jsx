@@ -483,7 +483,7 @@ const EvaluacionSemanal = () => {
           window.open(response.data.linkEntregable, "_blank");
         } else {
           throw new Error(
-            "No se encontró un archivo entregable ni un enlace válido."
+            "No se encontró un archivo entregable."
           );
         }
       } catch (error) {
