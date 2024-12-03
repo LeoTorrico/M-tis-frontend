@@ -35,11 +35,10 @@ const ParametrosGruposModal = ({
 
     setIsLoading(true);
     try {
-      await axios.post(
-        "http://localhost:3000/....",
+      await axios.put(
+        `http://localhost:3000/clases/${codClase}/integrantes`, // URL dinámica
         {
-          cod_clase: codClase,
-          max_group_size: maxGroupSize,
+          nroIntegrantes: maxGroupSize, // Clave ajustada según el formato requerido
         },
         {
           headers: {
@@ -53,7 +52,12 @@ const ParametrosGruposModal = ({
         title: "Éxito",
         text: "Parámetros de grupo guardados correctamente",
         icon: "success",
+        iconColor: "#3684DB",
         confirmButtonText: "Aceptar",
+        customClass: {
+          confirmButton:
+            "text-white bg-blue-modal hover:bg-semi-blue px-4 py-2 rounded",
+        },
       });
       onClose();
     } catch (error) {

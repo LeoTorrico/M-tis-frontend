@@ -25,7 +25,20 @@ const ModalRegistroGrupo = ({
   const [loadingHorarios, setLoadingHorarios] = useState(true); // Estado para gestionar la carga de horarios
   const [nombreLargoError, setNombreLargoError] = useState("");
   const [nombreCortoError, setNombreCortoError] = useState("");
+  const [maxIntegrantes, setMaxIntegrantes] = useState(6);
   const token = localStorage.getItem("token");
+
+  // Método para obtener estudiantes disponibles
+  const getAvailableStudents = () => {
+    // Filtrar los estudiantes que ya han sido seleccionados
+    return integrantesPosibles.filter(
+      (estudiante) =>
+        !groupData.integrantes.some(
+          (integrante) => integrante.codigo_sis === estudiante.codigo_sis
+        )
+    );
+  };
+
   useEffect(() => {
     const fetchHorarios = async () => {
       try {
@@ -44,18 +57,38 @@ const ModalRegistroGrupo = ({
         setLoadingHorarios(false); // Finaliza la carga
       }
     };
-
+    const fetchClaseInfo = async () => {
+      try {
+        const response = await axios.get(
+          `http://localhost:3000/clases/${cod_clase}`,
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        );
+        setMaxIntegrantes(response.data.clase.nro_integrantes);
+      } catch (error) {
+        console.error("Error fetching clase info:", error);
+        // Mantener el valor por defecto de 6 si hay un error
+        setMaxIntegrantes(6);
+      }
+    };
+    fetchClaseInfo();
     fetchHorarios();
   }, [cod_clase]); // Dependencia para volver a ejecutar cuando cambie cod_clase
 
   // Limitar los integrantes a un máximo de 6
   const addIntegrante = () => {
-    if (groupData.integrantes.length < 6) {
+    if (groupData.integrantes.length < maxIntegrantes) {
       handleAddIntegrante();
     } else {
-      alert("Se ha alcanzado el límite máximo de 6 integrantes.");
+      alert(
+        `Se ha alcanzado el límite máximo de ${maxIntegrantes} integrantes.`
+      );
     }
   };
+
   const handleFileValidation = (e) => {
     const file = e.target.files[0];
     const allowedExtensions = /(\.jpg|\.jpeg|\.png)$/i;
@@ -66,6 +99,7 @@ const ModalRegistroGrupo = ({
     }
     handleFileChange(e); // Llamar al manejador de archivos original
   };
+
   const validateNombreLargo = (value) => {
     if (value.length < 3 || value.length > 80) {
       setNombreLargoError(
@@ -85,6 +119,30 @@ const ModalRegistroGrupo = ({
       setNombreCortoError("");
     }
   };
+
+  // Validación de submit para asegurar al menos 2 integrantes
+  const handleCustomSubmit = (e) => {
+    e.preventDefault();
+
+    if (groupData.integrantes.length < 2) {
+      alert("Debe registrar al menos 2 integrantes en el grupo.");
+      return;
+    }
+
+    // Validar que todos los integrantes tengan información completa
+    const incompleteIntegrante = groupData.integrantes.some(
+      (integrante) => !integrante.codigo_sis || !integrante.rol
+    );
+
+    if (incompleteIntegrante) {
+      alert("Por favor, complete la información de todos los integrantes.");
+      return;
+    }
+
+    // Si todas las validaciones pasan, llamar al manejador de submit original
+    handleSubmit(e);
+  };
+
   return (
     <Modal
       isOpen={modalIsOpen}
@@ -112,7 +170,7 @@ const ModalRegistroGrupo = ({
         ) : (
           <form
             id="grupoForm"
-            onSubmit={handleSubmit}
+            onSubmit={handleCustomSubmit}
             className="flex flex-1 bg-white"
           >
             <div className="w-1/2 flex flex-col items-center justify-center border-r">
@@ -227,14 +285,13 @@ const ModalRegistroGrupo = ({
                         }
                         className="border rounded-lg w-1/2 p-2"
                         required
-                        disabled={integrantesPosibles.length === 0} // Deshabilitar si no hay estudiantes
                       >
                         <option value="" disabled>
-                          {integrantesPosibles.length === 0
+                          {getAvailableStudents().length === 0
                             ? "No hay estudiantes disponibles"
                             : "Seleccionar integrante"}
                         </option>
-                        {integrantesPosibles.map((estudiante) => (
+                        {getAvailableStudents().map((estudiante) => (
                           <option
                             key={estudiante.codigo_sis}
                             value={estudiante.codigo_sis}
