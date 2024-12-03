@@ -10,6 +10,7 @@ import Swal from "sweetalert2";
 import { useParams, useNavigate } from "react-router-dom";
 import getDetailsFromToken from "./Utils";
 import { UserContext } from "../context/UserContext";
+import ParametrosGruposModal from "../Components/ParametrosGruposModal";
 
 const VistaCurso = () => {
   const { cod_clase } = useParams();
@@ -29,7 +30,9 @@ const VistaCurso = () => {
   const [isHorarioModalOpen, setIsHorarioModalOpen] = useState(false);
   const openHorarioModal = () => setIsHorarioModalOpen(true);
   const closeHorarioModal = () => setIsHorarioModalOpen(false);
-
+  const [isParametrosModalOpen, setIsParametrosModalOpen] = useState(false);
+  const openParametrosModal = () => setIsParametrosModalOpen(true);
+  const closeParametrosModal = () => setIsParametrosModalOpen(false);
   const [groupData, setGroupData] = useState({
     logo: null,
     nombreLargo: "",
@@ -47,7 +50,6 @@ const VistaCurso = () => {
     "Gestión de calidad",
     "Documentación",
   ];
-
 
   useEffect(() => {
     const fetchClase = async () => {
@@ -308,12 +310,18 @@ const VistaCurso = () => {
           </div>
         )}
         {activeTab === "GruposEmpresas" && rol === "docente" && (
-          <div className="flex justify-end">
+          <div className="flex justify-end space-x-2">
             <button
               className="bg-white text-dark-blue px-4 py-2 rounded-lg border border-blue-800 flex items-center mt-6"
               onClick={openHorarioModal}
             >
               Registrar horario
+            </button>
+            <button
+              className="bg-white text-dark-blue px-4 py-2 rounded-lg border border-blue-800 flex items-center mt-6"
+              onClick={openParametrosModal}
+            >
+              Parámetros Grupos Empresas
             </button>
           </div>
         )}
@@ -339,6 +347,11 @@ const VistaCurso = () => {
       <RegistroHorarioModal
         isHorarioModalOpen={isHorarioModalOpen}
         onClose={closeHorarioModal}
+        codClase={cod_clase}
+      />
+      <ParametrosGruposModal
+        isParametrosModalOpen={isParametrosModalOpen}
+        onClose={closeParametrosModal}
         codClase={cod_clase}
       />
     </div>
