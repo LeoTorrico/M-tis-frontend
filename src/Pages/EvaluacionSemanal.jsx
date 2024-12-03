@@ -645,7 +645,9 @@ const EvaluacionSemanal = () => {
                 <td className="border px-4 py-2">
                   <textarea
                     value={
-                      retroalimentacionGrupal.comentario || retroalimentacion
+                      retroalimentacion ||
+                      retroalimentacionGrupal.comentario ||
+                      ""
                     }
                     onChange={handleRetroalimentacionChange}
                     placeholder="Ingrese retroalimentación grupal..."
