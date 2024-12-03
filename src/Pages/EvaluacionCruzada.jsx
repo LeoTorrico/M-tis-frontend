@@ -1,5 +1,4 @@
 import React, { useEffect, useState, useContext } from "react";
-import { PiNewspaper } from "react-icons/pi";
 import { useParams, useNavigate } from "react-router-dom";
 import axios from "axios";
 import { UserContext } from "../context/UserContext";
@@ -18,21 +17,22 @@ const EvaluacionCruzada = () => {
     },
     integrantes: [],
   });
-
   const [rubricScores, setRubricScores] = useState({});
   const [selectedStudentIndex, setSelectedStudentIndex] = useState(null);
   const [comentario, setComentario] = useState("");
   const [errorComentario, setErrorComentario] = useState("");
+  const [error, setError] = useState("");
 
-  // Verificar rol del usuario
   useEffect(() => {
+    // Validar el rol del usuario
     if (user?.rol === "docente") {
-      alert("Esta es una evaluación para estudiantes. Serás redirigido.");
-      navigate(-1); // Redirige al usuario a la página anterior
+      setError("Esta es una evaluación para estudiantes. Serás redirigido.");
+      setTimeout(() => {
+        navigate(-1); // Redirige al usuario a la página anterior
+      }, 3000);
+      return;
     }
-  }, [user, navigate]);
 
-  useEffect(() => {
     const fetchGrupoData = async () => {
       try {
         const token = localStorage.getItem("token");
@@ -54,7 +54,7 @@ const EvaluacionCruzada = () => {
     if (cod_clase) {
       fetchGrupoData();
     }
-  }, [cod_clase]);
+  }, [cod_clase, navigate, user]);
 
   const openRubricModal = (index) => {
     setSelectedStudentIndex(index);
@@ -97,6 +97,20 @@ const EvaluacionCruzada = () => {
     setSelectedStudentIndex(null);
   };
 
+  if (error) {
+    return (
+      <div className="flex items-center justify-center min-h-screen bg-gray-100">
+        <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded-lg shadow-lg max-w-md text-center">
+          <p className="font-semibold text-lg">Error</p>
+          <p className="mt-2">{error}</p>
+          <p className="mt-4 text-sm text-gray-600">
+            Serás redirigido en unos segundos...
+          </p>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="flex flex-col w-full p-6 bg-white">
       <div className="bg-semi-blue text-white p-6 mb-6 rounded-lg">
@@ -110,7 +124,6 @@ const EvaluacionCruzada = () => {
 
       <div className="border border-black rounded-lg p-6 mb-6 overflow-x-auto">
         <div className="flex items-center mb-4">
-          <PiNewspaper className="text-2xl mr-2" />
           <h1 className="text-lg font-bold">Evaluación de Integrantes</h1>
         </div>
         <hr className="border-black my-2" />
@@ -128,7 +141,6 @@ const EvaluacionCruzada = () => {
               </div>
             ))}
           </div>
-
           <div>
             <h2 className="font-bold text-md mb-2 text-center">Nota</h2>
             <div className="flex flex-col space-y-2">
@@ -152,6 +164,68 @@ const EvaluacionCruzada = () => {
           </div>
         </div>
       </div>
+
+      {selectedStudentIndex !== null &&
+        grupoData.integrantes[selectedStudentIndex] && (
+          <div className="fixed inset-0 flex items-center justify-center z-50 bg-black bg-opacity-50">
+            <div className="bg-white p-4 rounded-lg shadow-lg max-w-4xl w-full mx-4 lg:mx-auto max-h-[90vh] overflow-y-auto">
+              <h2 className="bg-[#3684DB] p-4 rounded-t-lg text-white font-bold w-full text-center">
+                Evaluar a{" "}
+                {grupoData.integrantes[selectedStudentIndex]?.nombre_estudiante}{" "}
+                {
+                  grupoData.integrantes[selectedStudentIndex]
+                    ?.apellido_estudiante
+                }
+              </h2>
+
+              <div className="mb-4 p-4">
+                <input
+                  type="number"
+                  min="0"
+                  max="100"
+                  value={rubricScores[selectedStudentIndex] || ""}
+                  onChange={(e) =>
+                    handleRubricChange(selectedStudentIndex, e.target.value)
+                  }
+                  className="border border-gray-300 p-2 w-full bg-[#B3D6FF] rounded-xl mb-4"
+                  placeholder="Ingrese la nota (0-100)"
+                />
+
+                <div className="mb-4">
+                  <label className="font-bold mb-2 block">Comentarios</label>
+                  <textarea
+                    value={comentario}
+                    onChange={handleComentarioChange}
+                    placeholder="Ingrese un comentario..."
+                    className="border border-gray-300 p-2 w-full rounded-lg"
+                  />
+                  {errorComentario && (
+                    <p className="text-red-500 mt-2">{errorComentario}</p>
+                  )}
+                </div>
+              </div>
+
+              <div className="bg-[#3684DB] p-4 rounded-b-lg flex justify-end">
+                <button
+                  className="bg-white text-[#3684DB] py-2 px-4 rounded-lg mr-2 border border-[#3684DB]"
+                  onClick={() => setSelectedStudentIndex(null)}
+                >
+                  Cancelar
+                </button>
+                <button
+                  className="bg-white text-[#3684DB] py-2 px-4 rounded-lg border border-[#3684DB]"
+                  onClick={saveRubricScores}
+                  disabled={
+                    !!errorComentario ||
+                    comentario.trim().split(/\s+/).length < 3
+                  }
+                >
+                  Calificar
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
     </div>
   );
 };
