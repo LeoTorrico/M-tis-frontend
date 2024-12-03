@@ -677,7 +677,7 @@ const EvaluacionSemanal = () => {
         <div className="fixed inset-0 flex items-center justify-center z-50 bg-black bg-opacity-50">
           <div className="flex gap-4">
             <div className="bg-white p-4 rounded-lg shadow-lg max-w-4xl w-full mx-4 lg:mx-auto max-h-[90vh] overflow-y-auto">
-              <h2 className="bg-[#3684DB] p-4 rounded-t-lg text-white font-bold w-full text-center">
+              <h2 className="bg-[#3684DB] p-5 rounded-t-lg text-white font-bold w-full text-center">
                 Evaluar a {integrantes[selectedStudentIndex]?.nombre_estudiante}{" "}
                 {integrantes[selectedStudentIndex]?.apellido_estudiante}
               </h2>
@@ -826,11 +826,11 @@ const EvaluacionSemanal = () => {
                   ) : (
                     entregable && (
                       <div>
-                                              {entregable.fileType === "application/pdf" ? (
+                        {entregable.fileType === "application/pdf" ? (
                           <iframe
                             src={entregable.archivoURL}
                             width="100%"
-                            height="500px"
+                            height="470px"
                             title="Vista previa del PDF"
                           />
                         ) : entregable.fileType === "image/jpeg" ? (
