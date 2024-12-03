@@ -793,29 +793,31 @@ const EvaluacionSemanal = () => {
                 >
                   Cancelar
                 </button>
-                <button
-                  onClick={handleCalificarClick}
-                  className="bg-white text-[#3684DB] py-2 px-4 rounded-lg border border-[#3684DB]"
-                  disabled={
-                    !!errorComentario ||
-                    comentario.trim().split(/\s+/).length < 1
-                  }
-                >
-                  Calificar
-                </button>
-                {/* Botón "Ver evaluación subida" con margen derecho */}
-                <button
-                  className="bg-white text-[#3684DB] py-2 px-4 rounded-lg border border-[#3684DB]"
-                  onClick={toggleViewEvaluationModal}
-                >
-                  Ver evaluación subida
-                </button>
+                <div className="flex gap-x-2">
+                  <button
+                    onClick={handleCalificarClick}
+                    className="bg-white text-[#3684DB] py-2 px-4 rounded-lg border border-[#3684DB]"
+                    disabled={
+                      !!errorComentario ||
+                      comentario.trim().split(/\s+/).length < 1
+                    }
+                  >
+                    Calificar
+                  </button>
+
+                  <button
+                    className="bg-white text-[#3684DB] py-2 px-4 rounded-lg border border-[#3684DB]"
+                    onClick={toggleViewEvaluationModal}
+                  >
+                    Ver evaluación subida
+                  </button>
+                </div>
               </div>
             </div>
             {/* Modal "Ver evaluación subida" */}
             {isViewEvaluationOpen && (
               <div className="bg-white p-4 rounded-lg shadow-lg max-w-lg w-full mx-4 max-h-[90vh] overflow-y-auto">
-                <h2 className="bg-[#3684DB] p-4 rounded-t-lg text-white font-bold text-center">
+                <h2 className="bg-[#3684DB] p-3 rounded-t-lg text-white font-bold text-center">
                   Evaluación subida
                 </h2>
                 <div className="p-4">
@@ -846,12 +848,24 @@ const EvaluacionSemanal = () => {
                     )
                   )}
                 </div>
-                <div className="bg-[#3684DB] p-4 rounded-b-lg flex justify-end">
+                <div className="bg-[#3684DB] p-4 rounded-b-lg flex justify-end gap-x-2">
                   <button
                     className="bg-white text-[#3684DB] py-2 px-4 rounded-lg border border-[#3684DB]"
                     onClick={toggleViewEvaluationModal}
                   >
                     Cerrar
+                  </button>
+                  <button
+                    className="bg-white text-[#3684DB] py-2 px-4 rounded-lg border border-[#3684DB]"
+                    onClick={() => {
+                      if (entregable?.archivoURL) {
+                        window.open(entregable.archivoURL, "_blank");
+                      } else {
+                        alert("No hay un archivo disponible para visualizar.");
+                      }
+                    }}
+                  >
+                    Ver archivo
                   </button>
                 </div>
               </div>
