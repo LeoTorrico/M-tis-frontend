@@ -5,7 +5,7 @@ import Swal from "sweetalert2";
 import axios from "axios";
 
 const Rubrica = () => {
-  const { cod_evaluacion } = useParams();
+  const { cod_evaluacion, cod_clase } = useParams();
   const navigate = useNavigate();
   const [criterios, setCriterios] = useState([]);
   const [errors, setErrors] = useState({});
@@ -150,31 +150,29 @@ const Rubrica = () => {
     }
 
     // Transformar los criterios al formato específico requerido
-    const rubricaActualizada = criterios.map((criterio, index) => {
-      // Calcular el peso máximo para la rúbrica
-      const pesoRubrica = Math.max(
-        ...criterio.niveles.map((nivel) => parseFloat(nivel.puntos) || 0)
-      );
-
-      return {
-        // Si estás editando, incluye el código de rúbrica existente
+    const rubricaActualizada = {
+      codEvaluacion: parseInt(cod_evaluacion),
+      codClase: cod_clase, // Esto lo extraes de la URL según tu lógica
+      rubricas: criterios.map((criterio, index) => ({
         codRubrica: isEditing
-          ? originalResponse.rubrica[index]?.cod_rubrica
+          ? originalResponse?.rubrica[index]?.cod_rubrica
           : null,
         nombreRubrica: criterio.titulo,
         descripcionRubrica: criterio.descripcion,
-        pesoRubrica,
+        pesoRubrica: Math.max(
+          ...criterio.niveles.map((nivel) => parseFloat(nivel.puntos) || 0)
+        ),
         detallesRubrica: criterio.niveles.map((nivel, nivelIndex) => ({
-          // Si estás editando, incluye el código de detalle existente
           codDetalle: isEditing
-            ? originalResponse.rubrica[index]?.detalles[nivelIndex]?.cod_detalle
+            ? originalResponse?.rubrica[index]?.detalles[nivelIndex]
+                ?.cod_detalle
             : null,
           clasificacion: nivel.tituloNivel,
           peso: parseFloat(nivel.puntos) || 0,
           descripcion: nivel.descripcion,
         })),
-      };
-    });
+      })),
+    };
 
     try {
       console.log(rubricaActualizada);
