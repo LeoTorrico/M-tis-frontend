@@ -6,9 +6,10 @@ import axios from "axios";
 import { useNavigate, useParams } from "react-router-dom";
 import MostarRubrica from "./MostrarRubrica";
 import ArchivoAdjunto from "./ArchivoAdjunto";
+import EditarEvaluacion from "./EditarEvaluacion"
 
 const EvaluacionDetails = ({
-  evaluacion,
+  evaluation,
   user,
   submitted,
   retrievedFile,
@@ -22,9 +23,11 @@ const EvaluacionDetails = ({
 }) => {
   const [selectedFile, setSelectedFile] = useState(null);
   const [menuOpen, setMenuOpen] = useState(false);
+  const [isModalOpen, setIsModalOpen] = useState(false);
   const [comentario, setComentario] = useState(null);
   const [comentarioIndividual, setComentarioIndividual] = useState(null);
   const { cod_clase } = useParams();
+  const [evaluacion, setEvaluacion] = useState(evaluation);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -54,6 +57,13 @@ const EvaluacionDetails = ({
     }
   }, [evaluacion.cod_evaluacion, cod_clase, user.token]);
 
+  useEffect(() => {
+    // Recuperar el comentario asociado a la evaluación actual
+    const comentarioKey = `comentario_${evaluacion.cod_evaluacion}`;
+    const savedComentario = localStorage.getItem(comentarioKey);
+    setComentario(savedComentario === 'null' ? null : savedComentario);
+  }, [evaluacion.cod_evaluacion]);
+
   const onFileChange = (event) => {
     const file = event.target.files[0];
     setSelectedFile(file);
@@ -67,6 +77,16 @@ const EvaluacionDetails = ({
   const toggleMenu = () => {
     setMenuOpen((prev) => !prev);
   };
+
+   // Función para abrir el modal de edición
+   const onEdit = () => {
+    setIsModalOpen(true);  // Abre el modal
+   };
+
+    // Función para cerrar el modal
+    const closeModal = () => {
+      setIsModalOpen(false);  // Cierra el modal
+    };
 
   const handleDelete = async () => {
     try {
@@ -96,6 +116,10 @@ const EvaluacionDetails = ({
     }
   };
 
+  const convertLocalHour = (fecha) => {
+    return fecha.replace(/T\d{2}:\d{2}:\d{2}\.\d{3}Z$/, 'T00:00:00.000');  
+  };
+
   return (
     <div className="flex flex-col min-h-[calc(100vh-60px)] h-full">
       <div className="bg-semi-blue text-white p-6 rounded-lg m-4 relative">
@@ -121,10 +145,10 @@ const EvaluacionDetails = ({
             {menuOpen && (
               <div className="absolute right-0 mt-2 w-28 bg-white rounded-lg shadow-lg z-10">
                 <button
-                  onClick={() => setMenuOpen(false)}
+                  onClick={onEdit}
                   className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 rounded-lg w-full text-left"
                 >
-                  Editar
+                  Editar evaluación
                 </button>
                 <button
                   onClick={() =>
@@ -166,10 +190,10 @@ const EvaluacionDetails = ({
                 Fecha de entrega:
               </label>
               <p className={`text-xm font-semibold font-Montserrat`}>
-                {new Date(evaluacion.fecha_fin).toLocaleDateString("es-ES", {
-                  day: "2-digit",
-                  month: "short",
-                  year: "numeric",
+                {new Date(convertLocalHour(evaluacion.fecha_fin)).toLocaleDateString('es-ES', {
+                    day: '2-digit',
+                    month: 'short',
+                    year: 'numeric'
                 })}
               </p>
             </div>
@@ -304,6 +328,14 @@ const EvaluacionDetails = ({
           </div>
         )}
       </div>
+      {/* Modal de edición */}
+      {isModalOpen && (
+            <EditarEvaluacion
+                evaluacion={evaluacion}
+                onCloseModal={closeModal}
+                saveModal={setEvaluacion}
+            />
+        )}
     </div>
   );
 };
