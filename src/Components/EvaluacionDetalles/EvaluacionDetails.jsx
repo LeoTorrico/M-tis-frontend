@@ -9,7 +9,7 @@ import ArchivoAdjunto from "./ArchivoAdjunto";
 import EditarEvaluacion from "./EditarEvaluacion"
 
 const EvaluacionDetails = ({
-  evaluacion,
+  evaluation,
   user,
   submitted,
   retrievedFile,
@@ -27,6 +27,7 @@ const EvaluacionDetails = ({
   const [comentario, setComentario] = useState(null);
   const [comentarioIndividual, setComentarioIndividual] = useState(null);
   const { cod_clase } = useParams();
+  const [evaluacion, setEvaluacion] = useState(evaluation);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -115,6 +116,10 @@ const EvaluacionDetails = ({
     }
   };
 
+  const convertLocalHour = (fecha) => {
+    return fecha.replace(/T\d{2}:\d{2}:\d{2}\.\d{3}Z$/, 'T00:00:00.000');  
+  };
+
   return (
     <div className="flex flex-col min-h-[calc(100vh-60px)] h-full">
       <div className="bg-semi-blue text-white p-6 rounded-lg m-4 relative">
@@ -143,7 +148,7 @@ const EvaluacionDetails = ({
                   onClick={onEdit}
                   className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 rounded-lg w-full text-left"
                 >
-                  Editar
+                  Editar evaluación
                 </button>
                 <button
                   onClick={() =>
@@ -185,10 +190,10 @@ const EvaluacionDetails = ({
                 Fecha de entrega:
               </label>
               <p className={`text-xm font-semibold font-Montserrat`}>
-                {new Date(evaluacion.fecha_fin).toLocaleDateString("es-ES", {
-                  day: "2-digit",
-                  month: "short",
-                  year: "numeric",
+                {new Date(convertLocalHour(evaluacion.fecha_fin)).toLocaleDateString('es-ES', {
+                    day: '2-digit',
+                    month: 'short',
+                    year: 'numeric'
                 })}
               </p>
             </div>
@@ -327,7 +332,8 @@ const EvaluacionDetails = ({
       {isModalOpen && (
             <EditarEvaluacion
                 evaluacion={evaluacion}
-                closeModal={closeModal}
+                onCloseModal={closeModal}
+                saveModal={setEvaluacion}
             />
         )}
     </div>

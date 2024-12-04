@@ -1,8 +1,8 @@
 import { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
-import Swal from "sweetalert2";  // Importa SweetAlert2
+import Swal from "sweetalert2"; // Importa SweetAlert2
 
-const EditarEvaluacion = () => {
+const EditarEvaluacion = ({saveModal, evaluacion, onCloseModal}) => {
   const { cod_evaluacion } = useParams(); // Obtiene el id de la evaluación desde la URL
   const [formData, setFormData] = useState({
     nombreEvaluacion: "",
@@ -12,17 +12,15 @@ const EditarEvaluacion = () => {
 
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState(null);
-  const [isModalOpen, setIsModalOpen] = useState(true); // Abre el modal directamente
   const [formErrors, setFormErrors] = useState({
     nombreEvaluacion: "",
     descripcion: "",
     fecha: "",
   });
 
-  // Función para cerrar el modal y recargar la página
+  // Función para cerrar el modal
   const closeModal = () => {
-    setIsModalOpen(false);
-    window.location.reload(); // Recargar la página cuando se presiona "Cancelar"
+    onCloseModal();
   };
 
   useEffect(() => {
@@ -114,6 +112,13 @@ const EditarEvaluacion = () => {
       setError("No se ha encontrado el token de autenticación.");
       return;
     }
+    
+    const body = {
+      nombreEvaluacion: formData.nombreEvaluacion,
+      descripcion: formData.descripcion,
+      fechaEntrega: formData.fecha,
+    };
+    
 
     try {
       const response = await fetch(`http://localhost:3000/evaluaciones/editar/${cod_evaluacion}`, {
@@ -137,9 +142,15 @@ const EditarEvaluacion = () => {
           text: "La evaluación se ha actualizado correctamente.",
           confirmButtonColor: "#3684DB",
         }).then(() => {
-          // Recargar la página después de aceptar el mensaje
-          window.location.reload();
+          // Cerrar el modal al aceptar el mensaje
+          onCloseModal();
         });
+        saveModal((prevEvaluacion) => ({
+          ...prevEvaluacion,
+          fecha_fin: new Date(body.fechaEntrega).toISOString(),
+          evaluacion: body.nombreEvaluacion,
+          descripcion_evaluacion: body.descripcion,
+        }));
       } else {
         throw new Error("Error al guardar la evaluación.");
       }
@@ -161,8 +172,6 @@ const EditarEvaluacion = () => {
 
   return (
     <div>
-      {/* El modal ya se muestra al cargar el componente */}
-      {isModalOpen && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
           <div className="bg-white w-[700px] max-h-[95vh] h-[65vh] rounded-xl flex flex-col font-title relative">
             <div className="bg-[#3684DB] rounded-t-xl p-4 flex justify-center items-center relative">
@@ -218,7 +227,7 @@ const EditarEvaluacion = () => {
                     name="fecha"
                     value={formData.fecha}
                     onChange={handleChange}
-                    min={today}  // Asegura que no se puedan seleccionar fechas anteriores al día de hoy
+                    min={today} // Asegura que no se puedan seleccionar fechas anteriores al día de hoy
                     className="w-full px-4 py-2 border border-gray-300 rounded"
                     style={{ backgroundColor: "#B3D6F9" }} // Fondo del campo
                   />
@@ -251,7 +260,6 @@ const EditarEvaluacion = () => {
             </div>
           </div>
         </div>
-      )}
     </div>
   );
 };

@@ -209,7 +209,7 @@ const Instrucciones = ({ evaluacion }) => {
 
   return (
     <EvaluacionDetails
-      evaluacion={evaluacion}
+      evaluation={evaluacion}
       user={user}
       submitted={submitted}
       retrievedFile={retrievedFile}

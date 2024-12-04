@@ -23,30 +23,36 @@ const RegistroGrupoModal = ({ isGrupoModalOpen, onClose }) => {
   }, [isGrupoModalOpen]);
 
   useEffect(() => {
-    const fetchEstudiantes = async () => {
-      try {
-        const response = await axios.get(
-          `http://localhost:3000/api/grupos/${cod_clase}/estudiantes-sin-grupo`,
-          {
-            headers: {
-              Authorization: `Bearer ${token}`,
-            },
+    if (isGrupoModalOpen) {
+      const fetchEstudiantes = async () => {
+        setCargando(true); // Muestra el estado de carga mientras se actualiza la lista.
+        try {
+          const response = await axios.get(
+            `http://localhost:3000/api/grupos/${cod_clase}/estudiantes-sin-grupo`,
+            {
+              headers: {
+                Authorization: `Bearer ${token}`,
+              },
+            }
+          );
+          setEstudiantes(response.data); // Actualiza la lista de estudiantes disponibles.
+        } catch (error) {
+          if (error.response && error.response.status === 404) {
+            setEstudiantes([]); // Maneja el caso donde no hay estudiantes disponibles.
+          } else {
+            console.error("Error fetching estudiantes:", error);
           }
-        );
-        setEstudiantes(response.data);
-      } catch (error) {
-        if (error.response && error.response.status === 404) {
-          setEstudiantes([]);
-        } else {
-          console.error("Error fetching estudiantes:", error);
+        } finally {
+          setCargando(false); // Termina el estado de carga.
         }
-      } finally {
-        setCargando(false);
-      }
-    };
-
-    fetchEstudiantes();
-  }, [cod_clase, token]);
+      };
+  
+      fetchEstudiantes();
+      setSelecciones({}); // Reinicia las selecciones.
+      setError(""); // Limpia cualquier error previo.
+    }
+  }, [isGrupoModalOpen, cod_clase, token]);
+  
 
   const handleSeleccionarEstudiante = (codigoSis) => {
     setSelecciones((prev) => ({
@@ -96,10 +102,10 @@ const RegistroGrupoModal = ({ isGrupoModalOpen, onClose }) => {
         text: "Los estudiantes fueron añadidos correctamente.",
         icon: "success",
         confirmButtonText: "Aceptar",
-        confirmButtonColor: "#3684DB", // Fondo personalizado para el botón de éxito
+        confirmButtonColor: "#3684DB",
       }).then(() => {
-        // Recargar la página después de que el usuario acepte el mensaje
-        window.location.reload();
+        // Cerrar el modal después de que el usuario acepte el mensaje
+        onClose();
       });
     } catch (error) {
       console.error("Error al añadir estudiantes:", error);
@@ -113,7 +119,12 @@ const RegistroGrupoModal = ({ isGrupoModalOpen, onClose }) => {
     onClose();
   };
 
-  const handleClose = () => {
+  const handleClose = () => { 
+    const estudianteAux = {
+
+      codigoSis: seleccionados.map((item) => item.codigoSis),
+      roles: seleccionados.map((item) => item.rol),
+    }
     setSelecciones({});
     setError("");
     onClose();
