@@ -10,9 +10,7 @@ const EvaluacionSemanal = () => {
   const navigate = useNavigate();
   const { cod_grupoempresa, cod_clase, cod_evaluacion } = useParams();
 
-  useEffect(() => {
-    // console.log("Parámetros:", { cod_grupoempresa, cod_clase, cod_evaluacion });
-  }, [cod_grupoempresa, cod_clase, cod_evaluacion]);
+  useEffect(() => {}, [cod_grupoempresa, cod_clase, cod_evaluacion]);
   const [curso, setCurso] = useState({
     nombre: "",
     gestion: "",
@@ -31,8 +29,6 @@ const EvaluacionSemanal = () => {
   const [retroalimentacionGrupal, setRetroalimentacionGrupal] = useState("");
   const [comentariosPorEstudiante, setComentariosPorEstudiante] = useState({});
   const [asistenciaDisponible, setAsistenciaDisponible] = useState(false);
-  // const [retroalimentacionDisponible, setRetroalimentacionDisponible] =
-  //  useState(false);
   const [selectedCriteria, setSelectedCriteria] = useState({});
   const handleCriteriaClick = (rubricIndex, value) => {
     const updatedCriteria = { ...selectedCriteria };
@@ -113,7 +109,9 @@ const EvaluacionSemanal = () => {
           }
         );
 
-        // console.log("Rúbricas obtenidas:", response.data);
+        setRetroalimentacionGrupal(
+          response.data.retroalimentacion_grupal || []
+        );
 
         setRubricas(response.data.rubricas);
 
@@ -138,10 +136,6 @@ const EvaluacionSemanal = () => {
           }) || [];
 
         setIntegrantes(updatedIntegrantes);
-
-        const retroalimentacionGrupal =
-          response.data.retroalimentacion_grupal || "";
-        setRetroalimentacionGrupal(retroalimentacionGrupal);
 
         // setRetroalimentacionDisponible(!!retroalimentacionGrupal);
       } catch (error) {
@@ -272,12 +266,6 @@ const EvaluacionSemanal = () => {
 
   function verificarToken() {
     const token = localStorage.getItem("token");
-
-    if (token) {
-      // console.log("Token obtenido:", token);
-    } else {
-      // console.log("No se obtuvo el token");
-    }
   }
 
   verificarToken();
@@ -302,8 +290,14 @@ const EvaluacionSemanal = () => {
           }
         );
 
+        const nuevaRetroalimentacion = {
+          fecha_registro: new Date().toISOString(),
+          comentario: retroalimentacion,
+        };
+        setRetroalimentacionGrupal((prev) => [nuevaRetroalimentacion, ...prev]);
+        setRetroalimentacion("");
+
         alert("Retroalimentación grupal guardada con éxito.");
-        //  setRetroalimentacionDisponible(true);
       } else {
         alert("Por favor, ingrese retroalimentación antes de guardar.");
       }
@@ -320,10 +314,6 @@ const EvaluacionSemanal = () => {
         codigoSis: integrante.codigo_sis,
         estado: integrante.asistencia || "Presente",
       }));
-      // console.log(
-      //   "Lista de asistencia que se envía al backend:",
-      //   listaAsistencia
-      // );
 
       await axios.post(
         `http://localhost:3000/asistencia/registrar/${cod_clase}`,
@@ -357,15 +347,12 @@ const EvaluacionSemanal = () => {
     const fetchAsistencia = async () => {
       try {
         const token = localStorage.getItem("token");
-        console.log({ fecha });
         const response = await axios.get(
           `http://localhost:3000/asistencia?codGrupo=${cod_grupoempresa}&fecha=${fecha}`,
           { headers: { Authorization: `Bearer ${token}` } }
         );
 
         const asistenciaData = response.data.data || [];
-        console.log("Asistencia obtenida:", asistenciaData);
-
         setAsistenciaDisponible(asistenciaData.length > 0);
 
         const updatedIntegrantes = integrantes.map((integrante) => {
@@ -381,8 +368,6 @@ const EvaluacionSemanal = () => {
         });
 
         setUpdatedIntegrantes(updatedIntegrantes);
-        // console.log(">>>> updatedIntegrantes", updatedIntegrantes);
-        // setIntegrantes(updatedIntegrantes);
       } catch (error) {
         console.error("Error al obtener la asistencia:", error);
       }
@@ -420,10 +405,6 @@ const EvaluacionSemanal = () => {
         setLoadingEntregable(true);
         setErrorEntregable(null);
 
-        console.log("cod_evaluacion:", cod_evaluacion);
-        console.log("cod_grupoempresa:", cod_grupoempresa);
-        console.log("user.token:", user?.token);
-
         if (!cod_evaluacion || !cod_grupoempresa) {
           throw new Error(
             "Datos insuficientes: cod_evaluacion o cod_grupoempresa no válidos."
@@ -442,9 +423,6 @@ const EvaluacionSemanal = () => {
             },
           }
         );
-
-        console.log("Respuesta del backend:", response);
-
         // Asegurarse de que la propiedad 'archivo' exista
         if (response.data && response.data.archivo) {
           const archivoBase64 = response.data.archivo;
@@ -482,16 +460,13 @@ const EvaluacionSemanal = () => {
           // Si hay un enlace al archivo, abrirlo en una nueva pestaña
           window.open(response.data.linkEntregable, "_blank");
         } else {
-          throw new Error(
-            "No se encontró un archivo entregable."
-          );
+          throw new Error("No se encontró un archivo entregable.");
         }
       } catch (error) {
         console.error("Error al obtener el entregable:", error);
 
         // Mostrar mensaje de error claro
         if (error.response && error.response.data) {
-          console.log("Detalles del error del servidor:", error.response.data);
           const serverError =
             error.response.data.detalle || "Error desconocido en el servidor.";
           setErrorEntregable(serverError);
@@ -616,9 +591,10 @@ const EvaluacionSemanal = () => {
             Guardar asistencia
           </button>
         </div>
-        {/*Retroalimentacion grupal*/}
         <div className="mt-6">
           <h2 className="font-bold text-md mb-2">Retroalimentación grupal</h2>
+
+          {/* Mostrar retroalimentaciones guardadas */}
           <table className="table-auto w-full mb-6 border-collapse">
             <thead>
               <tr>
@@ -627,37 +603,51 @@ const EvaluacionSemanal = () => {
               </tr>
             </thead>
             <tbody>
-              <tr>
-                <td className="border px-4 py-2">
-                  <input
-                    type="text"
-                    value={
-                      (
-                        fecha ||
-                        retroalimentacionGrupal.fecha_registro ||
-                        "00/00/00"
-                      )?.split("T")[0]
-                    }
-                    readOnly
-                  />
-                </td>
-
-                <td className="border px-4 py-2">
-                  <textarea
-                    value={
-                      retroalimentacion ||
-                      retroalimentacionGrupal.comentario ||
-                      ""
-                    }
-                    onChange={handleRetroalimentacionChange}
-                    placeholder="Ingrese retroalimentación grupal..."
-                    className="w-full p-2 border border-gray-300 rounded-lg"
-                  />
-                </td>
-              </tr>
+              {retroalimentacionGrupal.length > 0 ? (
+                retroalimentacionGrupal.map((retro, index) => (
+                  <tr key={index}>
+                    <td className="border px-4 py-2">
+                      {retro.fecha_registro.split("T")[0] ||
+                        "Fecha no disponible"}
+                    </td>
+                    <td className="border px-4 py-2">
+                      {/* Reemplazar saltos de línea por <br /> */}
+                      {retro.comentario
+                        ? retro.comentario.split("\n").map((line, i) => (
+                            <span key={i}>
+                              {line}
+                              <br />
+                            </span>
+                          ))
+                        : "Sin comentario"}
+                    </td>
+                  </tr>
+                ))
+              ) : (
+                <tr>
+                  <td className="border px-4 py-2 text-center" colSpan={2}>
+                    No hay retroalimentaciones disponibles
+                  </td>
+                </tr>
+              )}
             </tbody>
           </table>
-        </div>{" "}
+
+          {/* Espacio para agregar nueva retroalimentación */}
+          <h2 className="font-bold text-md mb-2">
+            Agregar nueva retroalimentación
+          </h2>
+          <div className="flex flex-col space-y-4">
+            <textarea
+              value={retroalimentacion}
+              onChange={(e) => setRetroalimentacion(e.target.value)}
+              placeholder="Ingrese retroalimentación grupal..."
+              className="w-full p-2 border border-gray-300 rounded-lg"
+            />
+            <div className="flex justify-between mt-4"></div>
+          </div>
+        </div>
+
         {/* Botón alineado a la derecha */}
         <div className="flex justify-between mt-4">
           <button
