@@ -5,12 +5,11 @@ import Swal from "sweetalert2";
 import axios from "axios";
 
 const Rubrica = () => {
-  const { cod_evaluacion } = useParams();
+  const { cod_evaluacion, cod_clase } = useParams();
   const navigate = useNavigate();
   const [criterios, setCriterios] = useState([]);
   const [errors, setErrors] = useState({});
   const token = localStorage.getItem("token");
-  console.log(cod_evaluacion);
   const agregarCriterio = () => {
     setCriterios([
       ...criterios,
@@ -99,6 +98,7 @@ const Rubrica = () => {
     }
 
     const rubrica = {
+      codClase: cod_clase,
       codEvaluacion: cod_evaluacion,
       rubricas: criterios.map((criterio) => {
         const pesoRubrica = Math.max(

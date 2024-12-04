@@ -180,7 +180,20 @@ const VistaCurso = () => {
 
   const handleIntegranteChange = (index, value) => {
     const newIntegrantes = [...groupData.integrantes];
+
+    // Verificar si el estudiante ya está seleccionado en otro índice
+    const estudianteYaSeleccionado = newIntegrantes.some(
+      (integrante, i) => integrante.codigo_sis === value && i !== index
+    );
+
+    if (estudianteYaSeleccionado) {
+      alert("Este estudiante ya ha sido seleccionado.");
+      return;
+    }
+
+    // Actualizar el integrante en el índice específico
     newIntegrantes[index] = { ...newIntegrantes[index], codigo_sis: value };
+
     setGroupData({ ...groupData, integrantes: newIntegrantes });
   };
 
