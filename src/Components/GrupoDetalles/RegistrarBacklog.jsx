@@ -38,7 +38,7 @@ const MostrarRequerimientos = () => {
       setLoading(true);
       try {
         const response = await fetch(
-          `http://localhost:3000/planificacion/productbacklog/${cod_grupoempresa}`,
+          `https://backend-tis-silk.vercel.app/planificacion/productbacklog/${cod_grupoempresa}`,
           {
             headers: {
               Authorization: `Bearer ${token}`,
@@ -112,7 +112,7 @@ const MostrarRequerimientos = () => {
 
     try {
       const response = await fetch(
-        "http://localhost:3000/planificacion/requerimientos",
+        "https://backend-tis-silk.vercel.app/planificacion/requerimientos",
         {
           method: "POST",
           headers: {

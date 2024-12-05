@@ -5,11 +5,7 @@ import { RingLoader } from "react-spinners";
 import axios from "axios";
 import ConfirmationModal from "../Components/ConfirmationModal";
 
-const RegistroHorarioModal = ({ 
-  isHorarioModalOpen, 
-  onClose,
-  codClase,
-}) => {
+const RegistroHorarioModal = ({ isHorarioModalOpen, onClose, codClase }) => {
   const [dia, setDia] = useState("");
   const [horaInicio, setHoraInicio] = useState("");
   const [horaFin, setHoraFin] = useState("");
@@ -39,19 +35,25 @@ const RegistroHorarioModal = ({
 
     setIsLoading(true);
     try {
-      await axios.post(`http://localhost:3000/clases/${codClase}/horarios`, {
-        hora_inicio: horaInicio, 
-        hora_fin: horaFin, 
-        dia_horario: dia, 
-      },{
-        headers: {
-          Authorization: `Bearer ${token}`,
+      await axios.post(
+        `https://backend-tis-silk.vercel.app/clases/${codClase}/horarios`,
+        {
+          hora_inicio: horaInicio,
+          hora_fin: horaFin,
+          dia_horario: dia,
         },
-      });
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
       onClose();
     } catch (error) {
       console.error("Error registrando horario:", error);
-      setError(error.response.data.error || "Hubo un problema al registrar el horario.");
+      setError(
+        error.response.data.error || "Hubo un problema al registrar el horario."
+      );
     } finally {
       setIsLoading(false);
     }
@@ -91,7 +93,6 @@ const RegistroHorarioModal = ({
         overlayClassName="fixed inset-0 bg-black bg-opacity-50"
       >
         <div className="bg-white w-[600px] rounded-xl flex flex-col font-title relative">
-          
           {/* Header Superior */}
           <div className="bg-[#3684DB] rounded-t-xl p-4 flex justify-center items-center relative">
             <h2 className="text-2xl font-semibold text-white text-center">
@@ -136,7 +137,10 @@ const RegistroHorarioModal = ({
                   </select>
                 </div>
                 <div>
-                  <label htmlFor="horaInicio" className="block font-semibold mb-2">
+                  <label
+                    htmlFor="horaInicio"
+                    className="block font-semibold mb-2"
+                  >
                     Hora de Inicio*
                   </label>
                   <input

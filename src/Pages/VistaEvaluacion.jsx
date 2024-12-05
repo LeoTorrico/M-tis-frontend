@@ -26,7 +26,7 @@ const VistaEvaluacion = () => {
     const fetchEvaluacionTipo = async () => {
       try {
         const response = await fetch(
-          `http://localhost:3000/evaluaciones/${cod_evaluacion}/tipo`,
+          `https://backend-tis-silk.vercel.app/evaluaciones/${cod_evaluacion}/tipo`,
           {
             headers: { Authorization: `Bearer ${token}` },
           }
@@ -71,7 +71,7 @@ const VistaEvaluacion = () => {
       {isEvaluacionCruzada && <EvaluacionCruzada />}
       {isEvaluacionSemanal && <EvaluacionDetalles />}
       {isEvaluacionPares && <EvaluacionPares />}
-      {!isEvaluacionCruzada && !isEvaluacionSemanal && !isEvaluacionPares &&(
+      {!isEvaluacionCruzada && !isEvaluacionSemanal && !isEvaluacionPares && (
         <div>Tipo de evaluación no reconocido: {evaluacionTipo}</div>
       )}
     </div>

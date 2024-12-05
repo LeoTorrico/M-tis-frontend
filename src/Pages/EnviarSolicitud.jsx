@@ -11,7 +11,7 @@ function EnviarSolicitud() {
     e.preventDefault();
 
     try {
-      const response = await axios.post('http://localhost:3000/email/enviar-correo-restablecer', { 
+      const response = await axios.post('https://backend-tis-silk.vercel.app/email/enviar-correo-restablecer', { 
         correo: email,  
         rol       
       });
