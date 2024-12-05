@@ -309,7 +309,7 @@ const EvaluacionDetails = ({
 
                 {comentario && (
                   <div className="mt-2 p-3 bg-white rounded-lg shadow">
-                    <p className="text-sm text-black font-Montserrat">
+                    <p className="text-sm text-black font-Montserrat whitespace-pre-line">
                       <strong>Comentario grupal:</strong> {comentario}
                     </p>
                   </div>
@@ -317,9 +317,8 @@ const EvaluacionDetails = ({
 
                 {comentarioIndividual && (
                   <div className="mt-2 p-3 bg-white rounded-lg shadow">
-                    <p className="text-sm text-black font-Montserrat">
-                      <strong>Comentario individual:</strong>{" "}
-                      {comentarioIndividual}
+                    <p className="text-sm text-black font-Montserrat whitespace-pre-line">
+                      <strong>Comentario individual:</strong> {comentarioIndividual}
                     </p>
                   </div>
                 )}
