@@ -272,7 +272,15 @@ const VistaCurso = () => {
         console.error("Error al registrar el grupo");
       }
     } catch (error) {
-      console.error("Error en el envío al backend:", error);
+      console.log("Error capturado:", error.response);
+      if (error.response && error.response.status === 500) {
+        setErrorMessage(
+          error.response.data.message ||
+            "Ocurrió un error al registrar el grupo. Por favor, inténtelo nuevamente."
+        );
+      } else {
+        setErrorMessage("Ocurrió un error inesperado.");
+      }
     } finally {
       setLoading(false);
     }
