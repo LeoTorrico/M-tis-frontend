@@ -34,7 +34,7 @@ const EditarEvaluacion = ({saveModal, evaluacion, onCloseModal}) => {
       }
 
       try {
-        const response = await fetch(`http://localhost:3000/evaluaciones/detalles/${cod_evaluacion}`, {
+        const response = await fetch(`https://backend-tis-silk.vercel.app/evaluaciones/detalles/${cod_evaluacion}`, {
           method: "GET",
           headers: {
             "Content-Type": "application/json",
@@ -121,7 +121,7 @@ const EditarEvaluacion = ({saveModal, evaluacion, onCloseModal}) => {
     
 
     try {
-      const response = await fetch(`http://localhost:3000/evaluaciones/editar/${cod_evaluacion}`, {
+      const response = await fetch(`https://backend-tis-silk.vercel.app/evaluaciones/editar/${cod_evaluacion}`, {
         method: "PUT",
         headers: {
           "Content-Type": "application/json",

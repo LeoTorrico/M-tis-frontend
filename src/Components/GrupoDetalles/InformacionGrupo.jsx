@@ -14,7 +14,7 @@ const InformacionGrupo = ({ grupo }) => {
     const fetchIntegrantes = async () => {
       try {
         const response = await fetch(
-          `http://localhost:3000/api/grupos/grupo/${cod_grupoempresa}`,
+          `https://backend-tis-silk.vercel.app/api/grupos/grupo/${cod_grupoempresa}`,
           {
             headers: {
               Authorization: `Bearer ${user.token}`,

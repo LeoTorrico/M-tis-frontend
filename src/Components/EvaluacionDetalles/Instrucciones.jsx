@@ -26,7 +26,7 @@ const Instrucciones = ({ evaluacion }) => {
       if (user.rol === "estudiante") {
         try {
           const response = await axios.get(
-            `http://localhost:3000/evaluaciones/${evaluacion.cod_evaluacion}/entregado`,
+            `https://backend-tis-silk.vercel.app/evaluaciones/${evaluacion.cod_evaluacion}/entregado`,
             {
               headers: {
                 Authorization: `Bearer ${user.token}`,
@@ -103,7 +103,7 @@ const Instrucciones = ({ evaluacion }) => {
         };
 
         const response = await axios.post(
-          `http://localhost:3000/evaluaciones/${evaluacion.cod_evaluacion}/entregables`,
+          `https://backend-tis-silk.vercel.app/evaluaciones/${evaluacion.cod_evaluacion}/entregables`,
           requestData,
           {
             headers: {

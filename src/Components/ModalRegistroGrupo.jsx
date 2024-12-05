@@ -61,7 +61,7 @@ const ModalRegistroGrupo = ({
     const fetchClaseInfo = async () => {
       try {
         const response = await axios.get(
-          `http://localhost:3000/clases/${cod_clase}`,
+          `https://backend-tis-silk.vercel.app/clases/${cod_clase}`,
           {
             headers: {
               Authorization: `Bearer ${token}`,

@@ -28,7 +28,7 @@ const RegistroGrupoModal = ({ isGrupoModalOpen, onClose }) => {
         setCargando(true); // Muestra el estado de carga mientras se actualiza la lista.
         try {
           const response = await axios.get(
-            `http://localhost:3000/api/grupos/${cod_clase}/estudiantes-sin-grupo`,
+            `https://backend-tis-silk.vercel.app/api/grupos/${cod_clase}/estudiantes-sin-grupo`,
             {
               headers: {
                 Authorization: `Bearer ${token}`,
@@ -83,7 +83,7 @@ const RegistroGrupoModal = ({ isGrupoModalOpen, onClose }) => {
 
     try {
       const response = await axios.put(
-        `http://localhost:3000/api/grupos/${cod_clase}/grupo/${cod_grupoempresa}/agregarIntegrantes`,
+        `https://backend-tis-silk.vercel.app/api/grupos/${cod_clase}/grupo/${cod_grupoempresa}/agregarIntegrantes`,
         {
           codigoSis: seleccionados.map((item) => item.codigoSis),
           roles: seleccionados.map((item) => item.rol),

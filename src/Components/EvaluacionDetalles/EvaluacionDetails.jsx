@@ -34,7 +34,7 @@ const EvaluacionDetails = ({
     const fetchComentarios = async () => {
       try {
         const response = await axios.get(
-          `http://localhost:3000/evaluaciones/${evaluacion.cod_evaluacion}/${cod_clase}/nota-total`,
+          `https://backend-tis-silk.vercel.app/evaluaciones/${evaluacion.cod_evaluacion}/${cod_clase}/nota-total`,
           {
             headers: {
               Authorization: `Bearer ${user.token}`,
@@ -95,7 +95,7 @@ const EvaluacionDetails = ({
       }
 
       const response = await axios.delete(
-        `http://localhost:3000/evaluaciones/${evaluacion.cod_evaluacion}`,
+        `https://backend-tis-silk.vercel.app/evaluaciones/${evaluacion.cod_evaluacion}`,
         {
           headers: {
             Authorization: `Bearer ${user.token}`,
