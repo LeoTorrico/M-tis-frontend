@@ -19,11 +19,14 @@ const Reportes = () => {
   useEffect(() => {
     const fetchCourses = async () => {
       try {
-        const response = await fetch("http://localhost:3000/clases/obtener", {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        });
+        const response = await fetch(
+          "https://backend-tis-silk.vercel.app/clases/obtener",
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        );
         const data = await response.json();
         setCourses(data.clases);
       } catch (error) {
@@ -46,7 +49,7 @@ const Reportes = () => {
     setLoadingGroups(true);
     try {
       const response = await fetch(
-        `http://localhost:3000/api/grupos/${cod_clase}`,
+        `https://backend-tis-silk.vercel.app/api/grupos/${cod_clase}`,
         {
           headers: {
             Authorization: `Bearer ${token}`,
@@ -71,7 +74,9 @@ const Reportes = () => {
     setShowGradesReport(true);
   };
   const handleNavigateToAsistencia = () => {
-    navigate(`/Reporte-asistencia/${selectedCourse.cod_clase}/${selectedGroup.cod_grupoempresa}`);
+    navigate(
+      `/Reporte-asistencia/${selectedCourse.cod_clase}/${selectedGroup.cod_grupoempresa}`
+    );
   };
   const renderGradesReportButton = () => {
     return (
@@ -212,7 +217,8 @@ const Reportes = () => {
             <div className="flex justify-center">
               <button
                 onClick={handleNavigateToAsistencia}
-                className="px-4 py-2 bg-semi-blue text-white rounded hover:bg-[#2a3b4f] transition-colors">
+                className="px-4 py-2 bg-semi-blue text-white rounded hover:bg-[#2a3b4f] transition-colors"
+              >
                 Visualizar reporte
               </button>
             </div>

@@ -15,7 +15,7 @@ const GradesReportModal = ({ selectedGroup, onClose }) => {
 
       try {
         const response = await fetch(
-          `http://localhost:3000/reportes/grupos/${selectedGroup.cod_grupoempresa}/reporte-notas`,
+          `https://backend-tis-silk.vercel.app/reportes/grupos/${selectedGroup.cod_grupoempresa}/reporte-notas`,
           {
             headers: {
               Authorization: `Bearer ${token}`,
