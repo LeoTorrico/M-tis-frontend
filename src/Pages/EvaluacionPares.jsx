@@ -1,18 +1,29 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useContext } from "react";
 import { PiNewspaper } from "react-icons/pi";
-import { useParams } from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom";
 import axios from "axios";
+import { UserContext } from "../context/UserContext";
 
 const EvaluacionPares = () => {
   const { cod_clase } = useParams();
-
+  const navigate = useNavigate();
+  const { user } = useContext(UserContext);
   const [grupoData, setGrupoData] = useState({});
   const [rubricScores, setRubricScores] = useState({});
   const [selectedStudentIndex, setSelectedStudentIndex] = useState(null);
   const [comentario, setComentario] = useState("");
   const [errorComentario, setErrorComentario] = useState("");
+  const [error, setError] = useState("");
 
   useEffect(() => {
+     // Validar el rol del usuario
+     if (user?.rol === "docente") {
+      setError("Esta es una evaluación para estudiantes. Serás redirigido.");
+      setTimeout(() => {
+        navigate(-1); // Redirige al usuario a la página anterior
+      }, 3000);
+      return;
+    }
     const fetchGrupoData = async () => {
       try {
         const token = localStorage.getItem("token");
@@ -76,6 +87,19 @@ const EvaluacionPares = () => {
     }));
     setSelectedStudentIndex(null);
   };
+  if (error) {
+    return (
+      <div className="flex items-center justify-center min-h-screen bg-gray-100">
+        <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded-lg shadow-lg max-w-md text-center">
+          <p className="font-semibold text-lg">Error</p>
+          <p className="mt-2">{error}</p>
+          <p className="mt-4 text-sm text-gray-600">
+            Serás redirigido en unos segundos...
+          </p>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="flex flex-col w-full p-6 bg-white">

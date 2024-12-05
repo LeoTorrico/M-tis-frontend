@@ -8,7 +8,8 @@ export default function CustomSelect({
   onChange,
   validation = [],
   allowCreate = false,
-  onCreate
+  onCreate,
+  isEnable = false
 }) {
   const [inputValue, setInputValue] = useState("");
   const [isCreating, setIsCreating] = useState(false);
@@ -71,6 +72,7 @@ export default function CustomSelect({
           <select
             value={value}
             onChange={handleSelectChange}
+            disabled={isEnable}
             className="w-full p-2 border rounded"
           >
             <option value="">Selecciona una opción</option>

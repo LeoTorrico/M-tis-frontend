@@ -10,6 +10,7 @@ import Swal from "sweetalert2";
 import { useParams, useNavigate } from "react-router-dom";
 import getDetailsFromToken from "./Utils";
 import { UserContext } from "../context/UserContext";
+import ParametrosGruposModal from "../Components/ParametrosGruposModal";
 
 const VistaCurso = () => {
   const { cod_clase } = useParams();
@@ -29,7 +30,9 @@ const VistaCurso = () => {
   const [isHorarioModalOpen, setIsHorarioModalOpen] = useState(false);
   const openHorarioModal = () => setIsHorarioModalOpen(true);
   const closeHorarioModal = () => setIsHorarioModalOpen(false);
-
+  const [isParametrosModalOpen, setIsParametrosModalOpen] = useState(false);
+  const openParametrosModal = () => setIsParametrosModalOpen(true);
+  const closeParametrosModal = () => setIsParametrosModalOpen(false);
   const [groupData, setGroupData] = useState({
     logo: null,
     nombreLargo: "",
@@ -47,7 +50,6 @@ const VistaCurso = () => {
     "Gestión de calidad",
     "Documentación",
   ];
-
 
   useEffect(() => {
     const fetchClase = async () => {
@@ -178,7 +180,20 @@ const VistaCurso = () => {
 
   const handleIntegranteChange = (index, value) => {
     const newIntegrantes = [...groupData.integrantes];
+
+    // Verificar si el estudiante ya está seleccionado en otro índice
+    const estudianteYaSeleccionado = newIntegrantes.some(
+      (integrante, i) => integrante.codigo_sis === value && i !== index
+    );
+
+    if (estudianteYaSeleccionado) {
+      alert("Este estudiante ya ha sido seleccionado.");
+      return;
+    }
+
+    // Actualizar el integrante en el índice específico
     newIntegrantes[index] = { ...newIntegrantes[index], codigo_sis: value };
+
     setGroupData({ ...groupData, integrantes: newIntegrantes });
   };
 
@@ -257,7 +272,15 @@ const VistaCurso = () => {
         console.error("Error al registrar el grupo");
       }
     } catch (error) {
-      console.error("Error en el envío al backend:", error);
+      console.log("Error capturado:", error.response);
+      if (error.response && error.response.status === 500) {
+        setErrorMessage(
+          error.response.data.message ||
+            "Ocurrió un error al registrar el grupo. Por favor, inténtelo nuevamente."
+        );
+      } else {
+        setErrorMessage("Ocurrió un error inesperado.");
+      }
     } finally {
       setLoading(false);
     }
@@ -308,12 +331,18 @@ const VistaCurso = () => {
           </div>
         )}
         {activeTab === "GruposEmpresas" && rol === "docente" && (
-          <div className="flex justify-end">
+          <div className="flex justify-end space-x-2">
             <button
               className="bg-white text-dark-blue px-4 py-2 rounded-lg border border-blue-800 flex items-center mt-6"
               onClick={openHorarioModal}
             >
               Registrar horario
+            </button>
+            <button
+              className="bg-white text-dark-blue px-4 py-2 rounded-lg border border-blue-800 flex items-center mt-6"
+              onClick={openParametrosModal}
+            >
+              Parámetros Grupos Empresas
             </button>
           </div>
         )}
@@ -339,6 +368,11 @@ const VistaCurso = () => {
       <RegistroHorarioModal
         isHorarioModalOpen={isHorarioModalOpen}
         onClose={closeHorarioModal}
+        codClase={cod_clase}
+      />
+      <ParametrosGruposModal
+        isParametrosModalOpen={isParametrosModalOpen}
+        onClose={closeParametrosModal}
         codClase={cod_clase}
       />
     </div>

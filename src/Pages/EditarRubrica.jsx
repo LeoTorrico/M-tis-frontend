@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import Criterio from "../Components/RubricaDetalles/Criterio";
 import { useNavigate, useParams } from "react-router-dom";
 import Swal from "sweetalert2";
@@ -9,7 +9,59 @@ const Rubrica = () => {
   const navigate = useNavigate();
   const [criterios, setCriterios] = useState([]);
   const [errors, setErrors] = useState({});
+  const [isEditing, setIsEditing] = useState(false);
+  const [originalResponse, setOriginalResponse] = useState(null);
   const token = localStorage.getItem("token");
+
+  // Fetch existing rubric data when component mounts
+  useEffect(() => {
+    const fetchRubricaData = async () => {
+      try {
+        const response = await axios.get(
+          `http://localhost:3000/rubricas/${cod_evaluacion}`,
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        );
+
+        if (response.data.rubrica && response.data.rubrica.length > 0) {
+          // Guarda la respuesta original para referencias posteriores
+          setOriginalResponse(response.data);
+
+          const transformedCriterios = response.data.rubrica.map((rubrica) => ({
+            titulo: rubrica.nombre_rubrica,
+            descripcion: rubrica.descripcion_rubrica,
+            niveles: rubrica.detalles
+              .map((detalle) => ({
+                puntos: detalle.peso_rubrica,
+                tituloNivel: detalle.clasificacion_rubrica,
+                descripcion: detalle.descripcion,
+              }))
+              .sort((a, b) => b.puntos - a.puntos),
+          }));
+
+          setCriterios(transformedCriterios);
+          setIsEditing(true);
+        }
+      } catch (error) {
+        console.error("Error al obtener la rúbrica:", error);
+        Swal.fire({
+          title: "Error!",
+          text: "No se pudo cargar la rúbrica. Inténtalo de nuevo.",
+          icon: "error",
+          confirmButtonText: "Aceptar",
+        });
+      }
+    };
+
+    // Only fetch if we have a cod_evaluacion
+    if (cod_evaluacion) {
+      fetchRubricaData();
+    }
+  }, [cod_evaluacion, token]);
+
   const agregarCriterio = () => {
     setCriterios([
       ...criterios,
@@ -97,41 +149,47 @@ const Rubrica = () => {
       return;
     }
 
-    const rubrica = {
-      codClase: cod_clase,
-      codEvaluacion: cod_evaluacion,
-      rubricas: criterios.map((criterio) => {
-        const pesoRubrica = Math.max(
+    // Transformar los criterios al formato específico requerido
+    const rubricaActualizada = {
+      codEvaluacion: parseInt(cod_evaluacion),
+      codClase: cod_clase, // Esto lo extraes de la URL según tu lógica
+      rubricas: criterios.map((criterio, index) => ({
+        codRubrica: isEditing
+          ? originalResponse?.rubrica[index]?.cod_rubrica
+          : null,
+        nombreRubrica: criterio.titulo,
+        descripcionRubrica: criterio.descripcion,
+        pesoRubrica: Math.max(
           ...criterio.niveles.map((nivel) => parseFloat(nivel.puntos) || 0)
-        );
-
-        return {
-          nombreRubrica: criterio.titulo,
-          descripcionRubrica: criterio.descripcion,
-          pesoRubrica,
-          detallesRubrica: criterio.niveles.map((nivel) => ({
-            peso: parseFloat(nivel.puntos) || 0,
-            clasificacion: nivel.tituloNivel,
-            descripcion: nivel.descripcion,
-          })),
-        };
-      }),
+        ),
+        detallesRubrica: criterio.niveles.map((nivel, nivelIndex) => ({
+          codDetalle: isEditing
+            ? originalResponse?.rubrica[index]?.detalles[nivelIndex]
+                ?.cod_detalle
+            : null,
+          clasificacion: nivel.tituloNivel,
+          peso: parseFloat(nivel.puntos) || 0,
+          descripcion: nivel.descripcion,
+        })),
+      })),
     };
 
     try {
-      const response = await axios.post(
-        "https://backend-tis-silk.vercel.app/rubricas/registrar-rubrica",
-        rubrica,
+      console.log(rubricaActualizada);
+      const response = await axios.put(
+        "http://localhost:3000/rubricas/editar",
+        rubricaActualizada,
         {
           headers: {
             Authorization: `Bearer ${token}`,
           },
         }
       );
-      if (response.status === 201) {
+
+      if (response.status === 200) {
         await Swal.fire({
           title: "Éxito!",
-          text: "Rúbrica registrada correctamente",
+          text: "Rúbrica actualizada correctamente",
           icon: "success",
           iconColor: "#3684DB",
           confirmButtonText: "Aceptar",
@@ -143,10 +201,10 @@ const Rubrica = () => {
         navigate(`/`);
       }
     } catch (error) {
-      console.error("Error al registrar la rúbrica:", error);
+      console.error("Error al actualizar la rúbrica:", error);
       await Swal.fire({
         title: "Error!",
-        text: "No se pudo registrar la rúbrica. Inténtalo de nuevo.",
+        text: "No se pudo actualizar la rúbrica. Inténtalo de nuevo.",
         icon: "error",
         confirmButtonText: "Aceptar",
         customClass: {
@@ -160,12 +218,14 @@ const Rubrica = () => {
   return (
     <div className="p-6">
       <div className="bg-semi-blue text-white p-6 rounded-lg mb-4 flex justify-between">
-        <h1 className="text-3xl font-bold">Rubrica</h1>
+        <h1 className="text-3xl font-bold">
+          {isEditing ? "Editar Rúbrica" : "Crear Rúbrica"}
+        </h1>
         <button
           onClick={registrarRubrica}
           className="bg-white text-dark-blue px-4 py-2 rounded-lg border border-blue-800 flex items-center mt-6"
         >
-          Registrar rúbrica
+          {isEditing ? "Actualizar rúbrica" : "Registrar rúbrica"}
         </button>
       </div>
       <div className="bg-blue-table p-6 rounded-lg">

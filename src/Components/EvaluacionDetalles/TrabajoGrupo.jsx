@@ -27,7 +27,6 @@ const TrabajoGrupo = ({ evaluacion }) => {
           throw new Error("Error en la petición");
         }
         const data = await response.json();
-        console.log("Datos recibidos:", data); // Verificar los datos recibidos
         setGruposEntregados(data);
         setLoading(false);
       } catch (error) {
