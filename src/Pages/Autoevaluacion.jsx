@@ -87,24 +87,49 @@ const Autoevaluacion = () => {
     }
   };
   
-  
-
   const saveRubricScores = async () => {
-    const estudiante = grupoData.estudiantes[selectedStudentIndex];
-    
-    // Obtenemos la nota correspondiente al estudiante y a la rúbrica
+    // Encuentra al estudiante que coincide con el nombre y apellido evaluado
+    const estudianteEvaluado = grupoData.estudiantes.find(
+      (est) =>
+        est.nombre_estudiante.trim().toLowerCase() === estudiante.nombre_estudiante.trim().toLowerCase() &&
+        est.apellido_estudiante.trim().toLowerCase() === estudiante.apellido_estudiante.trim().toLowerCase()
+    );
+  
+    // Validar que se encontró el estudiante evaluado
+    if (!estudianteEvaluado) {
+      Swal.fire({
+        icon: "error",
+        title: "Error",
+        text: `No se encontró al estudiante ${estudiante.nombre_estudiante} ${estudiante.apellido_estudiante}.`,
+        confirmButtonText: "Aceptar",
+      });
+      return;
+    }
+  
+    // Obtenemos la nota correspondiente al estudiante evaluado
     const nota = rubricScores[selectedStudentIndex]; // Nota ingresada
   
+    // Validación de la nota
+    if (nota === undefined || nota === null || isNaN(nota)) {
+      Swal.fire({
+        icon: "error",
+        title: "Error",
+        text: "La calificación ingresada no es válida.",
+        confirmButtonText: "Aceptar",
+      });
+      return;
+    }
+  
     // Usamos el cod_rubrica guardado en el estado
-    const codRubrica = selectedRubricCode;  // Usar el cod_rubrica del estado
+    const codRubrica = selectedRubricCode;
   
     const data = {
       codEvaluacion: cod_evaluacion, // Código de la evaluación
-      codigoSis: estudiante.codigo_sis, // Código del estudiante
+      codigoSis: estudianteEvaluado.codigo_sis, // Código del estudiante evaluado
       notas: [
         {
-          codRubrica: codRubrica, // Usar el cod_rubrica guardado
-          nota: nota, // Nota ingresada para el estudiante
+          codRubrica: codRubrica, // Código de la rúbrica seleccionada
+          nota: nota, // Nota ingresada
         },
       ],
       comentario: "Buen desempeño en la evaluación.", // Comentario general
@@ -117,24 +142,27 @@ const Autoevaluacion = () => {
           Authorization: `Bearer ${token}`,
         },
       });
-  
-      // Mostrar el mensaje de éxito con SweetAlert2
+
       Swal.fire({
         icon: "success",
         title: "¡Calificación guardada!",
-        text: "La calificación se ha guardado correctamente.",
+        text: `La calificación se ha guardado correctamente.`,
         confirmButtonText: "Aceptar",
       });
   
-      // Si la calificación se guarda correctamente, podemos cerrar el modal y actualizar el estado
+      // Restablecer el índice seleccionado después de guardar
       setSelectedStudentIndex(null);
     } catch (error) {
       console.error("Error al guardar la calificación:", error);
+  
+      Swal.fire({
+        icon: "error",
+        title: "Error al guardar",
+        text: "Hubo un problema al guardar la calificación. Por favor, intenta nuevamente.",
+        confirmButtonText: "Aceptar",
+      });
     }
-  };
-  
- 
-  
+  }; 
 
   if (error) {
     return (
@@ -164,9 +192,7 @@ const Autoevaluacion = () => {
         <div className="fixed inset-0 flex items-center justify-center z-50 bg-black bg-opacity-50">
       <div className="bg-white p-0 rounded-t-lg rounded-b-lg shadow-lg max-w-4xl w-full mx-4 lg:mx-auto max-h-[90vh] overflow-y-auto">
           <h2 className="bg-[#3684DB] p-4 rounded-t-lg text-white font-bold w-full text-center">
-            Evaluar a{" "}
-            {grupoData.estudiantes[selectedStudentIndex]?.nombre_estudiante}{" "}
-            {grupoData.estudiantes[selectedStudentIndex]?.apellido_estudiante}
+             Evaluar a {estudiante.nombre_estudiante} {estudiante.apellido_estudiante}
           </h2>
       
           <div className="mb-4 p-4">
