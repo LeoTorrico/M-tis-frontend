@@ -36,7 +36,7 @@ const ParametrosGruposModal = ({
     setIsLoading(true);
     try {
       await axios.put(
-        `http://localhost:3000/clases/${codClase}/integrantes`, // URL dinámica
+        `https://backend-tis-silk.vercel.app/clases/${codClase}/integrantes`, // URL dinámica
         {
           nroIntegrantes: maxGroupSize, // Clave ajustada según el formato requerido
         },

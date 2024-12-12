@@ -63,7 +63,7 @@ function LoginDocentes() {
       return;
     }
     try {
-      const response = await axios.post("http://localhost:3000/login/docente", {
+      const response = await axios.post("https://backend-tis-silk.vercel.app/login/docente", {
         password: formState.password,
         correo: formState.email,
         captchaToken: captchaValue

@@ -36,7 +36,7 @@ const EvaluacionCruzada = () => {
       try {
         const token = localStorage.getItem("token");
         const response = await axios.get(
-          `http://localhost:3000/eval-cruzada/${cod_clase}`,
+          `https://backend-tis-silk.vercel.app/eval-cruzada/${cod_clase}`,
           {
             headers: {
               Authorization: `Bearer ${token}`,

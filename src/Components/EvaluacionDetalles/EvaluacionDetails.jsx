@@ -34,7 +34,7 @@ const EvaluacionDetails = ({
     const fetchComentarios = async () => {
       try {
         const response = await axios.get(
-          `http://localhost:3000/evaluaciones/${evaluacion.cod_evaluacion}/${cod_clase}/nota-total`,
+          `https://backend-tis-silk.vercel.app/evaluaciones/${evaluacion.cod_evaluacion}/${cod_clase}/nota-total`,
           {
             headers: {
               Authorization: `Bearer ${user.token}`,
@@ -95,7 +95,7 @@ const EvaluacionDetails = ({
       }
 
       const response = await axios.delete(
-        `http://localhost:3000/evaluaciones/${evaluacion.cod_evaluacion}`,
+        `https://backend-tis-silk.vercel.app/evaluaciones/${evaluacion.cod_evaluacion}`,
         {
           headers: {
             Authorization: `Bearer ${user.token}`,
@@ -309,7 +309,7 @@ const EvaluacionDetails = ({
 
                 {comentario && (
                   <div className="mt-2 p-3 bg-white rounded-lg shadow">
-                    <p className="text-sm text-black font-Montserrat">
+                    <p className="text-sm text-black font-Montserrat whitespace-pre-line">
                       <strong>Comentario grupal:</strong> {comentario}
                     </p>
                   </div>
@@ -317,9 +317,8 @@ const EvaluacionDetails = ({
 
                 {comentarioIndividual && (
                   <div className="mt-2 p-3 bg-white rounded-lg shadow">
-                    <p className="text-sm text-black font-Montserrat">
-                      <strong>Comentario individual:</strong>{" "}
-                      {comentarioIndividual}
+                    <p className="text-sm text-black font-Montserrat whitespace-pre-line">
+                      <strong>Comentario individual:</strong> {comentarioIndividual}
                     </p>
                   </div>
                 )}

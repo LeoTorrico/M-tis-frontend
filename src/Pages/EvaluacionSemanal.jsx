@@ -63,7 +63,7 @@ const EvaluacionSemanal = () => {
       try {
         const token = localStorage.getItem("token");
         const response = await axios.get(
-          "http://localhost:3000/clases/obtener",
+          "https://backend-tis-silk.vercel.app/clases/obtener",
           {
             headers: {
               Authorization: `Bearer ${token}`,
@@ -101,7 +101,7 @@ const EvaluacionSemanal = () => {
         }
 
         const response = await axios.get(
-          `http://localhost:3000/rubricas/${cod_evaluacion}/grupos/${cod_grupoempresa}/calificaciones`,
+          `https://backend-tis-silk.vercel.app/rubricas/${cod_evaluacion}/grupos/${cod_grupoempresa}/calificaciones`,
           {
             headers: {
               Authorization: `Bearer ${token}`,
@@ -236,7 +236,7 @@ const EvaluacionSemanal = () => {
     try {
       const token = localStorage.getItem("token");
       await axios.post(
-        "http://localhost:3000/evaluacion/calificar",
+        "https://backend-tis-silk.vercel.app/evaluacion/calificar",
         {
           codEvaluacion: cod_evaluacion,
           codigoSis: selectedStudent.codigo_sis,
@@ -276,7 +276,7 @@ const EvaluacionSemanal = () => {
 
       if (retroalimentacion.trim()) {
         await axios.post(
-          "http://localhost:3000/evaluacion/retroalimentacion",
+          "https://backend-tis-silk.vercel.app/evaluacion/retroalimentacion",
           {
             codEvaluacion: cod_evaluacion,
             codClase: cod_clase,
@@ -316,7 +316,7 @@ const EvaluacionSemanal = () => {
       }));
 
       await axios.post(
-        `http://localhost:3000/asistencia/registrar/${cod_clase}`,
+        `https://backend-tis-silk.vercel.app/asistencia/registrar/${cod_clase}`,
         {
           listaAsistencia,
         },
@@ -348,7 +348,7 @@ const EvaluacionSemanal = () => {
       try {
         const token = localStorage.getItem("token");
         const response = await axios.get(
-          `http://localhost:3000/asistencia?codGrupo=${cod_grupoempresa}&fecha=${fecha}`,
+          `https://backend-tis-silk.vercel.app/asistencia?codGrupo=${cod_grupoempresa}&fecha=${fecha}`,
           { headers: { Authorization: `Bearer ${token}` } }
         );
 
@@ -416,7 +416,7 @@ const EvaluacionSemanal = () => {
         }
 
         const response = await axios.get(
-          `http://localhost:3000/evaluaciones/${cod_evaluacion}/entregas/${cod_grupoempresa}`,
+          `https://backend-tis-silk.vercel.app/evaluaciones/${cod_evaluacion}/entregas/${cod_grupoempresa}`,
           {
             headers: {
               Authorization: `Bearer ${user.token}`,

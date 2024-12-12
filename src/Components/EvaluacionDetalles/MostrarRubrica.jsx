@@ -16,7 +16,7 @@ const MostrarRubrica = ({ evaluacion }) => {
     const fetchRubrica = async () => {
       try {
         const response = await axios.get(
-          `http://localhost:3000/evaluaciones/${evaluacion.cod_evaluacion}/${cod_clase}/nota-total`,
+          `https://backend-tis-silk.vercel.app/evaluaciones/${evaluacion.cod_evaluacion}/${cod_clase}/nota-total`,
           {
             headers: {
               Authorization: `Bearer ${user.token}`,

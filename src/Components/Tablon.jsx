@@ -16,7 +16,7 @@ const Tablon = () => {
     const fetchTareas = async () => {
       setCargando(true);
       try {
-        const response = await axios.get(`http://localhost:3000/evaluaciones/${cod_clase}`, {
+        const response = await axios.get(`https://backend-tis-silk.vercel.app/evaluaciones/${cod_clase}`, {
           headers: {
             Authorization: `Bearer ${user?.token}`
           }
