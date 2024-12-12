@@ -3,6 +3,7 @@ import { useParams } from "react-router-dom";
 import EvaluacionDetalles from "./EvaluacionDetalles";
 import EvaluacionCruzada from "./EvaluacionCruzada";
 import EvaluacionPares from "./EvaluacionPares";
+import Autoevaluacion from "./AutoEvaluacion";
 
 const VistaEvaluacion = () => {
   const { cod_evaluacion } = useParams();
@@ -65,15 +66,21 @@ const VistaEvaluacion = () => {
     normalizarTexto(evaluacionTipo) === "evaluacion semanal";
   const isEvaluacionPares =
     normalizarTexto(evaluacionTipo) === "evaluacion de pares";
+  const isAutoevaluacion = normalizarTexto(evaluacionTipo) === "autoevaluacion"; // Nuevo tipo de evaluación
 
   return (
     <div>
       {isEvaluacionCruzada && <EvaluacionCruzada />}
       {isEvaluacionSemanal && <EvaluacionDetalles />}
       {isEvaluacionPares && <EvaluacionPares />}
-      {!isEvaluacionCruzada && !isEvaluacionSemanal && !isEvaluacionPares &&(
-        <div>Tipo de evaluación no reconocido: {evaluacionTipo}</div>
-      )}
+      {isAutoevaluacion && <Autoevaluacion />}{" "}
+      {/* Renderiza el nuevo componente */}
+      {!isEvaluacionCruzada &&
+        !isEvaluacionSemanal &&
+        !isEvaluacionPares &&
+        !isAutoevaluacion && (
+          <div>Tipo de evaluación no reconocido: {evaluacionTipo}</div>
+        )}
     </div>
   );
 };
