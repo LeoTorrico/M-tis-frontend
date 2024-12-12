@@ -88,7 +88,7 @@ export default function EvaluationForm({
     let errorMessage = "";
     for (let rule of validation) {
       if (rule === VType.maxLength) {
-        errorMessage = validations[rule](value, 50);
+        errorMessage = validations[rule](value, 4000);
       } else {
         errorMessage = validations[rule](value);
       }

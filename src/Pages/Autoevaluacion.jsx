@@ -6,7 +6,7 @@ import { UserContext } from "../context/UserContext";
 import Swal from "sweetalert2";
 
 
-const EvaluacionPares = () => {
+const Autoevaluacion = () => {
   const { cod_clase, cod_evaluacion } = useParams();
   const navigate = useNavigate();
   const { user } = useContext(UserContext);
@@ -22,7 +22,8 @@ const EvaluacionPares = () => {
       [index]: value,
     }));
   };
-
+  const estudiante = grupoData?.estudiantes?.find(integrante => integrante.codigo_sis === user.codigoSis);
+  
   useEffect(() => {
     // Validar el rol del usuario
     if (user?.rol === "docente") {
@@ -132,6 +133,7 @@ const EvaluacionPares = () => {
     }
   };
   
+ 
   
 
   if (error) {
@@ -149,53 +151,12 @@ const EvaluacionPares = () => {
   }
 
   return (
-    <div className="flex flex-col w-full p-6 bg-white">
-      <div className="bg-semi-blue text-white p-6 mb-6 rounded-lg">
-        <h2 className="text-2xl font-semibold">Evaluación de Pares</h2>
-        <p className="text-xl">{grupoData.nombre_largo}</p>
-      </div>
-
-      <div className="border border-black rounded-lg p-6 mb-6 overflow-x-auto">
-        <div className="flex items-center mb-4">
-          <PiNewspaper className="text-2xl mr-2" />
-          <h1 className="text-lg font-bold">Evaluación de Integrantes</h1>
-        </div>
-        <hr className="border-black my-2" />
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <div>
-            <h2 className="font-bold text-md mb-2">Integrantes</h2>
-            {grupoData.estudiantes && grupoData.estudiantes.map((integrante, index) => (
-              <div key={index} className="mb-2">
-                <input
-                  type="text"
-                  value={`${integrante.nombre_estudiante} ${integrante.apellido_estudiante} (${integrante.rol})`}
-                  readOnly
-                  className="bg-[#D1DDED] rounded-lg p-2 w-full"
-                />
-              </div>
-            ))}
+    <div className="flex flex-col w-full p-6 bg-white"> <div className="bg-semi-blue text-white p-6 mb-6 rounded-lg"> <h2 className="text-2xl font-semibold">Autoevaluación</h2> <p className="text-xl">{grupoData.nombre_largo}</p> </div> <div className="border border-black rounded-lg p-6 mb-6 overflow-x-auto"> <div className="flex items-center mb-4"> <PiNewspaper className="text-2xl mr-2" /> <h1 className="text-lg font-bold">Calificación a usted mismo bajo honestidad</h1> </div> <hr className="border-black my-2" /> <div className="grid grid-cols-1 md:grid-cols-2 gap-4"> <div> <h2 className="font-bold text-md mb-2">Autoevaluación personal</h2> {estudiante ? ( <div className="mb-2"> <input type="text" value={`${estudiante.nombre_estudiante} ${estudiante.apellido_estudiante} (${estudiante.rol})`} readOnly className="bg-[#D1DDED] rounded-lg p-2 w-full" /> </div> ) : ( <div>No se encontró al estudiante.</div> )}
           </div>
 
           <div>
             <h2 className="font-bold text-md mb-2 text-center">Nota</h2>
-            <div className="flex flex-col space-y-2">
-              {grupoData.estudiantes && grupoData.estudiantes.map((integrante, index) => (
-                <div
-                  key={index}
-                  className="relative"
-                  onClick={() => openRubricModal(index)}
-                >
-                  <input
-                    type="text"
-                    value={
-                      integrante.score !== undefined ? integrante.score : "/..."
-                    }
-                    readOnly
-                    className="bg-[#D1DDED] border border-gray-300 rounded-lg p-1 w-full h-10 text-center cursor-pointer"
-                  />
-                </div>
-              ))}
-            </div>
+            <div className="flex flex-col space-y-2"> {estudiante ? ( <div className="relative" onClick={() => openRubricModal(0)}> <input type="text" value={ estudiante.score !== undefined ? estudiante.score : "/..." } readOnly className="bg-[#D1DDED] border border-gray-300 rounded-lg p-1 w-full h-10 text-center cursor-pointer" /> </div> ) : ( <div>No se encontró al estudiante.</div> )} </div>
           </div>
         </div>
       </div>
@@ -273,4 +234,4 @@ const EvaluacionPares = () => {
   );
 };
 
-export default EvaluacionPares;
+export default Autoevaluacion;
