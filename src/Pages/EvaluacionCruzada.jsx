@@ -161,37 +161,41 @@ const EvaluacionCruzada = () => {
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <div>
             <h2 className="font-bold text-md mb-2">Integrantes</h2>
-            {grupoData.integrantes.map((integrante, index) => (
-              <div key={index} className="mb-2">
-                <input
-                  type="text"
-                  value={`${integrante.nombre_estudiante} ${integrante.apellido_estudiante} (${integrante.rol})`}
-                  readOnly
-                  className="bg-[#D1DDED] rounded-lg p-2 w-full"
-                />
-              </div>
-            ))}
+            {grupoData.integrantes &&
+              grupoData.integrantes.map((integrante, index) => (
+                <div key={index} className="mb-2">
+                  <input
+                    type="text"
+                    value={`${integrante.nombre_estudiante} ${integrante.apellido_estudiante} (${integrante.rol})`}
+                    readOnly
+                    className="bg-[#D1DDED] rounded-lg p-2 w-full"
+                  />
+                </div>
+              ))}
           </div>
 
           <div>
             <h2 className="font-bold text-md mb-2 text-center">Nota</h2>
             <div className="flex flex-col space-y-2">
-              {grupoData.integrantes.map((integrante, index) => (
-                <div
-                  key={index}
-                  className="relative"
-                  onClick={() => openRubricModal(index)}
-                >
-                  <input
-                    type="text"
-                    value={
-                      integrante.score !== undefined ? integrante.score : "/..."
-                    }
-                    readOnly
-                    className="bg-[#D1DDED] border border-gray-300 rounded-lg p-1 w-full h-10 text-center cursor-pointer"
-                  />
-                </div>
-              ))}
+              {grupoData.integrantes &&
+                grupoData.integrantes.map((integrante, index) => (
+                  <div
+                    key={index}
+                    className="relative"
+                    onClick={() => openRubricModal(index)}
+                  >
+                    <input
+                      type="text"
+                      value={
+                        integrante.score !== undefined
+                          ? integrante.score
+                          : "/..."
+                      }
+                      readOnly
+                      className="bg-[#D1DDED] border border-gray-300 rounded-lg p-1 w-full h-10 text-center cursor-pointer"
+                    />
+                  </div>
+                ))}
             </div>
           </div>
         </div>
