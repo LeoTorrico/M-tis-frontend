@@ -281,6 +281,7 @@ const EvaluacionSemanal = () => {
             codEvaluacion: cod_evaluacion,
             codClase: cod_clase,
             codGrupo: cod_grupoempresa,
+            fecha: fecha,
             comentario: retroalimentacion,
           },
           {
@@ -318,6 +319,7 @@ const EvaluacionSemanal = () => {
       await axios.post(
         `https://backend-tis-silk.vercel.app/asistencia/registrar/${cod_clase}`,
         {
+          fecha: fecha,
           listaAsistencia,
         },
         {
