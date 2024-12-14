@@ -3,8 +3,7 @@ import { useParams } from "react-router-dom";
 import EvaluacionDetalles from "./EvaluacionDetalles";
 import EvaluacionCruzada from "./EvaluacionCruzada";
 import EvaluacionPares from "./EvaluacionPares";
-import Autoevaluacion from "./AutoEvaluacion";
-
+import Autoevaluacion from "./Autoevaluacion";
 const VistaEvaluacion = () => {
   const { cod_evaluacion } = useParams();
   const [evaluacionTipo, setEvaluacionTipo] = useState(null);
@@ -27,7 +26,7 @@ const VistaEvaluacion = () => {
     const fetchEvaluacionTipo = async () => {
       try {
         const response = await fetch(
-          `https://backend-tis-silk.vercel.app/${cod_evaluacion}/tipo`,
+          `https://backend-tis-silk.vercel.app/evaluaciones/${cod_evaluacion}/tipo`,
           {
             headers: { Authorization: `Bearer ${token}` },
           }
