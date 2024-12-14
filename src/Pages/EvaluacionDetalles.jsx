@@ -23,7 +23,7 @@ const EvaluacionDetalles = () => {
 
     try {
       const response = await axios.get(
-        `https://backend-tis-silk.vercel.app/evaluaciones/detalles/${cod_evaluacion}`,
+        `http://localhost:3000/evaluaciones/detalles/${cod_evaluacion}`,
         {
           headers: {
             Authorization: `Bearer ${user.token}`,

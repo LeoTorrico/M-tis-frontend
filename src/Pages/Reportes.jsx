@@ -20,7 +20,7 @@ const Reportes = () => {
     const fetchCourses = async () => {
       try {
         const response = await fetch(
-          "https://backend-tis-silk.vercel.app/clases/obtener",
+          "http://localhost:3000/clases/obtener",
           {
             headers: {
               Authorization: `Bearer ${token}`,
@@ -49,7 +49,7 @@ const Reportes = () => {
     setLoadingGroups(true);
     try {
       const response = await fetch(
-        `https://backend-tis-silk.vercel.app/api/grupos/${cod_clase}`,
+        `http://localhost:3000/api/grupos/${cod_clase}`,
         {
           headers: {
             Authorization: `Bearer ${token}`,

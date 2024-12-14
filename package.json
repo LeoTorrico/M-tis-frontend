@@ -21,6 +21,7 @@
     "jspdf-autotable": "^3.8.4",
     "jwt-decode": "^4.0.0",
     "lucide-react": "^0.439.0",
+    "m-tis-frontend": "file:",
     "react": "^18.3.1",
     "react-avatar": "^5.0.3",
     "react-doc-viewer": "^0.1.14",

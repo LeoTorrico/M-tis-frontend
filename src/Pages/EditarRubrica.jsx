@@ -18,7 +18,7 @@ const Rubrica = () => {
     const fetchRubricaData = async () => {
       try {
         const response = await axios.get(
-          `https://backend-tis-silk.vercel.app/rubricas/${cod_evaluacion}`,
+          `http://localhost:3000/rubricas/${cod_evaluacion}`,
           {
             headers: {
               Authorization: `Bearer ${token}`,
@@ -177,7 +177,7 @@ const Rubrica = () => {
     try {
       console.log(rubricaActualizada);
       const response = await axios.put(
-        "https://backend-tis-silk.vercel.app/rubricas/editar",
+        "http://localhost:3000/rubricas/editar",
         rubricaActualizada,
         {
           headers: {

@@ -19,7 +19,7 @@ const GrupoDetalles = () => {
   const fetchGrupo = async () => {
     try {
       const response = await fetch(
-        `https://backend-tis-silk.vercel.app/api/grupos/grupo/${cod_grupoempresa}`,
+        `http://localhost:3000/api/grupos/grupo/${cod_grupoempresa}`,
         {
           headers: {
             Authorization: `Bearer ${user.token}`,

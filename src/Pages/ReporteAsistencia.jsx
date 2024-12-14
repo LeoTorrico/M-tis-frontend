@@ -17,7 +17,7 @@ function AsistenciaReporte() {
   const fetchAsistencia = async () => {
     try {
       const response = await axios.get(
-        `https://backend-tis-silk.vercel.app/asistencia/reporte/${cod_clase}/${cod_grupoempresa}`,
+        `http://localhost:3000/asistencia/reporte/${cod_clase}/${cod_grupoempresa}`,
         {
           headers: {
             Authorization: `Bearer ${user.token}`,
