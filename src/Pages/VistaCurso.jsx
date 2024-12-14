@@ -14,6 +14,7 @@ import ParametrosGruposModal from "../Components/ParametrosGruposModal";
 
 const VistaCurso = () => {
   const { cod_clase } = useParams();
+  const fechaActual = new Date(); // Obtiene la fecha y hora actua
   const navigate = useNavigate();
   const [curso, setCurso] = useState({
     nombre: "",
@@ -54,6 +55,7 @@ const VistaCurso = () => {
   useEffect(() => {
     const fetchClase = async () => {
       try {
+        console.log(fechaActual);
         if (rol === "estudiante") {
           const response = await axios.get(
             "https://backend-tis-silk.vercel.app/clases-estudiante/obtener-clases",
