@@ -61,7 +61,7 @@ const EvaluacionCruzada = () => {
     try {
       const token = localStorage.getItem("token");
       const response = await axios.get(
-        `http://localhost:3000/evaluaciones/${cod_evaluacion}/${cod_clase}/nota-total`,
+        `https://backend-tis-silk.vercel.app/evaluaciones/${cod_evaluacion}/${cod_clase}/nota-total`,
         {
           headers: {
             Authorization: `Bearer ${token}`,
@@ -109,11 +109,15 @@ const EvaluacionCruzada = () => {
 
     try {
       const token = localStorage.getItem("token");
-      await axios.post("http://localhost:3000/evaluacion/calificar", data, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      });
+      await axios.post(
+        "https://backend-tis-silk.vercel.app/evaluacion/calificar",
+        data,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
 
       // Mostrar el mensaje de éxito con SweetAlert2
       Swal.fire({
