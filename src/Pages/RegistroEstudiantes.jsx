@@ -125,7 +125,7 @@ function RegistroEstudiante() {
     if (Object.keys(newErrors).length === 0) {
       try {
         const response = await axios.post(
-          "https://backend-tis-silk.vercel.app/estudiantes/registro",
+          "http://localhost:3000/estudiantes/registro",
           formData,
           {
             headers: {
